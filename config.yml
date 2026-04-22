@@ -1,0 +1,22 @@
+video:
+  resolution: 1600x900
+  fps: 60
+  fullscreen: false
+
+audio:
+  music: 1.0
+  sound: 1.0
+
+gui:
+  language: Russian
+
+input:
+    up: up
+    down: down
+    left: left
+    right: right
+    confirm: return
+    back: escape
+    pause: escape
+    jump: up
+    poop: space
