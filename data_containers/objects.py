@@ -19,5 +19,16 @@ def add(obj: Object) -> None:
     else:
         _idx_hidden.append(obj.id)
 
-def delete(obj: Object, throw: bool = False) -> None:
-    pass
+def delete(obj: Object, throw: bool = False) -> Object|None:
+    if obj.id not in _all:
+        if throw:
+            raise KeyError(f"Object with id {obj.id} was not found.")
+        else:
+            return None
+
+    if obj.VISIBLE:
+        _idx_visible.remove(obj.id)
+    else:
+        _idx_hidden.remove(obj.id)
+
+    return _all.pop(obj.id)
