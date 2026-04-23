@@ -27,6 +27,9 @@ class Object:
         if self.texture_name is not None:
             core.video.texture_load(core.paths.TEXTURES / self.texture_name)
 
+    def draw(self) -> None:
+        pass
+
     @property
     def x(self) -> float:
         return self.rect.x
