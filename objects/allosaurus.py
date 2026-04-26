@@ -42,8 +42,6 @@ class Allosaurus(Object):
             int(self.height)
         )
 
-        print(area)
-
         core.video.texture_blit(
             self.texture_name,
             (self.x - viewpoint.x, self.y - viewpoint.y),
