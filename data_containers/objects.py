@@ -1,5 +1,5 @@
 from enum import Enum
-from objects import Object
+from objects import Object, Camera
 
 class _TaskType(int, Enum):
     ADD = 0
@@ -15,7 +15,7 @@ class _Task:
         self.throw: bool = throw
 
 
-_all: dict[str, Object] = {}
+_all: dict[str, Object|Camera] = {}
 _idx_visible: list[str] = []
 _idx_hidden: list[str] = []
 _idx_with_handlers: list[str] = []
@@ -100,6 +100,7 @@ def queue_add(obj: Object, throw: bool = False) -> None:
 
     _task_queue.append(new_task)
 
+
 def queue_delete(obj: Object, throw: bool = False) -> None:
     new_task: _Task = _Task(_TaskType.DELETE, obj)
 
@@ -116,6 +117,7 @@ def queue_delete(obj: Object, throw: bool = False) -> None:
 
     _task_queue.append(new_task)
 
+
 def process_task_queue() -> None:
     for task in _task_queue:
         if task.type == _TaskType.ADD:
@@ -124,3 +126,10 @@ def process_task_queue() -> None:
             delete(task.subject, task.throw)
 
     _task_queue.clear()
+
+
+def get_camera() -> Camera:
+    if Camera.ID not in _all:
+        raise KeyError(f"Camera not found.")
+
+    return _all[Camera.ID]

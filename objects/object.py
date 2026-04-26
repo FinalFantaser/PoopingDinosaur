@@ -5,6 +5,16 @@ import core.video
 from objects.rect import Rect
 
 class Object:
+    __slots__ = (
+        'id',
+        'rect',
+        'texture_name',
+        'curr_frame',
+        'total_frames',
+        'anim_interval',
+        'last_frame_change',
+    )
+
     VISIBLE: bool = True
     HANDLER_NAME: str|None = None
 
@@ -20,14 +30,15 @@ class Object:
         self.id: str = id
         self.rect: Rect = Rect(pos[0], pos[1], size[0], size[1])
         self.texture_name: str|None = texture_name
+        self.curr_frame: int = 0
         self.total_frames: int = total_frames
         self.anim_interval: int = anim_interval
         self.last_frame_change: int = pygame.time.get_ticks()
 
         if self.texture_name is not None:
-            core.video.texture_load(core.paths.TEXTURES / self.texture_name)
+            core.video.texture_load(core.paths.TEXTURES / self.texture_name, self.texture_name)
 
-    def draw(self) -> None:
+    def draw(self, **kwargs) -> None:
         pass
 
     @property

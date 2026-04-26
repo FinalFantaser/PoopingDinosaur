@@ -7,6 +7,14 @@ class Rect:
         self.width: float = float(width)
         self.height: float = float(height)
 
+    def overlaps(self, other_rect: 'Rect') -> bool:
+        return (
+                other_rect.left <= self.left <= other_rect.right
+                or other_rect.left <= self.right <= other_rect.right
+                or other_rect.top <= self.top <= other_rect.bottom
+                or other_rect.top <= self.bottom <= other_rect.bottom
+        )
+
     @property
     def size(self) -> tuple[float, float]:
         return self.width, self.height
