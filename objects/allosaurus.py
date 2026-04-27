@@ -1,4 +1,5 @@
 import pygame.time
+import pygame.transform
 import core.video
 from objects.object import Object, Rect
 
@@ -12,6 +13,9 @@ class Allosaurus(Object):
     ANIM_INTERVAL: int = 250
     SIZE: tuple[float, float] = (53, 16)
     TEXTURE_NAME: str = 'allosaurus.png'
+
+    MAX_VEL_X: float = 4.0
+    MAX_WEIGHT: float = 2.0
 
     def __init__(
             self,
@@ -42,13 +46,21 @@ class Allosaurus(Object):
             int(self.height)
         )
 
+        surface: pygame.Surface = self.texture
+        if self.direction == self.DIR_LEFT:
+            surface = pygame.transform.flip(surface, True, False)
+
         core.video.texture_blit(
-            self.texture_name,
+            surface,
             (self.x - viewpoint.x, self.y - viewpoint.y),
             area
         )
 
     def animate(self) -> None:
+        if self.vel_x == 0.0:
+            self.curr_frame = 0
+            return
+
         if pygame.time.get_ticks() - self.last_frame_change >= self.ANIM_INTERVAL:
             self.last_frame_change = pygame.time.get_ticks()
             self.curr_frame += 1
