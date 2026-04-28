@@ -51,3 +51,7 @@ class Ground(Object):
             )
 
             draw_x += self.BLOCK_W
+
+    @property
+    def touch_level(self) -> float:
+        return self.y + self.height/2

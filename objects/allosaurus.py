@@ -13,8 +13,10 @@ class Allosaurus(Object):
     ANIM_INTERVAL: int = 250
     SIZE: tuple[float, float] = (53, 16)
     TEXTURE_NAME: str = 'allosaurus.png'
+    HANDLER_NAME: str = 'AllosaurusHandler'
 
     MAX_VEL_X: float = 4.0
+    MAX_VEL_Y: float = 10.0
     MAX_WEIGHT: float = 2.0
 
     def __init__(

@@ -40,7 +40,10 @@ class Object:
         if self.texture_name is not None:
             core.video.texture_load(core.paths.TEXTURES / self.texture_name, self.texture_name)
 
-    def draw(self, **kwargs) -> None:
+    def draw(self, viewpoint: Rect) -> None:
+        pass
+
+    def animate(self) -> None:
         pass
 
     @property
@@ -94,3 +97,7 @@ class Object:
     @property
     def texture(self) -> Surface|None:
         return core.video.texture_get(self.texture_name)
+
+    @property
+    def update_delta(self) -> int:
+        return pygame.time.get_ticks() - self.last_update

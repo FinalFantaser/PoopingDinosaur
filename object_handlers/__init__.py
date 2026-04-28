@@ -1,1 +1,2 @@
 from .object_handler import ObjectHandler
+from .allosaurus_handler import AllosaurusHandler
