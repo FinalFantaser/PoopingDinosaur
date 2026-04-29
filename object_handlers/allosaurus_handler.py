@@ -1,5 +1,6 @@
 import pygame.time
 from objects import *
+import core.input
 from data_containers import objects as obj_container
 from object_handlers.object_handler import ObjectHandler
 
@@ -24,6 +25,16 @@ class AllosaurusHandler(ObjectHandler):
             obj.vel_y = 0.0
             obj.rect.bottom = ground.touch_level
 
-        print(obj.vel_y)
-
         obj.last_update = pygame.time.get_ticks()
+
+    @classmethod
+    def read_input(cls, obj: Allosaurus) -> None:
+        if core.input.pressed("left"):
+            obj.direction = obj.DIR_LEFT
+            accel = obj.MAX_VEL_X / 1000 / 4  * obj.update_delta * obj.direction
+            obj.vel_x = max(obj.MAX_VEL_X * obj.direction, obj.vel_x + accel)
+
+        if core.input.pressed("right"):
+            obj.direction = obj.DIR_RIGHT
+            accel = obj.MAX_VEL_X / 1000 / 4 * obj.update_delta * obj.direction
+            obj.vel_x = min(obj.MAX_VEL_X * obj.direction, obj.vel_x + accel)

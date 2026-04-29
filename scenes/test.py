@@ -15,12 +15,10 @@ class Test(Scene):
         objects.add(Camera((0, 0)))
         ground: Ground = Ground(100)
         objects.add(ground)
-        objects.add(Allosaurus(
-            "allosaurus_main",
-            (8, ground.y - 64),
-        ))
+        objects.add(Allosaurus((8, ground.y - 64)))
 
         self.handlers: dict[str, type[ObjectHandler]] = {
+            CameraHandler.__name__: CameraHandler,
             AllosaurusHandler.__name__: AllosaurusHandler,
         }
 
@@ -39,12 +37,5 @@ class Test(Scene):
     def read_input(self) -> None:
         if core.input.pressed('back'):
             self.done = True
-    #     elif core.input.pressed('left'):
-    #         if self.camera.left > 0:
-    #             self.camera.left = max(0, self.camera.left - 4)
-    #     elif core.input.pressed('right'):
-    #         if self.camera.right < self.ground.width:
-    #             self.camera.right = min(
-    #                 self.ground.width,
-    #                 self.camera.right + 4
-    #             )
+
+        AllosaurusHandler.read_input(objects.get(Allosaurus.ID))

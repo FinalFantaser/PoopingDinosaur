@@ -5,7 +5,7 @@ from objects.object import Object, Rect
 class Camera(Object):
     ID: str = 'camera'
     VISIBLE: bool = False
-    HANDLER_NAME: str|None = None
+    HANDLER_NAME: str|None = 'CameraHandler'
 
     def __init__(self, pos: tuple[int|float, int|float]):
         super().__init__(

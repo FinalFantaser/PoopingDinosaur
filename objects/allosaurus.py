@@ -5,8 +5,9 @@ from objects.object import Object, Rect
 
 
 class Allosaurus(Object):
-    __slots__ = Object.__slots__ + ('direction', 'vel_x', 'vel_y')
+    __slots__ = Object.__slots__ + ('weight', 'direction', 'vel_x', 'vel_y')
 
+    ID: str = 'player'
     DIR_LEFT: int = -1
     DIR_RIGHT: int = 1
     TOTAL_FRAMES: int = 2
@@ -15,20 +16,20 @@ class Allosaurus(Object):
     TEXTURE_NAME: str = 'allosaurus.png'
     HANDLER_NAME: str = 'AllosaurusHandler'
 
-    MAX_VEL_X: float = 4.0
-    MAX_VEL_Y: float = 10.0
+    MAX_VEL_X: float = 20.0
+    MAX_VEL_Y: float = 40.0
+    MIN_WEIGHT: float = 1.5
     MAX_WEIGHT: float = 2.0
 
     def __init__(
             self,
-            id: str,
             pos: tuple[int|float, int|float],
             direction: int = DIR_RIGHT,
             vel_x: float = 0.0,
             vel_y: float = 0.0,
     ) -> None:
         super().__init__(
-            id=id,
+            id=self.ID,
             pos=pos,
             size=self.SIZE,
             texture_name=self.TEXTURE_NAME,
@@ -36,6 +37,7 @@ class Allosaurus(Object):
             anim_interval=self.ANIM_INTERVAL,
         )
 
+        self.weight: float = self.MIN_WEIGHT
         self.direction: int = direction
         self.vel_x: float = vel_x
         self.vel_y: float = vel_y
