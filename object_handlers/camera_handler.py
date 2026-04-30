@@ -9,7 +9,7 @@ class CameraHandler(ObjectHandler):
         ground: Ground = obj_container.get(Ground.ID)
         allosaurus: Allosaurus = obj_container.get(Allosaurus.ID)
 
-        obj.rect.center_x = allosaurus.rect.center_x
+        obj.rect.center_x = allosaurus.rect.center_x + obj.rect.width/4
 
         if obj.rect.left < ground.rect.left:
             obj.rect.left = ground.rect.left

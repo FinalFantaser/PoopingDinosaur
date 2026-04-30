@@ -10,7 +10,9 @@ class AllosaurusHandler(ObjectHandler):
     def update(cls, obj: Allosaurus) -> None:
         ground: Ground = obj_container.get(Ground.ID)
 
-        obj.x += obj.vel_x / 1000 * obj.update_delta
+        vel_x_total: float = obj.VEL_X_CONST - (obj.VEL_X_PENALTY * obj.poos) + obj.vel_x_modifier
+
+        obj.x += vel_x_total / 1000 * obj.update_delta
 
         if obj.rect.left <= ground.rect.left:
             obj.x = ground.rect.left
@@ -18,7 +20,7 @@ class AllosaurusHandler(ObjectHandler):
             obj.rect.right = ground.rect.right
 
         if obj.rect.bottom < ground.touch_level:
-            obj.vel_y = min(Allosaurus.MAX_VEL_Y, obj.vel_y + 0.2)
+            obj.vel_y = min(Allosaurus.VEL_Y_MIN, obj.vel_y + 0.2)
 
         obj.y += obj.vel_y / 1000 * obj.update_delta
         if obj.rect.bottom >= ground.touch_level:
@@ -29,12 +31,14 @@ class AllosaurusHandler(ObjectHandler):
 
     @classmethod
     def read_input(cls, obj: Allosaurus) -> None:
-        if core.input.pressed("left"):
-            obj.direction = obj.DIR_LEFT
-            accel = obj.MAX_VEL_X / 1000 / 4  * obj.update_delta * obj.direction
-            obj.vel_x = max(obj.MAX_VEL_X * obj.direction, obj.vel_x + accel)
+        ground: Ground = obj_container.get(Ground.ID)
 
-        if core.input.pressed("right"):
-            obj.direction = obj.DIR_RIGHT
-            accel = obj.MAX_VEL_X / 1000 / 4 * obj.update_delta * obj.direction
-            obj.vel_x = min(obj.MAX_VEL_X * obj.direction, obj.vel_x + accel)
+        if core.input.pressed("left"):
+            obj.vel_x_modifier = -(obj.VEL_X_MODIFIER)
+        elif core.input.pressed("right"):
+            obj.vel_x_modifier = obj.VEL_X_MODIFIER
+        else:
+            obj.vel_x_modifier = 0.0
+
+        if core.input.pressed("up") and obj.rect.bottom >= ground.touch_level:
+            obj.vel_y -= obj.VEL_Y_MIN
