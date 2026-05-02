@@ -1,3 +1,4 @@
+import random
 from typing import Any
 from pygame import Surface
 import core
@@ -16,6 +17,20 @@ class Test(Scene):
         ground: Ground = Ground(100)
         objects.add(ground)
         objects.add(Allosaurus((8, ground.y - 64)))
+        
+        # Distributing clouds randomly
+        total_clouds: int = int(ground.total_tiles/3)
+        draw_x: float = 0.0
+        for cloud in range(total_clouds):
+            if random.choice([True, False]):
+                cloud_pos: tuple[float, float] = (
+                    core.video.get_screen_rect().centery + Cloud.SIZE[1] * random.randint(-1, 1),
+                    draw_x
+                )
+                
+                objects.add(Cloud(cloud_pos))
+            
+            draw_x += Cloud.SIZE[0]
 
         self.handlers: dict[str, type[ObjectHandler]] = {
             CameraHandler.__name__: CameraHandler,

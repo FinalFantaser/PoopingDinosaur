@@ -7,6 +7,7 @@ class Ground(Object):
     __slots__ = Object.__slots__ + ('tiles', 'total_tiles')
 
     ID: str = 'ground'
+    LAYER: int = -1
     TEXTURE_NAME: str = 'ground.png'
 
     TILE_OPTIONS: int = 4

@@ -38,6 +38,7 @@ def add(obj: Object, throw: bool = False) -> None:
 
     if obj.VISIBLE:
         _idx_visible.append(obj.id)
+        _sort_visibles()
     else:
         _idx_hidden.append(obj.id)
 
@@ -133,3 +134,8 @@ def get_camera() -> Camera:
         raise KeyError(f"Camera not found.")
 
     return _all[Camera.ID]
+    
+
+def _sort_visibles() -> None:
+    global _idx_visible
+    _idx_visible = sorted(_idx_visible, key=lambda obj: get(obj).LAYER) 

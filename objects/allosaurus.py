@@ -12,6 +12,7 @@ class Allosaurus(Object):
     ANIM_INTERVAL: int = 250
     SIZE: tuple[float, float] = (53, 16)
     TEXTURE_NAME: str = 'allosaurus.png'
+    LAYER: int = 0
     HANDLER_NAME: str = 'AllosaurusHandler'
 
     WEIGHT: float = 25.0

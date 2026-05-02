@@ -17,6 +17,7 @@ class Object:
     )
 
     VISIBLE: bool = True
+    LAYER: int = 0
     HANDLER_NAME: str|None = None
 
     def __init__(
