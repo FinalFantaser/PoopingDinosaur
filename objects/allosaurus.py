@@ -14,7 +14,9 @@ class Allosaurus(Object):
     TEXTURE_NAME: str = 'allosaurus.png'
     HANDLER_NAME: str = 'AllosaurusHandler'
 
+    WEIGHT: float = 25.0
     MAX_POOS: int = 4
+    SINGLE_POO_WEIGHT: float = WEIGHT / 10 
     VEL_X_CONST: float = 150.0
     VEL_X_MODIFIER: float = VEL_X_CONST / 4
     VEL_X_PENALTY: float = VEL_X_CONST / 4 / MAX_POOS
@@ -52,9 +54,20 @@ class Allosaurus(Object):
             (self.x - viewpoint.x, self.y - viewpoint.y),
             area
         )
+        
+    @property
+    def total_weight(self) -> float:
+        return self.WEIGHT + self.poos * self.SINGLE_POO_WEIGHT
+        
+    @property
+    def vel_x_total(self) -> float:
+        return self.VEL_X_CONST - (self.VEL_X_PENALTY * self.poos) + self.vel_x_modifier
 
     def animate(self) -> None:
-        if pygame.time.get_ticks() - self.last_frame_change >= self.ANIM_INTERVAL:
+        # Animation interval is affected by dinousaur's current speed
+        anim_interval: int = int(self.ANIM_INTERVAL - self.vel_x_modifier * 2)    
+    
+        if pygame.time.get_ticks() - self.last_frame_change >= anim_interval:
             self.last_frame_change = pygame.time.get_ticks()
             self.curr_frame += 1
             if self.curr_frame >= self.TOTAL_FRAMES:

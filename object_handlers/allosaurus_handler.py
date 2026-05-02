@@ -10,9 +10,7 @@ class AllosaurusHandler(ObjectHandler):
     def update(cls, obj: Allosaurus) -> None:
         ground: Ground = obj_container.get(Ground.ID)
 
-        vel_x_total: float = obj.VEL_X_CONST - (obj.VEL_X_PENALTY * obj.poos) + obj.vel_x_modifier
-
-        obj.x += vel_x_total / 1000 * obj.update_delta
+        obj.x += obj.vel_x_total / 1000 * obj.update_delta
 
         if obj.rect.left <= ground.rect.left:
             obj.x = ground.rect.left
@@ -20,7 +18,7 @@ class AllosaurusHandler(ObjectHandler):
             obj.rect.right = ground.rect.right
 
         if obj.rect.bottom < ground.touch_level:
-            obj.vel_y = min(Allosaurus.VEL_Y_MIN, obj.vel_y + 0.2)
+            obj.vel_y += obj.total_weight / 2
 
         obj.y += obj.vel_y / 1000 * obj.update_delta
         if obj.rect.bottom >= ground.touch_level:
@@ -41,4 +39,4 @@ class AllosaurusHandler(ObjectHandler):
             obj.vel_x_modifier = 0.0
 
         if core.input.pressed("up") and obj.rect.bottom >= ground.touch_level:
-            obj.vel_y -= obj.VEL_Y_MIN
+            obj.vel_y -= obj.VEL_Y_MIN * (obj.total_weight / 4) + obj.vel_x_modifier
