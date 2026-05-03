@@ -1,6 +1,6 @@
 video:
   resolution: 1600x900
-  fps: 120
+  fps: 60
   fullscreen: false
 
 audio:

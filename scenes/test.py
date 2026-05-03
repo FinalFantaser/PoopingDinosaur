@@ -14,20 +14,21 @@ class Test(Scene):
         self.label: Surface = core.gui.text_render("Нажмите Esc, чтобы закрыть программу")
 
         objects.add(Camera((0, 0)))
-        ground: Ground = Ground(100)
+        ground: Ground = Ground(1000)
         objects.add(ground)
         objects.add(Allosaurus((8, ground.y - 64)))
         
         # Distributing clouds randomly
-        total_clouds: int = int(ground.total_tiles/3)
         draw_x: float = 0.0
-        for cloud in range(total_clouds):
-            if random.choice([True, False]):
+        for _ in range(ground.total_tiles):
+            if random.randint(1, 100) >= 90:
+                objects.add(Obstacle(ObstacleType.CACTUS, (draw_x, ground.touch_level - 16)))
+
+            if random.randint(1, 100) >= 80:
                 cloud_pos: tuple[float, float] = (
-                    core.video.get_screen_rect().centery + Cloud.SIZE[1] * random.randint(-1, 1),
-                    draw_x
+                    draw_x,
+                    core.video.get_screen_rect().height/4 + Cloud.SIZE[1] * random.randint(-1, 1),
                 )
-                
                 objects.add(Cloud(cloud_pos))
             
             draw_x += Cloud.SIZE[0]
