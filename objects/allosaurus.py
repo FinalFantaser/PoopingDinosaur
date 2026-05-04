@@ -5,7 +5,7 @@ from objects.object import Object, Rect
 
 
 class Allosaurus(Object):
-    __slots__ = Object.__slots__ + ('poos', 'vel_y', 'vel_x_modifier')
+    __slots__ = Object.__slots__ + ('poos', 'vel_y', 'vel_x_modifier', 'hitbox')
 
     ID: str = 'player'
     TOTAL_FRAMES: int = 2
@@ -41,6 +41,7 @@ class Allosaurus(Object):
         self.poos: int = 0
         self.vel_x_modifier: float = 0.0
         self.vel_y: float = vel_y
+        self.hitbox: Rect = Rect(self.x, self.y, 32, self.height)
 
     def draw(self, viewpoint: Rect) -> None:
         area: tuple[int, int, int, int] = (

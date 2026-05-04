@@ -39,4 +39,4 @@ class AllosaurusHandler(ObjectHandler):
             obj.vel_x_modifier = 0.0
 
         if core.input.pressed("up") and obj.rect.bottom >= ground.touch_level:
-            obj.vel_y -= obj.VEL_Y_MIN * (obj.total_weight / 4) + obj.vel_x_modifier
+            obj.vel_y -= obj.VEL_Y_MIN * (obj.total_weight / 3) + obj.vel_x_modifier
