@@ -5,7 +5,13 @@ from objects.object import Object, Rect
 
 
 class Allosaurus(Object):
-    __slots__ = Object.__slots__ + ('poos', 'vel_y', 'vel_x_modifier', 'hitbox')
+    __slots__ = Object.__slots__ + (
+        'poos',
+        'vel_y',
+        'vel_x_modifier',
+        '_hitbox',
+        'invincibility'
+    )
 
     ID: str = 'player'
     TOTAL_FRAMES: int = 2
@@ -22,6 +28,7 @@ class Allosaurus(Object):
     VEL_X_MODIFIER: float = VEL_X_CONST / 4
     VEL_X_PENALTY: float = VEL_X_CONST / 4 / MAX_POOS
     VEL_Y_MIN: float = 40.0
+    HITBOX_SIZE: tuple[float, float] = (32, SIZE[1])
 
     def __init__(
             self,
@@ -41,9 +48,14 @@ class Allosaurus(Object):
         self.poos: int = 0
         self.vel_x_modifier: float = 0.0
         self.vel_y: float = vel_y
-        self.hitbox: Rect = Rect(self.x, self.y, 32, self.height)
+        self._hitbox: Rect = Rect(self.x, self.y, self.HITBOX_SIZE[0], self.HITBOX_SIZE[1])
+        self.invincibility: int = 0
 
     def draw(self, viewpoint: Rect) -> None:
+        # Blinking when invincible
+        if self.invincibility > 0:
+            pass
+
         area: tuple[int, int, int, int] = (
             int(self.curr_frame * self.width),
             0,
@@ -64,6 +76,13 @@ class Allosaurus(Object):
     @property
     def vel_x_total(self) -> float:
         return self.VEL_X_CONST - (self.VEL_X_PENALTY * self.poos) + self.vel_x_modifier
+
+    @property
+    def hitbox(self) -> Rect:
+        self._hitbox.center_x = self.rect.center_x
+        self._hitbox.y = self.y
+
+        return self._hitbox
 
     def animate(self) -> None:
         # Animation interval is affected by dinousaur's current speed

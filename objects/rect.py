@@ -1,3 +1,7 @@
+import pygame
+import pygame
+
+
 class Rect:
     __slots__ = ("x", "y", "width", "height")
 
@@ -121,3 +125,6 @@ class Rect:
 
     def to_tuple(self) -> tuple[float, float, float, float]:
         return self.x, self.y, self.width, self.height
+
+    def to_pygame_rect(self) -> pygame.Rect:
+        return pygame.Rect(self.to_tuple())
