@@ -1,13 +1,13 @@
 import math
 import core.video
-from objects.object import Object, Rect
+from objects.object import Layer, Object, Rect
 from random import randint
 
 class Ground(Object):
-    __slots__ = Object.__slots__ + ('tiles', 'total_tiles')
+    __slots__ = *Object.__slots__, 'tiles', 'total_tiles'
 
     ID: str = 'ground'
-    LAYER: int = -1
+    LAYER: Layer = Layer.BACKGROUND_1
     TEXTURE_NAME: str = 'ground.png'
 
     TILE_OPTIONS: int = 4

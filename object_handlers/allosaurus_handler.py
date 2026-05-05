@@ -46,6 +46,7 @@ class AllosaurusHandler(ObjectHandler):
                 if isinstance(other_obj, Obstacle) and other_obj.ob_type == ObstacleType.CACTUS and obj.invincibility < 1:
                     obj.vel_y -= obj.VEL_Y_MIN * (obj.total_weight / 3) + obj.vel_x_modifier
                     obj.vel_x_modifier = -obj.VEL_X_MODIFIER * 6
+                    obj.health = max(0, obj.health - 1)
                     obj.invincibility = 3000
 
         # Blink if invincible

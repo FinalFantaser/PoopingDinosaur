@@ -1,14 +1,14 @@
 import core.paths
 import core.video
-from objects.object import Object, Rect
+from objects.object import Layer, Object, Rect
 
 
 class Cloud(Object):
-    __slots__ = Object.__slots__ + ('last_draw_pos',)
+    __slots__ = *Object.__slots__, 'last_draw_pos'
     ID_STUB: str = "cloud_%d"
     TEXTURE_NAME: str = "cloud.png"
     SIZE: tuple[float, float] = (32.0, 16.0)
-    LAYER: int = -2
+    LAYER: Layer = Layer.BACKGROUND_2
     PARALLAX_FACTOR: float = 0.6
     _total: int = 0
     

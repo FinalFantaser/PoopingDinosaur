@@ -1,18 +1,20 @@
 import pygame.time
 import pygame.transform
 import core.video
-from objects.object import Object, Rect
+from objects.object import Object, Layer, Rect
 
 
 class Allosaurus(Object):
-    __slots__ = Object.__slots__ + (
-        'poos',
+    __slots__ = (
+        *Object.__slots__,
         'vel_y',
         'vel_x_modifier',
         '_hitbox',
         'invincibility',
         'last_blink',
         'visible',
+        'health',
+        'poos',
     )
 
     ID: str = 'player'
@@ -20,7 +22,7 @@ class Allosaurus(Object):
     ANIM_INTERVAL: int = 250
     SIZE: tuple[float, float] = (53, 16)
     TEXTURE_NAME: str = 'allosaurus.png'
-    LAYER: int = 0
+    LAYER: Layer = Layer.MAIN
     HANDLER_NAME: str = 'AllosaurusHandler'
 
     WEIGHT: float = 25.0
@@ -31,6 +33,8 @@ class Allosaurus(Object):
     VEL_Y_MIN: float = 40.0
     HITBOX_SIZE: tuple[float, float] = (32, SIZE[1])
     BLINK_INTERVAL: int = 100
+
+    MAX_HEALTH: int = 5
 
     def __init__(
             self,
@@ -47,13 +51,14 @@ class Allosaurus(Object):
             anim_interval=self.ANIM_INTERVAL,
         )
 
-        self.poos: int = 0
         self.vel_x_modifier: float = 0.0
         self.vel_y: float = vel_y
         self._hitbox: Rect = Rect(self.x, self.y, self.HITBOX_SIZE[0], self.HITBOX_SIZE[1])
         self.invincibility: int = 0
         self.last_blink: int = pygame.time.get_ticks()
         self.visible: bool = True
+        self.health: int = self.MAX_HEALTH
+        self.poos: int = 0
 
     def draw(self, viewpoint: Rect) -> None:
         # Blinking when invincible

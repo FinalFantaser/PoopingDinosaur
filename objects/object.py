@@ -1,8 +1,31 @@
+from enum import Enum
 from pygame import Surface
 import pygame.time
 import core.paths
 import core.video
 from objects.rect import Rect
+
+
+class Layer(Enum):
+    BACKGROUND_2 = -2
+    BACKGROUND_1 = -1
+    MAIN = 0
+    FOREGROUND_1 = 1
+    FOREGROUND_2 = 2
+    GUI = 3
+
+    def __lt__(self, other: 'Layer'):
+        return self.value < other.value
+
+    def __le__(self, other: 'Layer'):
+        return self.value <= other.value
+
+    def __gt__(self, other: 'Layer'):
+        return self.value > other.value
+
+    def __ge__(self, other: 'Layer'):
+        return self.value >= other.value
+
 
 class Object:
     __slots__ = (
@@ -17,7 +40,7 @@ class Object:
     )
 
     VISIBLE: bool = True
-    LAYER: int = 0
+    LAYER: Layer = Layer.MAIN
     HANDLER_NAME: str|None = None
 
     def __init__(

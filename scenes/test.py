@@ -17,6 +17,7 @@ class Test(Scene):
         ground: Ground = Ground(1000)
         objects.add(ground)
         objects.add(Allosaurus((8, ground.y - 64)))
+        objects.add(GuiHealthMeter(0))
         
         # Distributing clouds randomly
         draw_x: float = 0.0
@@ -36,6 +37,8 @@ class Test(Scene):
         self.handlers: dict[str, type[ObjectHandler]] = {
             CameraHandler.__name__: CameraHandler,
             AllosaurusHandler.__name__: AllosaurusHandler,
+
+            GuiHealthMeterHandler.__name__: GuiHealthMeterHandler,
         }
 
     def update(self) -> None:
