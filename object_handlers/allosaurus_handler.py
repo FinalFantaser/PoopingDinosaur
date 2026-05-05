@@ -76,3 +76,19 @@ class AllosaurusHandler(ObjectHandler):
 
         if core.input.pressed("up") and obj.rect.bottom >= ground.touch_level:
             obj.vel_y -= obj.VEL_Y_MIN * (obj.total_weight / 3) + obj.vel_x_modifier
+
+        if (
+                core.input.pressed("poop")
+                and obj.poos > 0
+                and pygame.time.get_ticks() - obj.last_pooped_at >= obj.POOP_INTERVAL
+        ):
+            obj.last_pooped_at = pygame.time.get_ticks()
+
+            if obj.rect.bottom >= ground.touch_level:
+                obj.vel_y -= (obj.VEL_Y_MIN * (obj.total_weight / 3) + obj.vel_x_modifier)/2
+
+            obj.poos -= 1
+
+            obj_container.queue_add(
+                Poo(obj.pos)
+            )

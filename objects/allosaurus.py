@@ -15,6 +15,7 @@ class Allosaurus(Object):
         'visible',
         'health',
         'poos',
+        'last_pooped_at',
     )
 
     ID: str = 'player'
@@ -33,6 +34,7 @@ class Allosaurus(Object):
     VEL_Y_MIN: float = 40.0
     HITBOX_SIZE: tuple[float, float] = (32, SIZE[1])
     BLINK_INTERVAL: int = 100
+    POOP_INTERVAL: int = 1000
 
     MAX_HEALTH: int = 5
 
@@ -59,6 +61,7 @@ class Allosaurus(Object):
         self.visible: bool = True
         self.health: int = self.MAX_HEALTH
         self.poos: int = 0
+        self.last_pooped_at: int = pygame.time.get_ticks()
 
     def draw(self, viewpoint: Rect) -> None:
         # Blinking when invincible

@@ -40,6 +40,7 @@ class Test(Scene):
         self.handlers: dict[str, type[ObjectHandler]] = {
             CameraHandler.__name__: CameraHandler,
             AllosaurusHandler.__name__: AllosaurusHandler,
+            PooHandler.__name__: PooHandler,
 
             GuiHealthMeterHandler.__name__: GuiHealthMeterHandler,
             GuiPooMeterHandler.__name__: GuiPooMeterHandler,
@@ -48,6 +49,8 @@ class Test(Scene):
     def update(self) -> None:
         for obj in objects.with_handlers().values():
             self.handlers[obj.HANDLER_NAME].update(obj)
+
+        objects.process_task_queue()
 
     def draw(self) -> None:
         for obj in objects.visible().values():
