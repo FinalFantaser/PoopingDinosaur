@@ -1,18 +1,19 @@
+from pygame import Rect as PygameRect
 import core.video
-from objects.object import Layer, Object, Rect
+from objects.object import Layer, Rect, Object
 
 
-class GuiHealthMeter(Object):
+class GuiPooMeter(Object):
     __slots__ = *Object.__slots__, "value"
 
     LAYER: Layer = Layer.GUI
-    HANDLER_NAME: str | None = "GuiHealthMeterHandler"
-
-    ID: str = "gui_health_meter"
-    POS: tuple[float, float] = 8, 8
-    SIZE_METER: tuple[float, float] = 52, 8
-    SIZE_HEART: tuple[float, float] = 8, 8
-    TEXTURE_NAME: str = "heart.png"
+    HANDLER_NAME: str | None = "GuiPooMeterHandler"
+    ID: str = "gui_poo_meter"
+    SIZE_POO: tuple[float, float] = 16, 16
+    SIZE_METER: tuple[float, float] = SIZE_POO[0] * 5, 16
+    POS: tuple[float, float] = SIZE_POO[0]/2, core.video.get_screen_rect().bottom - SIZE_METER[1] * 1.5
+    TEXTURE_NAME: str = "poo.png"
+    POO_DRAW_RECT: PygameRect = PygameRect((0, 0), SIZE_POO)
 
     def __init__(self, value: int) -> None:
         super().__init__(
@@ -24,6 +25,7 @@ class GuiHealthMeter(Object):
 
         self.value: int = value
 
+
     def draw(self, viewpoint: Rect) -> None:
         if self.value < 1:
             return
@@ -33,5 +35,6 @@ class GuiHealthMeter(Object):
             core.video.texture_blit(
                 self.TEXTURE_NAME,
                 (draw_x, self.POS[1]),
+                self.POO_DRAW_RECT
             )
-            draw_x += self.SIZE_HEART[0] * 1.5
+            draw_x += self.SIZE_POO[0] * 1.5

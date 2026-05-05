@@ -102,8 +102,11 @@ def texture_get(key: str, throw_exception: bool = False) -> Surface|None:
 
 
 def texture_load(filepath: Path, key: str, unique: bool = False) -> Surface:
-    if key in _textures_pool and unique:
-        raise KeyError(f"Duplicate texture key {key}")
+    if key in _textures_pool:
+        if unique:
+            raise KeyError(f"Duplicate texture key {key}")
+        else:
+            return texture_get(key)
 
     new_surf: Surface = pygame.image.load(filepath)
     new_surf.set_colorkey(COLOR_KEY)

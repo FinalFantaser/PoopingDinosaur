@@ -18,7 +18,10 @@ class Test(Scene):
         objects.add(ground)
         objects.add(Allosaurus((8, ground.y - 64)))
         objects.add(GuiHealthMeter(0))
-        
+        objects.add(GuiPooMeter(0))
+
+        objects.get_player().poos = Allosaurus.MAX_POOS
+
         # Distributing clouds randomly
         draw_x: float = 0.0
         for _ in range(ground.total_tiles):
@@ -39,6 +42,7 @@ class Test(Scene):
             AllosaurusHandler.__name__: AllosaurusHandler,
 
             GuiHealthMeterHandler.__name__: GuiHealthMeterHandler,
+            GuiPooMeterHandler.__name__: GuiPooMeterHandler,
         }
 
     def update(self) -> None:

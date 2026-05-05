@@ -1,5 +1,6 @@
 from enum import Enum
-from objects import Object, Camera
+from objects import Object, Camera, Allosaurus, Ground
+
 
 class _TaskType(int, Enum):
     ADD = 0
@@ -130,11 +131,16 @@ def process_task_queue() -> None:
 
 
 def get_camera() -> Camera:
-    if Camera.ID not in _all:
-        raise KeyError(f"Camera not found.")
+    return get(Camera.ID, True)
 
-    return _all[Camera.ID]
-    
+
+def get_player() -> Allosaurus:
+    return get(Allosaurus.ID, True)
+
+
+def get_ground() -> Ground:
+    return get(Ground.ID, True)
+
 
 def _sort_visibles() -> None:
     global _idx_visible
