@@ -65,10 +65,14 @@ class AllosaurusHandler(ObjectHandler):
     def read_input(cls, obj: Allosaurus) -> None:
         ground: Ground = obj_container.get(Ground.ID)
 
+        accel: float = obj.VEL_X_MODIFIER / 250 * obj.update_delta
+
         if core.input.pressed("left"):
-            obj.vel_x_modifier = -(obj.VEL_X_MODIFIER)
+            if obj.vel_x_modifier > -obj.VEL_X_MODIFIER:
+                obj.vel_x_modifier = max(-obj.VEL_X_MODIFIER, obj.vel_x_modifier - accel)
         elif core.input.pressed("right"):
-            obj.vel_x_modifier = obj.VEL_X_MODIFIER
+            if obj.vel_x_modifier < obj.VEL_X_MODIFIER:
+                obj.vel_x_modifier = min(obj.vel_x_modifier + accel, obj.VEL_X_MODIFIER)
 
         if core.input.pressed("up") and obj.rect.bottom >= ground.touch_level:
             obj.vel_y -= obj.VEL_Y_MIN * (obj.total_weight / 3) + obj.vel_x_modifier
