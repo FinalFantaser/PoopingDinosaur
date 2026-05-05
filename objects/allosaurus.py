@@ -25,10 +25,9 @@ class Allosaurus(Object):
 
     WEIGHT: float = 25.0
     MAX_POOS: int = 4
-    SINGLE_POO_WEIGHT: float = WEIGHT / 10 
+    POO_WEIGHT: float = WEIGHT / 10
     VEL_X_CONST: float = 150.0
     VEL_X_MODIFIER: float = VEL_X_CONST / 4
-    VEL_X_PENALTY: float = VEL_X_CONST / 4 / MAX_POOS
     VEL_Y_MIN: float = 40.0
     HITBOX_SIZE: tuple[float, float] = (32, SIZE[1])
     BLINK_INTERVAL: int = 100
@@ -76,11 +75,11 @@ class Allosaurus(Object):
         
     @property
     def total_weight(self) -> float:
-        return self.WEIGHT + self.poos * self.SINGLE_POO_WEIGHT
+        return self.WEIGHT + self.poos * self.POO_WEIGHT
         
     @property
     def vel_x_total(self) -> float:
-        return self.VEL_X_CONST - (self.VEL_X_PENALTY * self.poos) + self.vel_x_modifier
+        return self.VEL_X_CONST - self.POO_WEIGHT * self.poos + self.vel_x_modifier
 
     @property
     def hitbox(self) -> Rect:

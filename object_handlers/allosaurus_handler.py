@@ -28,16 +28,25 @@ class AllosaurusHandler(ObjectHandler):
             obj.vel_y = 0.0
             obj.rect.bottom = ground.touch_level
 
+        # Normalizing vel_x_modifier
+        if obj.vel_x_modifier != 0.0:
+            accel: float = obj.VEL_X_MODIFIER/500 * update_delta
+
+            if obj.vel_x_modifier < 0:
+                obj.vel_x_modifier = min(obj.vel_x_modifier + accel, 0.0)
+            else:
+                obj.vel_x_modifier = max(0.0, obj.vel_x_modifier - accel)
+
         # Collision check
         for other_obj in obj_container.visible().values():
             if other_obj.id == obj.id or isinstance(other_obj, Ground):
                 continue
 
             if obj.hitbox.overlaps(other_obj.rect):
-                if isinstance(other_obj, Obstacle) and obj.invincibility < 1:
+                if isinstance(other_obj, Obstacle) and other_obj.ob_type == ObstacleType.CACTUS and obj.invincibility < 1:
                     obj.vel_y -= obj.VEL_Y_MIN * (obj.total_weight / 3) + obj.vel_x_modifier
+                    obj.vel_x_modifier = -obj.VEL_X_MODIFIER * 6
                     obj.invincibility = 3000
-                    # TODO Снижение горизонтальной скорости
 
         # Blink if invincible
         obj.invincibility = max(0, obj.invincibility - update_delta)
@@ -59,8 +68,6 @@ class AllosaurusHandler(ObjectHandler):
             obj.vel_x_modifier = -(obj.VEL_X_MODIFIER)
         elif core.input.pressed("right"):
             obj.vel_x_modifier = obj.VEL_X_MODIFIER
-        else:
-            obj.vel_x_modifier = 0.0
 
         if core.input.pressed("up") and obj.rect.bottom >= ground.touch_level:
             obj.vel_y -= obj.VEL_Y_MIN * (obj.total_weight / 3) + obj.vel_x_modifier
