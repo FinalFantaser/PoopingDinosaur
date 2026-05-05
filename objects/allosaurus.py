@@ -10,7 +10,9 @@ class Allosaurus(Object):
         'vel_y',
         'vel_x_modifier',
         '_hitbox',
-        'invincibility'
+        'invincibility',
+        'last_blink',
+        'visible',
     )
 
     ID: str = 'player'
@@ -29,6 +31,7 @@ class Allosaurus(Object):
     VEL_X_PENALTY: float = VEL_X_CONST / 4 / MAX_POOS
     VEL_Y_MIN: float = 40.0
     HITBOX_SIZE: tuple[float, float] = (32, SIZE[1])
+    BLINK_INTERVAL: int = 100
 
     def __init__(
             self,
@@ -50,11 +53,13 @@ class Allosaurus(Object):
         self.vel_y: float = vel_y
         self._hitbox: Rect = Rect(self.x, self.y, self.HITBOX_SIZE[0], self.HITBOX_SIZE[1])
         self.invincibility: int = 0
+        self.last_blink: int = pygame.time.get_ticks()
+        self.visible: bool = True
 
     def draw(self, viewpoint: Rect) -> None:
         # Blinking when invincible
-        if self.invincibility > 0:
-            pass
+        if not self.visible:
+            return
 
         area: tuple[int, int, int, int] = (
             int(self.curr_frame * self.width),

@@ -39,8 +39,17 @@ class AllosaurusHandler(ObjectHandler):
                     obj.invincibility = 3000
                     # TODO Снижение горизонтальной скорости
 
+        # Blink if invincible
         obj.invincibility = max(0, obj.invincibility - update_delta)
+        if obj.invincibility > 0 and pygame.time.get_ticks() - obj.last_blink >= obj.BLINK_INTERVAL:
+            obj.last_blink = pygame.time.get_ticks()
+            obj.visible = not obj.visible
+
+        if obj.invincibility < 1:
+            obj.visible = True
+
         obj.last_update = pygame.time.get_ticks()
+
 
     @classmethod
     def read_input(cls, obj: Allosaurus) -> None:
