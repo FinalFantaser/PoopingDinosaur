@@ -130,14 +130,17 @@ def texture_blit(
     surface: Surface = texture if isinstance(texture, Surface) else texture_get(key=texture, throw_exception=True)
     _buffer.blit(surface, pos, area)
 
-def draw_line(start: tuple[int, int], end: tuple[int, int], color: str|Color) -> None:
-    pygame.draw.line(surface=_buffer, color=color, start_pos=start, end_pos=end)
+def draw_line(start: tuple[int, int], end: tuple[int, int], color: str|Color, width: int = 0) -> None:
+    pygame.draw.line(surface=_buffer, color=color, start_pos=start, end_pos=end, width=width)
 
 def draw_pixel(pos: tuple[int, int], color: str|Color) -> None:
     draw_line(start=pos, end=pos, color=color)
 
-def draw_rect(rect: Rect, color: str|Color) -> None:
-    pygame.draw.rect(_buffer, color, rect)
+def draw_rect(rect: Rect, color: str|Color, width: int = 0) -> None:
+    pygame.draw.rect(surface=_buffer, color=color, rect=rect, width=width)
+
+def draw_circle(center: tuple[int|float, int|float], radius: int|float, color: str|Color,) -> None:
+    pygame.draw.circle(surface=_buffer, color=color, center=center, radius=radius)
 
 def to_dict() -> dict[str, Any]:
     resolution: tuple[int, int] = pygame.display.get_window_size()

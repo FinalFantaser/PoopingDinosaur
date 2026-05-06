@@ -2,11 +2,10 @@ from pygame import Surface
 from pygame.font import Font
 from core.paths import ASSETS as ASSETS_PATH
 
-CAPTION: str = "My Invaders"
+CAPTION: str = "Turd Rex"
 
 COLOR_BG: str = "0xBCBCBC"
 COLOR_TEXT: str = "0x000000"
-COLOR_TEXT_SELECTED: str = "0xFFFF00"
 
 MARGIN: tuple[int, int] = 4, 4
 PADDING: tuple[int, int] = 4, 4

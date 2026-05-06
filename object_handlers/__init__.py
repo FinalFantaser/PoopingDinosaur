@@ -5,6 +5,7 @@ from .poo_handler import PooHandler
 
 from object_handlers.gui.health_meter_handler import HealthMeterHandler
 from object_handlers.gui.poo_handler import PooMeterHandler
+from objects.gui.pause_menu import PauseMenu
 
 
 object_handlers: dict[str, type[ObjectHandler]] = {
