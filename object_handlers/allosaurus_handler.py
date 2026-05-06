@@ -90,5 +90,5 @@ class AllosaurusHandler(ObjectHandler):
             obj.poos -= 1
 
             obj_container.queue_add(
-                Poo(obj.pos)
+                Poo((obj.hitbox.left, obj.y))
             )
