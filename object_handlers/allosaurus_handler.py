@@ -44,10 +44,15 @@ class AllosaurusHandler(ObjectHandler):
 
             if obj.hitbox.overlaps(other_obj.rect):
                 if isinstance(other_obj, Obstacle) and other_obj.ob_type == ObstacleType.CACTUS and obj.invincibility < 1:
-                    obj.vel_y -= obj.VEL_Y_MIN * (obj.total_weight / 3) + obj.vel_x_modifier
-                    obj.vel_x_modifier = -obj.VEL_X_MODIFIER * 6
                     obj.health = max(0, obj.health - 1)
                     obj.invincibility = 3000
+
+                    obj.vel_x_modifier = -obj.VEL_X_MODIFIER * 6
+
+                    if obj.rect.bottom >= ground.touch_level:
+                        obj.vel_y -= obj.VEL_Y_MIN * (obj.total_weight / 3) + obj.vel_x_modifier
+                    else:
+                        obj.vel_y -= obj.VEL_Y_MIN
 
         # Blink if invincible
         obj.invincibility = max(0, obj.invincibility - update_delta)
@@ -84,7 +89,7 @@ class AllosaurusHandler(ObjectHandler):
         ):
             obj.last_pooped_at = pygame.time.get_ticks()
 
-            if obj.rect.bottom >= ground.touch_level:
+            if obj.rect.bottom >= ground.touch_level and obj.vel_y == 0.0:
                 obj.vel_y -= (obj.VEL_Y_MIN * (obj.total_weight / 3) + obj.vel_x_modifier)/2
 
             obj.poos -= 1

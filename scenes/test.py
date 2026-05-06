@@ -11,14 +11,12 @@ class Test(Scene):
     def __init__(self):
         super().__init__()
 
-        self.label: Surface = core.gui.text_render("Нажмите Esc, чтобы закрыть программу")
-
         objects.add(Camera((0, 0)))
         ground: Ground = Ground(1000)
         objects.add(ground)
         objects.add(Allosaurus((8, ground.y - 64)))
-        objects.add(GuiHealthMeter(0))
-        objects.add(GuiPooMeter(0))
+        objects.add(HealthMeter(0))
+        objects.add(PooMeter(0))
 
         objects.get_player().poos = Allosaurus.MAX_POOS
 
@@ -37,18 +35,9 @@ class Test(Scene):
             
             draw_x += Cloud.SIZE[0]
 
-        self.handlers: dict[str, type[ObjectHandler]] = {
-            CameraHandler.__name__: CameraHandler,
-            AllosaurusHandler.__name__: AllosaurusHandler,
-            PooHandler.__name__: PooHandler,
-
-            GuiHealthMeterHandler.__name__: GuiHealthMeterHandler,
-            GuiPooMeterHandler.__name__: GuiPooMeterHandler,
-        }
-
     def update(self) -> None:
         for obj in objects.with_handlers().values():
-            self.handlers[obj.HANDLER_NAME].update(obj)
+            object_handlers[obj.HANDLER_NAME].update(obj)
 
         objects.process_task_queue()
 
@@ -56,9 +45,6 @@ class Test(Scene):
         for obj in objects.visible().values():
             obj.animate()
             obj.draw(viewpoint=objects.get_camera().rect)
-
-    def draw_gui(self) -> Any:
-        core.video.texture_blit(self.label, (0, 0))
 
     def read_input(self) -> None:
         if core.input.pressed('back'):

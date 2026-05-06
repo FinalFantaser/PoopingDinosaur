@@ -3,11 +3,11 @@ import core.video
 from objects.object import Layer, Rect, Object
 
 
-class GuiPooMeter(Object):
+class PooMeter(Object):
     __slots__ = *Object.__slots__, "value"
 
     LAYER: Layer = Layer.GUI
-    HANDLER_NAME: str | None = "GuiPooMeterHandler"
+    HANDLER_NAME: str | None = "PooMeterHandler"
     ID: str = "gui_poo_meter"
     SIZE_POO: tuple[float, float] = 16, 16
     SIZE_METER: tuple[float, float] = SIZE_POO[0] * 5, 16

@@ -1,10 +1,10 @@
-from objects import Allosaurus, GuiPooMeter
+from objects import Allosaurus, PooMeter
 from object_handlers.object_handler import ObjectHandler
 from data_containers import objects as obj_container
 
 
-class GuiPooMeterHandler(ObjectHandler):
+class PooMeterHandler(ObjectHandler):
     @classmethod
-    def update(cls, obj: GuiPooMeter) -> None:
+    def update(cls, obj: PooMeter) -> None:
         allosaurus: Allosaurus = obj_container.get_player()
         obj.value = allosaurus.poos

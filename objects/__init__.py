@@ -7,5 +7,5 @@ from .obstacle import ObstacleType, Obstacle
 from .allosaurus import Allosaurus
 from .poo import Poo
 
-from .gui_health_meter import GuiHealthMeter
-from .gui_poo_meter import GuiPooMeter
+from objects.gui.health_meter import HealthMeter
+from objects.gui.poo_meter import PooMeter

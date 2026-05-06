@@ -29,10 +29,10 @@ class Allosaurus(Object):
     WEIGHT: float = 25.0
     MAX_POOS: int = 4
     POO_WEIGHT: float = WEIGHT / 10
-    VEL_X_CONST: float = 150.0
+    VEL_X_CONST: float = 175.0
     VEL_X_MODIFIER: float = VEL_X_CONST / 4
     VEL_Y_MIN: float = 40.0
-    HITBOX_SIZE: tuple[float, float] = (32, SIZE[1])
+    HITBOX_SIZE: tuple[float, float] = (24, SIZE[1])
     BLINK_INTERVAL: int = 100
     POOP_INTERVAL: int = 1000
 
@@ -41,7 +41,6 @@ class Allosaurus(Object):
     def __init__(
             self,
             pos: tuple[int|float, int|float],
-            vel_x: float = 0.0,
             vel_y: float = 0.0,
     ) -> None:
         super().__init__(

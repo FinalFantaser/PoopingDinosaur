@@ -2,11 +2,11 @@ import core.video
 from objects.object import Layer, Object, Rect
 
 
-class GuiHealthMeter(Object):
+class HealthMeter(Object):
     __slots__ = *Object.__slots__, "value"
 
     LAYER: Layer = Layer.GUI
-    HANDLER_NAME: str | None = "GuiHealthMeterHandler"
+    HANDLER_NAME: str | None = "HealthMeterHandler"
 
     ID: str = "gui_health_meter"
     POS: tuple[float, float] = 8, 8
