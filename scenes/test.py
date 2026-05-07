@@ -2,6 +2,7 @@ import random
 from typing import Any
 from pygame import Surface
 import core
+from object_handlers.gui.pause_menu_handler import PauseMenuHandler
 from scenes.scene import Scene
 from objects import *
 from data_containers import objects
@@ -36,8 +37,10 @@ class Test(Scene):
             draw_x += Cloud.SIZE[0]
 
     def update(self) -> None:
-        for obj in objects.with_handlers().values():
-            object_handlers[obj.HANDLER_NAME].update(obj)
+        if objects.get(PauseMenu.ID) is None:
+            for obj in objects.with_handlers().values():
+                print(object_handlers[obj.HANDLER_NAME].__name__)
+                object_handlers[obj.HANDLER_NAME].update(obj)
 
         objects.process_task_queue()
 
@@ -47,7 +50,10 @@ class Test(Scene):
             obj.draw(viewpoint=objects.get_camera().rect)
 
     def read_input(self) -> None:
-        if core.input.pressed('back'):
-            self.done = True
-
-        AllosaurusHandler.read_input(objects.get(Allosaurus.ID))
+        pause_menu: PauseMenuHandler|None = objects.get(PauseMenu.ID)
+        if pause_menu is not None:
+            PauseMenuHandler.read_input(pause_menu)
+        else:
+            AllosaurusHandler.read_input(objects.get(Allosaurus.ID))
+            if core.input.pressed("pause"):
+                objects.add(PauseMenu())

@@ -11,7 +11,7 @@ class PauseMenu(Object):
     ID: str = "pause_menu"
     LAYER: Layer = Layer.GUI
     HANDLER_NAME: str | None = None
-    CURSOR_RADIUS: float = 4
+    CURSOR_RADIUS: float = 2
     INPUT_READ_INTERVAL: int = 250
 
     def __init__ (self) -> None:
@@ -19,7 +19,7 @@ class PauseMenu(Object):
             key: core.gui.text_render(core.localization.translate(key)) for key in (
                 "menu_pause",
                 "menu_resume",
-                "menu_pause",
+                "menu_quit",
             )
         }
 
@@ -29,7 +29,7 @@ class PauseMenu(Object):
         )
 
         size: tuple[float, float] = (
-            core.gui.PADDING[0] * 2 + widest_label.get_width(),
+            core.gui.PADDING[0] * 2 + widest_label.get_width() + self.CURSOR_RADIUS * 2 + core.gui.MARGIN[0],
             sum((
                 *(surf.get_height() for surf in self.labels.values()),
                 core.gui.PADDING[1] * 2,
@@ -43,7 +43,7 @@ class PauseMenu(Object):
         self.selected: int = 0
 
         self.labels_pos: dict[str, tuple[float, float]] = {}
-        draw_y = self.rect.bottom + core.gui.PADDING[1]
+        draw_y = self.rect.top + core.gui.PADDING[1]
         for key, label in self.labels.items():
             draw_x: float = self.rect.center_x - label.get_width() / 2
             self.labels_pos[key] = draw_x, draw_y
@@ -55,16 +55,16 @@ class PauseMenu(Object):
         return tuple(self.labels.keys())[self.selected]
 
     def next(self) -> str:
-        self.selected += (self.selected + 1) % len(self.labels)
+        self.selected = (self.selected + 1) % len(self.labels)
         return self.value
 
     def prev(self) -> str:
-        self.selected -= (self.selected - 1) % len(self.labels)
+        self.selected = (self.selected - 1) % len(self.labels)
         return self.value
 
     def draw(self, viewpoint: Rect) -> None:
         # Window
-        for color, width in ((core.gui.COLOR_TEXT, 0), (core.gui.COLOR_BG, 1)):
+        for color, width in (core.gui.COLOR_BG, 0), (core.gui.COLOR_TEXT, 1):
             core.video.draw_rect(rect=self.rect.to_pygame_rect(), color=color, width=width)
 
         # Labels
@@ -73,7 +73,7 @@ class PauseMenu(Object):
 
         # Cursor
         key: str = self.value
-        cursor_x: float = self.labels_pos[key][0] - self.CURSOR_RADIUS * 2 - core.gui.MARGIN[0]
+        cursor_x: float = self.labels_pos[key][0] - self.CURSOR_RADIUS * 2
         cursor_y: float = self.labels_pos[key][1] + self.labels[key].get_height()/2 - self.CURSOR_RADIUS/2
 
         core.video.draw_circle(center=(cursor_x, cursor_y), radius=self.CURSOR_RADIUS, color=core.gui.COLOR_TEXT)
