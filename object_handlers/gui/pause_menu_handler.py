@@ -19,5 +19,7 @@ class PauseMenuHandler(ObjectHandler):
         if core.input.pressed("confirm") or core.input.pressed("poop"):
             obj_container.queue_delete(obj)
             # TODO Действие в зависимости от выбранного пункта
+            obj_container.reset_updated_at()
         elif core.input.pressed("back") or core.input.pressed("pause"):
             obj_container.queue_delete(obj)
+            obj_container.reset_updated_at()
