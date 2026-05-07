@@ -39,7 +39,6 @@ class Test(Scene):
     def update(self) -> None:
         if objects.get(PauseMenu.ID) is None:
             for obj in objects.with_handlers().values():
-                print(object_handlers[obj.HANDLER_NAME].__name__)
                 object_handlers[obj.HANDLER_NAME].update(obj)
 
         objects.process_task_queue()
