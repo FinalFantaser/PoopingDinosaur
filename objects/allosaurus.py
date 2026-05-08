@@ -79,6 +79,10 @@ class Allosaurus(Object):
             (self.x - viewpoint.x, self.y - viewpoint.y),
             area
         )
+
+    def reset_last_update(self, new_value: int|None = None) -> None:
+        super().reset_last_update(new_value)
+        self.last_pooped_at = new_value if new_value is not None else pygame.time.get_ticks()
         
     @property
     def total_weight(self) -> float:

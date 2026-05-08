@@ -143,10 +143,11 @@ def get_ground() -> Ground:
     return get(Ground.ID, True)
 
 
-def _sort_visibles() -> None:
-    global _idx_visible
-    _idx_visible = sorted(_idx_visible, key=lambda obj: get(obj).LAYER) 
-
 def reset_updated_at() -> None:
     for obj in _all.values():
-        obj.last_update = pygame.time.get_ticks()
+        obj.reset_last_update()
+
+
+def _sort_visibles() -> None:
+    global _idx_visible
+    _idx_visible = sorted(_idx_visible, key=lambda obj: get(obj).LAYER)

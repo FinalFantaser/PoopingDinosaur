@@ -72,10 +72,10 @@ class AllosaurusHandler(ObjectHandler):
 
         accel: float = obj.VEL_X_MODIFIER / 250 * obj.update_delta
 
-        if core.input.pressed("left"):
+        if core.input.held("left"):
             if obj.vel_x_modifier > -obj.VEL_X_MODIFIER:
                 obj.vel_x_modifier = max(-obj.VEL_X_MODIFIER, obj.vel_x_modifier - accel)
-        elif core.input.pressed("right"):
+        elif core.input.held("right"):
             if obj.vel_x_modifier < obj.VEL_X_MODIFIER:
                 obj.vel_x_modifier = min(obj.vel_x_modifier + accel, obj.VEL_X_MODIFIER)
 
