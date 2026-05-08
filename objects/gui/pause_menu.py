@@ -12,7 +12,7 @@ class PauseMenu(Object):
     LAYER: Layer = Layer.GUI
     HANDLER_NAME: str | None = None
     CURSOR_RADIUS: float = 2
-    INPUT_READ_INTERVAL: int = 250
+    INPUT_READ_INTERVAL: int = 125
 
     def __init__ (self) -> None:
         self.labels: dict[str, Surface] = {
