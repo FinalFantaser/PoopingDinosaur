@@ -49,7 +49,7 @@ class Object:
             pos: tuple[int|float, int|float] = (0, 0),
             size: tuple[int|float, int|float] = (0, 0),
             texture_name: str|None = None,
-            total_frames: int = 0,
+            total_frames: int = 1,
             anim_interval: int = 0,
     ) -> None:
         self.id: str = id
@@ -69,6 +69,12 @@ class Object:
 
     def animate(self) -> None:
         pass
+
+    def reset_last_update(self, new_value: int|None = None) -> None:
+        self.last_update = new_value if new_value is not None else pygame.time.get_ticks()
+
+        if self.total_frames > 1:
+            self.last_frame_change = new_value if new_value is not None else pygame.time.get_ticks()
 
     @property
     def x(self) -> float:
