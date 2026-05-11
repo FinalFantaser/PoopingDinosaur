@@ -5,5 +5,5 @@
 config.yml
 
 # Убрать, когда будут оригинальные звуки и музыка
-assets/sounds
-assets/music
+assets/sounds/*
+assets/music/*
