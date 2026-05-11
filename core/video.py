@@ -94,8 +94,8 @@ def texture_add(key: str, surface: Surface, unique: bool = False) -> Surface:
     return surface
 
 
-def texture_get(key: str, throw_exception: bool = False) -> Surface|None:
-    if key not in _textures_pool and throw_exception:
+def texture_get(key: str, raise_error: bool = False) -> Surface | None:
+    if key not in _textures_pool and raise_error:
         raise KeyError(f"No texture key {key}")
 
     return _textures_pool.get(key, None)
@@ -115,10 +115,10 @@ def texture_load(filepath: Path, key: str, unique: bool = False) -> Surface:
     return new_surf
 
 
-def texture_remove(key: str, throw_exception: bool = False) -> None:
+def texture_remove(key: str, raise_error: bool = False) -> None:
     if key in _textures_pool:
         _textures_pool.pop(key)
-    elif throw_exception:
+    elif raise_error:
         raise KeyError(f"Attempting to delete non-existent texture: {key}")
 
 
@@ -127,7 +127,7 @@ def texture_blit(
         pos: tuple[int|float, int|float],
         area: tuple[int, int, int, int]|Rect|None = None,
 ) -> None:
-    surface: Surface = texture if isinstance(texture, Surface) else texture_get(key=texture, throw_exception=True)
+    surface: Surface = texture if isinstance(texture, Surface) else texture_get(key=texture, raise_error=True)
     _buffer.blit(surface, pos, area)
 
 def draw_line(start: tuple[int, int], end: tuple[int, int], color: str|Color, width: int = 0) -> None:

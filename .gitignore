@@ -1,4 +1,9 @@
 .idea
 .venv
 **/__pycache__/**
+
 config.yml
+
+# Убрать, когда будут оригинальные звуки и музыка
+assets/sounds
+assets/music

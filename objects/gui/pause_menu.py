@@ -7,7 +7,7 @@ from objects.object import Layer, Rect, Object
 
 
 class PauseMenu(Object):
-    __slots__ = *Object.__slots__, "labels", "labels_pos", "selected"
+    __slots__ = *Object.__slots__, "labels", "entries", "labels_pos", "selected"
     ID: str = "pause_menu"
     LAYER: Layer = Layer.GUI
     HANDLER_NAME: str | None = None
@@ -21,6 +21,10 @@ class PauseMenu(Object):
                 "menu_resume",
                 "menu_quit",
             )
+        }
+
+        self.entries: dict[str, Surface] = {
+            key: self.labels[key] for key in ("menu_resume", "menu_quit")
         }
 
         widest_label: Surface = max(
@@ -52,14 +56,14 @@ class PauseMenu(Object):
 
     @property
     def value(self) -> str:
-        return tuple(self.labels.keys())[self.selected]
+        return tuple(self.entries.keys())[self.selected]
 
     def next(self) -> str:
-        self.selected = (self.selected + 1) % len(self.labels)
+        self.selected = (self.selected + 1) % len(self.entries)
         return self.value
 
     def prev(self) -> str:
-        self.selected = (self.selected - 1) % len(self.labels)
+        self.selected = (self.selected - 1) % len(self.entries)
         return self.value
 
     def draw(self, viewpoint: Rect) -> None:

@@ -36,6 +36,11 @@ class Test(Scene):
             
             draw_x += Cloud.SIZE[0]
 
+        # Loading sounds and music
+        for idx in range(1, 3):
+            key: str = f"fart_{idx}"
+            core.audio.sound_load(core.paths.SOUNDS / f"{key}.wav", key)
+
     def update(self) -> None:
         if objects.get(PauseMenu.ID) is None:
             for obj in objects.with_handlers().values():
@@ -56,3 +61,6 @@ class Test(Scene):
             AllosaurusHandler.read_input(objects.get(Allosaurus.ID))
             if core.input.pressed("pause"):
                 objects.add(PauseMenu())
+
+    def on_finish(self) -> None:
+        core.audio.clear()

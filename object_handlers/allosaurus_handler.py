@@ -1,6 +1,8 @@
+import random
 import pygame.time
 from objects import *
 import core.video
+import core.audio
 import core.input
 from data_containers import objects as obj_container
 from object_handlers.object_handler import ObjectHandler
@@ -100,3 +102,6 @@ class AllosaurusHandler(ObjectHandler):
             obj_container.queue_add(
                 Poo((obj.hitbox.left, obj.y))
             )
+
+            sound_key: str = random.choice(tuple(f"fart_{idx}" for idx in range(1, 3)))
+            core.audio.sound_play(sound_key)
