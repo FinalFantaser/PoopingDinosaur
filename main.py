@@ -8,9 +8,6 @@ from core import localization
 import scenes
 
 if __name__ == '__main__':
-    pygame.init()
-    pygame.font.init()
-
     data = config.read()
 
     video.init(data["video"])
@@ -26,7 +23,4 @@ if __name__ == '__main__':
         new_scene: scenes.Scene = scene_class()
         next_scene = new_scene.run()
 
-    pygame.font.quit()
     pygame.quit()
-    if pygame.mixer.get_init() is not None:
-        pygame.mixer.quit()

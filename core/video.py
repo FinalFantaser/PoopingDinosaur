@@ -15,6 +15,8 @@ _textures_pool: dict[str, Surface] = {}
 
 
 def init(config_data: dict[str, Any]) -> None:
+    pygame.display.init()
+
     global _fps, _fullscreen, _buffer
 
     _buffer = Surface(_screen_rect.size)

@@ -1,4 +1,5 @@
 from pygame import Surface
+import pygame.font
 from pygame.font import Font
 from core.paths import ASSETS as ASSETS_PATH
 
@@ -17,6 +18,8 @@ font: Font|None = None
 
 
 def init() -> None:
+    pygame.font.init()
+
     global font
     font = Font(ASSETS_PATH / FONT_NAME, FONT_SIZE)
 
