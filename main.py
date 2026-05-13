@@ -16,7 +16,7 @@ if __name__ == '__main__':
     input.init(data["input"])
     localization.init(data["gui"])
 
-    next_scene: str|None = 'Test'
+    next_scene: str|None = 'MainMenu'
 
     while next_scene is not None:
         scene_class = getattr(scenes, next_scene)

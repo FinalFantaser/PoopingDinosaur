@@ -1,5 +1,7 @@
+import pygame
 from pygame import Surface
 import core
+from core.localization import translate as trans
 from objects import Rect
 from scenes.scene import Scene
 
@@ -12,7 +14,7 @@ class MainMenu(Scene):
         super().__init__()
 
         self.labels: dict[str, Surface] = {
-            key: core.gui.text_render(core.localization.translate(key)) for key in (
+            key: core.gui.text_render(trans(key)) for key in (
                 "menu_start",
                 "menu_quit",
             )
@@ -20,9 +22,7 @@ class MainMenu(Scene):
 
         self.labels_pos: dict[str, tuple[float, float]] = {}
 
-        menu_rect: Rect = Rect(
-            0,
-            0,
+        menu_rect: Rect = Rect(0, 0,
             max(label.get_width() for label in self.labels.values()),
             sum(label.get_height() for label in self.labels.values()) + core.gui.MARGIN[1] * (len(self.labels) / 2),
         )
@@ -37,7 +37,10 @@ class MainMenu(Scene):
         self.menu_entries: tuple[str, ...] = "menu_start", "menu_quit"
         self.selected: int = 0
 
-    def draw(self) -> None:
+        self.input_interval: int = 125
+        self.last_input: int = pygame.time.get_ticks()
+
+    def draw_gui(self) -> None:
         core.video.clear(core.gui.COLOR_BG)
         for key, label in self.labels.items():
             core.video.texture_blit(label, self.labels_pos[key])
@@ -52,3 +55,25 @@ class MainMenu(Scene):
             self._CURSOR_RADIUS,
             core.gui.COLOR_TEXT
         )
+
+    def read_input(self) -> None:
+        if pygame.time.get_ticks() - self.last_input >= self._INPUT_READ_INTERVAL:
+            if core.input.held("down"):
+                self.selected = (self.selected + 1) % len(self.menu_entries)
+            elif core.input.held("up"):
+                self.selected = (self.selected - 1) % len(self.menu_entries)
+
+            self.last_input = pygame.time.get_ticks()
+
+        if core.input.pressed("confirm") or core.input.pressed("poop"):
+            self.done = True
+            value: str = self.menu_entries[self.selected]
+            print(value)
+
+            if value == "menu_quit":
+                self.next_scene = None
+            elif value == "menu_start":
+                self.next_scene = "Test"
+        elif core.input.pressed("back"):
+            self.done = True
+            self.next_scene = None
