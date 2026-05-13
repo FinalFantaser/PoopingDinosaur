@@ -1,7 +1,7 @@
 import pygame.time
 from objects import Poo, Ground
 from object_handlers.object_handler import ObjectHandler
-from data_containers import objects as obj_container
+from data_containers import objects as obj_container, game_data
 
 
 class PooHandler(ObjectHandler):
@@ -17,7 +17,8 @@ class PooHandler(ObjectHandler):
 
         # Gravity
         if obj.rect.bottom < ground.touch_level:
-            obj.vel_y += max(500/1000 * update_delta, obj.vel_y/2/1000 * update_delta)
+            fall_accel: float = game_data.GRAVITY_PIXELS * obj.weight_factor
+            obj.vel_y += fall_accel/1000 * update_delta
         else:
             obj.vel_y = 0
 

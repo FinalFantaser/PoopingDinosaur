@@ -35,9 +35,9 @@ class Allosaurus(Object):
 
     MAX_HEALTH: int = 5
     MAX_POOS: int = 4
-    BASE_WEIGHT: float = 25.0
+    BASE_WEIGHT: float = 5000.0
     POO_WEIGHT: float = BASE_WEIGHT / 50
-    BASE_JUMP_ACCEL: float = -(BASE_WEIGHT * 12.5)
+    BASE_JUMP_ACCEL: float = -(BASE_WEIGHT * 0.0625)
 
     def __init__(
             self,

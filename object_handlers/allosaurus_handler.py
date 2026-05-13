@@ -21,7 +21,7 @@ class AllosaurusHandler(ObjectHandler):
             obj.rect.right = ground.rect.right
 
         if obj.rect.bottom < ground.touch_level:
-            fall_accel: float = min(2.0, obj.weight_factor()) * game_data.GRAVITY_PIXELS
+            fall_accel: float = game_data.GRAVITY_PIXELS * obj.weight_factor()
             obj.vel_y += fall_accel/1000 * update_delta
 
         obj.y += obj.vel_y / 1000 * update_delta
@@ -51,9 +51,9 @@ class AllosaurusHandler(ObjectHandler):
                     obj.vel_x_modifier = -obj.VEL_X_MODIFIER * 6
 
                     if obj.rect.bottom >= ground.touch_level:
-                        obj.vel_y -= obj.VEL_Y_MIN * (obj.total_weight() / 3) + obj.vel_x_modifier
+                        obj.vel_y -= obj.BASE_JUMP_ACCEL/8 - obj.vel_x_modifier
                     else:
-                        obj.vel_y -= obj.VEL_Y_MIN
+                        obj.vel_y -= obj.BASE_JUMP_ACCEL/6 - obj.vel_x_modifier
 
         # Blink if invincible
         obj.invincibility = max(0, obj.invincibility - update_delta)
@@ -81,7 +81,7 @@ class AllosaurusHandler(ObjectHandler):
                 obj.vel_x_modifier = min(obj.vel_x_modifier + accel, obj.VEL_X_MODIFIER)
 
         if core.input.pressed("up") and obj.rect.bottom >= ground.touch_level:
-            obj.vel_y = obj.BASE_JUMP_ACCEL / obj.weight_factor() - obj.vel_x_modifier
+            obj.vel_y = obj.BASE_JUMP_ACCEL * obj.weight_factor() - obj.vel_x_modifier
             obj.vel_x_modifier += max(obj.VEL_X_MODIFIER, obj.vel_x_modifier - accel)
 
         if (
@@ -92,7 +92,7 @@ class AllosaurusHandler(ObjectHandler):
             obj.poos -= 1
             obj.last_pooped_at = pygame.time.get_ticks()
             obj_container.queue_add(
-                Poo((obj.hitbox.left, obj.y))
+                Poo((obj.hitbox.left, obj.y), Allosaurus.POO_WEIGHT)
             )
 
             if obj.rect.bottom >= ground.touch_level and obj.vel_y == 0.0:
