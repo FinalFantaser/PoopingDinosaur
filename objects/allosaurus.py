@@ -26,9 +26,6 @@ class Allosaurus(Object):
     LAYER: Layer = Layer.MAIN
     HANDLER_NAME: str = 'AllosaurusHandler'
 
-    WEIGHT: float = 25.0
-    MAX_POOS: int = 4
-    POO_WEIGHT: float = WEIGHT / 10
     VEL_X_CONST: float = 175.0
     VEL_X_MODIFIER: float = VEL_X_CONST / 4
     VEL_Y_MIN: float = 40.0
@@ -37,6 +34,10 @@ class Allosaurus(Object):
     POOP_INTERVAL: int = 1000
 
     MAX_HEALTH: int = 5
+    MAX_POOS: int = 4
+    BASE_WEIGHT: float = 25.0
+    POO_WEIGHT: float = BASE_WEIGHT / 50
+    BASE_JUMP_ACCEL: float = -(BASE_WEIGHT * 12.5)
 
     def __init__(
             self,
@@ -83,14 +84,28 @@ class Allosaurus(Object):
     def reset_last_update(self, new_value: int|None = None) -> None:
         super().reset_last_update(new_value)
         self.last_pooped_at = new_value if new_value is not None else pygame.time.get_ticks()
-        
-    @property
+
     def total_weight(self) -> float:
-        return self.WEIGHT + self.poos * self.POO_WEIGHT
+        return self.BASE_WEIGHT + self.poos * self.POO_WEIGHT
+
+    def weight_factor(self) -> float:
+        return self.total_weight() / self.BASE_WEIGHT
         
     @property
     def vel_x_total(self) -> float:
-        return self.VEL_X_CONST - self.POO_WEIGHT * self.poos + self.vel_x_modifier
+        # Постоянная мощность: P = F * v, F = m * a
+        speed_factor = 1.0 / (self.weight_factor() ** 0.5)  # v ∝ 1/√m
+
+        # Ограничиваем минимальную скорость (не менее 40 % от базовой)
+        speed_factor = max(0.4, speed_factor)
+
+        # Базовая скорость с учётом массы
+        base_speed = self.VEL_X_CONST * speed_factor
+
+        # Модификатор скорости тоже зависит от массы (тяжелее — сложнее изменить скорость)
+        modified_vel = self.vel_x_modifier * speed_factor
+
+        return base_speed + modified_vel
 
     @property
     def hitbox(self) -> Rect:

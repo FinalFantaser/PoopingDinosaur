@@ -1,10 +1,8 @@
 import random
 import pygame.time
 from objects import *
-import core.video
-import core.audio
-import core.input
-from data_containers import objects as obj_container
+import core
+from data_containers import objects as obj_container, game_data
 from object_handlers.object_handler import ObjectHandler
 
 
@@ -23,7 +21,8 @@ class AllosaurusHandler(ObjectHandler):
             obj.rect.right = ground.rect.right
 
         if obj.rect.bottom < ground.touch_level:
-            obj.vel_y += obj.total_weight / 2
+            fall_accel: float = min(2.0, obj.weight_factor()) * game_data.GRAVITY_PIXELS
+            obj.vel_y += fall_accel/1000 * update_delta
 
         obj.y += obj.vel_y / 1000 * update_delta
         if obj.rect.bottom >= ground.touch_level:
@@ -52,7 +51,7 @@ class AllosaurusHandler(ObjectHandler):
                     obj.vel_x_modifier = -obj.VEL_X_MODIFIER * 6
 
                     if obj.rect.bottom >= ground.touch_level:
-                        obj.vel_y -= obj.VEL_Y_MIN * (obj.total_weight / 3) + obj.vel_x_modifier
+                        obj.vel_y -= obj.VEL_Y_MIN * (obj.total_weight() / 3) + obj.vel_x_modifier
                     else:
                         obj.vel_y -= obj.VEL_Y_MIN
 
@@ -82,7 +81,7 @@ class AllosaurusHandler(ObjectHandler):
                 obj.vel_x_modifier = min(obj.vel_x_modifier + accel, obj.VEL_X_MODIFIER)
 
         if core.input.pressed("up") and obj.rect.bottom >= ground.touch_level:
-            obj.vel_y -= obj.VEL_Y_MIN * (obj.total_weight / 3) + obj.vel_x_modifier
+            obj.vel_y = obj.BASE_JUMP_ACCEL / obj.weight_factor() - obj.vel_x_modifier
             obj.vel_x_modifier += max(obj.VEL_X_MODIFIER, obj.vel_x_modifier - accel)
 
         if (
@@ -90,18 +89,16 @@ class AllosaurusHandler(ObjectHandler):
                 and obj.poos > 0
                 and pygame.time.get_ticks() - obj.last_pooped_at >= obj.POOP_INTERVAL
         ):
-            obj.last_pooped_at = pygame.time.get_ticks()
-
-            if obj.rect.bottom >= ground.touch_level and obj.vel_y == 0.0:
-                obj.vel_y -= (obj.VEL_Y_MIN * (obj.total_weight / 3) + obj.vel_x_modifier)/2
-            elif obj.vel_y >= 0:
-                obj.vel_y = -(obj.VEL_Y_MIN * (obj.total_weight / 3) + obj.vel_x_modifier)/1.5
-
             obj.poos -= 1
-
+            obj.last_pooped_at = pygame.time.get_ticks()
             obj_container.queue_add(
                 Poo((obj.hitbox.left, obj.y))
             )
+
+            if obj.rect.bottom >= ground.touch_level and obj.vel_y == 0.0:
+                obj.vel_y = obj.BASE_JUMP_ACCEL/3 / obj.weight_factor() - obj.vel_x_modifier
+            elif obj.vel_y >= 0:
+                obj.vel_y = obj.BASE_JUMP_ACCEL/2 / obj.weight_factor() - obj.vel_x_modifier
 
             sound_key: str = random.choice(tuple(f"fart_{idx}" for idx in range(1, 3)))
             core.audio.sound_play(sound_key)
