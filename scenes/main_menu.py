@@ -73,7 +73,7 @@ class MainMenu(Scene):
             if value == "menu_quit":
                 self.next_scene = None
             elif value == "menu_start":
-                self.next_scene = "Test"
+                self.next_scene = "SelectGameMode"
         elif core.input.pressed("back"):
             self.done = True
             self.next_scene = None

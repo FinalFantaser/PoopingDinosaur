@@ -51,9 +51,9 @@ class AllosaurusHandler(ObjectHandler):
                     obj.vel_x_modifier = -obj.VEL_X_MODIFIER * 6
 
                     if obj.rect.bottom >= ground.touch_level:
-                        obj.vel_y -= obj.BASE_JUMP_ACCEL/8 - obj.vel_x_modifier
+                        obj.vel_y = -(obj.BASE_JUMP_ACCEL/8 - obj.vel_x_modifier)
                     else:
-                        obj.vel_y -= obj.BASE_JUMP_ACCEL/6 - obj.vel_x_modifier
+                        obj.vel_y = -(obj.BASE_JUMP_ACCEL/6 - obj.vel_x_modifier)
 
         # Blink if invincible
         obj.invincibility = max(0, obj.invincibility - update_delta)

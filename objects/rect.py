@@ -128,3 +128,7 @@ class Rect:
 
     def to_pygame_rect(self) -> pygame.Rect:
         return pygame.Rect(self.to_tuple())
+
+    @classmethod
+    def from_pygame_rect(cls, pygame_rect: pygame.Rect) -> 'Rect':
+        return cls(pygame_rect.x, pygame_rect.y, pygame_rect.width, pygame_rect.height)
