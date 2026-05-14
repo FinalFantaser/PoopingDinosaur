@@ -68,7 +68,6 @@ class MainMenu(Scene):
         if core.input.pressed("confirm") or core.input.pressed("poop"):
             self.done = True
             value: str = self.menu_entries[self.selected]
-            print(value)
 
             if value == "menu_quit":
                 self.next_scene = None

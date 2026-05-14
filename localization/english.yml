@@ -1,6 +1,13 @@
 title: Turd-Rex
+
 menu_start: Start
 menu_quit: Quit
 menu_pause: Pause
 menu_resume: Resume
+menu_select_game_mode: Select game mode
+
 gui_score: Score
+
+game_mode_test_title: Test Mode
+game_mode_test_description: No game design; just testing the features
+

@@ -1,4 +1,4 @@
-from pygame import Surface
+from pygame import Surface, Rect as PygameRect
 import pygame.time
 import core
 from scenes.scene import Scene
@@ -33,6 +33,17 @@ class _Card:
         )
 
         # Mode image
+        core.video.draw_rect(
+            PygameRect(
+                center[0] - self.IMAGE_SIZE[0] / 2 - 1,
+                center[1] - self.IMAGE_SIZE[1] / 2 - 1,
+                self.IMAGE_SIZE[0] + 2,
+                self.IMAGE_SIZE[1] + 2
+            ),
+            core.gui.COLOR_TEXT,
+            1
+        )
+
         core.video.texture_blit(
             texture=self.image,
             pos=(
@@ -52,15 +63,14 @@ class _Card:
 
 
 class SelectGameMode(Scene):
-    INPUT_INTERVAL: int = 125
+    INPUT_INTERVAL: int = 250
 
     def __init__(self) -> None:
         super().__init__()
 
         self.cards: dict[str, _Card] = {
             "Test": _Card("game_mode_test_title", "game_mode_test_description"),
-            "Placeholder_1": _Card("Placeholder 1 Title", "Placeholder 1 Description"),
-            "Placeholder_2": _Card("Placeholder 2 Title", "Placeholder 2 Description"),
+            # ...
         }
 
         self.entries: list[str] = list(self.cards.keys())
@@ -99,6 +109,23 @@ class SelectGameMode(Scene):
             core.video.texture_blit(self.labels[key], self.labels_pos[key])
 
         self.cards[ self.entries[self.selected] ].draw()
+
+    def read_input(self) -> None:
+        if pygame.time.get_ticks() - core.input.last_pressed_at() >= self.INPUT_INTERVAL:
+            if core.input.held("left"):
+                self.selected = (self.selected - 1) % len(self.entries)
+                self.labels["total"] = self._render_total_label()
+                self._refresh_total_label_pos()
+            elif core.input.held("right"):
+                self.selected = (self.selected + 1) % len(self.entries)
+                self.labels["total"] = self._render_total_label()
+                self._refresh_total_label_pos()
+
+        if core.input.pressed("back"):
+            self.done = True
+        if core.input.pressed("confirm") or core.input.pressed("poop"):
+            self.done = True
+            self.next_scene = self.entries[self.selected]
 
 
     def _render_total_label(self) -> Surface:

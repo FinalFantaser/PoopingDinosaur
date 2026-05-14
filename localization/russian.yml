@@ -1,6 +1,12 @@
 title: Тиранносравр
+
 menu_start: Начать
 menu_quit: Выход
 menu_pause: Пауза
 menu_resume: Продолжить
+menu_select_game_mode: Выберите режим игры
+
 gui_score: Счет
+
+game_mode_test_title: Тестовый режим
+game_mode_test_description: Никакого гейм-дизайна; просто тестирование функций
