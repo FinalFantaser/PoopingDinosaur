@@ -21,7 +21,7 @@ def load_translation(filename: str) -> None:
         language = _FALLBACK_LANGUAGE
         filename = Path(_DIR) / available_languages[language]
 
-    with open(filename, "r") as file:
+    with open(filename, "r", encoding="utf-8") as file:
         translation = yaml.safe_load(file)
 
 
