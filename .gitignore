@@ -7,3 +7,7 @@ config.yml
 # Убрать, когда будут оригинальные звуки и музыка
 assets/sounds/*
 assets/music/*
+
+# Файлы сборки
+dist
+build
