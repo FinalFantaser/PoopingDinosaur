@@ -123,6 +123,7 @@ class SelectGameMode(Scene):
 
         if core.input.pressed("back"):
             self.done = True
+            self.next_scene = 'MainMenu'
         if core.input.pressed("confirm") or core.input.pressed("poop"):
             self.done = True
             self.next_scene = self.entries[self.selected]

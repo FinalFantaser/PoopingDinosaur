@@ -5,7 +5,7 @@ import core
 from object_handlers.gui.pause_menu_handler import PauseMenuHandler
 from scenes.scene import Scene
 from objects import *
-from data_containers import objects
+from data_containers import objects, game_data
 from object_handlers import *
 
 class Test(Scene):
@@ -42,6 +42,18 @@ class Test(Scene):
             core.audio.sound_load(core.paths.SOUNDS / f"{key}.wav", key)
 
     def update(self) -> None:
+        if game_data.quit:
+            self.done = True
+            self.next_scene = 'SelectGameMode'
+            game_data.quit = False
+            return
+
+        if objects.get_player().health <= 0:
+            self.done = True
+            self.next_scene = 'GameOverScreen'
+            return
+
+
         if objects.get(PauseMenu.ID) is None:
             for obj in objects.with_handlers().values():
                 object_handlers[obj.HANDLER_NAME].update(obj)

@@ -17,6 +17,8 @@ class PauseMenuHandler(ObjectHandler):
             obj.last_update = pygame.time.get_ticks()
 
         if core.input.pressed("confirm") or core.input.pressed("poop"):
+            if obj.value == "menu_quit":
+                game_data.quit = True
             obj_container.queue_delete(obj)
             obj_container.reset_updated_at()
         elif core.input.pressed("back") or core.input.pressed("pause"):

@@ -6,6 +6,7 @@ class GameData:
     def __init__(self):
         self.score: int = 0
         self.pause: bool = False
+        self.quit: bool = False
 
 
 game_data: GameData = GameData()
