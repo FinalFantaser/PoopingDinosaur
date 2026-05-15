@@ -16,6 +16,8 @@ if __name__ == '__main__':
     input.init(data["input"])
     localization.init(data["gui"])
 
+    pygame.display.set_caption(localization.translate("title"))
+
     next_scene: str|None = 'MainMenu'
 
     while next_scene is not None:
