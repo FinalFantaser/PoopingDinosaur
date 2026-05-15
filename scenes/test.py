@@ -48,11 +48,15 @@ class Test(Scene):
             game_data.quit = False
             return
 
+        if objects.get_player().rect.right >= objects.get_ground().rect.right:
+            self.done = True
+            self.next_scene = 'WinScreen'
+            return
+
         if objects.get_player().health <= 0:
             self.done = True
             self.next_scene = 'GameOverScreen'
             return
-
 
         if objects.get(PauseMenu.ID) is None:
             for obj in objects.with_handlers().values():

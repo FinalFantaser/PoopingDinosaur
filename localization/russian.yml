@@ -10,3 +10,8 @@ gui_score: Счет
 
 game_mode_test_title: Тестовый режим
 game_mode_test_description: Никакого гейм-дизайна; просто тестирование функций
+
+win: Ты выиграл. Ура. Молодец. Молодцы сосут концы.
+game_over: Потрачено
+
+ballbuster_needles: Ты весь как на иголках, успокойся

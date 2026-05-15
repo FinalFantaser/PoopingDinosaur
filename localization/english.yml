@@ -11,3 +11,7 @@ gui_score: Score
 game_mode_test_title: Test Mode
 game_mode_test_description: No game design; just testing the features
 
+win: You won. Yay. Or something. Good (blow)job.
+game_over: Game Over
+
+ballbuster_needles: Oh, don't so threaded on a needle
