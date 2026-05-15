@@ -67,6 +67,7 @@ class SelectGameMode(Scene):
 
     def __init__(self) -> None:
         super().__init__()
+        self.fps = 30
 
         self.cards: dict[str, _Card] = {
             "Test": _Card("game_mode_test_title", "game_mode_test_description"),

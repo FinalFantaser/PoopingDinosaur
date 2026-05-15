@@ -18,6 +18,7 @@ class GameOverScreen(Scene):
 
     def __init__(self):
         super().__init__()
+        self.fps = 30
 
         self.picture: str = self.IMAGE_PLACEHOLDER
         self.pic_rect: Rect = Rect(0, 0, *self.IMAGE_SIZE)

@@ -12,6 +12,7 @@ class Test(Scene):
     def __init__(self):
         super().__init__()
 
+        objects.clear()
         objects.add(Camera((0, 0)))
         ground: Ground = Ground(1000)
         objects.add(ground)
@@ -59,8 +60,12 @@ class Test(Scene):
             return
 
         if objects.get(PauseMenu.ID) is None:
+            self.fps = core.video.get_fps()
+
             for obj in objects.with_handlers().values():
                 object_handlers[obj.HANDLER_NAME].update(obj)
+        else:
+            self.fps = 30
 
         objects.process_task_queue()
 

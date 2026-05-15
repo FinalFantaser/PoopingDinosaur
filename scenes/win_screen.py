@@ -12,6 +12,7 @@ class WinScreen(Scene):
 
     def __init__(self):
         super().__init__()
+        self.fps = 30
 
         self.camera: Camera = Camera((0, 0))
         self.ground = Ground(int(core.video.get_screen_rect().width/Ground.BLOCK_W))

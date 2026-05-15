@@ -7,6 +7,7 @@ import core.input
 
 class Scene:
     def __init__(self):
+        self.fps: int = core.video.get_fps()
         self.clock: Clock = Clock()
 
         self.next_scene: str|None = None
@@ -22,7 +23,7 @@ class Scene:
             self.draw()
             self.draw_gui()
             video.refresh()
-            self.clock.tick(video.get_fps())
+            self.clock.tick(self.fps)
 
         self.on_finish()
         return self.next_scene

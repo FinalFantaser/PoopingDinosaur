@@ -12,6 +12,7 @@ class MainMenu(Scene):
 
     def __init__(self):
         super().__init__()
+        self.fps = 30
 
         self.labels: dict[str, Surface] = {
             key: core.gui.text_render(trans(key)) for key in (
