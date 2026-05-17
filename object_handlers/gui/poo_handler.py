@@ -1,4 +1,4 @@
-from objects import Allosaurus, PooMeter
+from objects import TRex, PooMeter
 from object_handlers.object_handler import ObjectHandler
 from data_containers import objects as obj_container
 
@@ -6,5 +6,5 @@ from data_containers import objects as obj_container
 class PooMeterHandler(ObjectHandler):
     @classmethod
     def update(cls, obj: PooMeter) -> None:
-        allosaurus: Allosaurus = obj_container.get_player()
+        allosaurus: TRex = obj_container.get_player()
         obj.value = allosaurus.poos

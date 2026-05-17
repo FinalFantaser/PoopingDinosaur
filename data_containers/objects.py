@@ -1,6 +1,6 @@
 from enum import Enum
 import pygame.time
-from objects import Object, Camera, Allosaurus, Ground
+from objects import Object, Camera, TRex, Ground
 
 
 class _TaskType(int, Enum):
@@ -139,8 +139,8 @@ def get_camera() -> Camera:
     return get(Camera.ID, True)
 
 
-def get_player() -> Allosaurus:
-    return get(Allosaurus.ID, True)
+def get_player() -> TRex:
+    return get(TRex.ID, True)
 
 
 def get_ground() -> Ground:

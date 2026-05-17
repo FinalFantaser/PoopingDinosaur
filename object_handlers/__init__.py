@@ -1,11 +1,12 @@
 from .object_handler import ObjectHandler
 from .camera_handler import CameraHandler
-from .allosaurus_handler import AllosaurusHandler
+from .trex_handler import TRexHandler
+from .austroraptor_handler import AustroraptorHandler
 from .poo_handler import PooHandler
 
-from object_handlers.gui.health_meter_handler import HealthMeterHandler
-from object_handlers.gui.poo_handler import PooMeterHandler
-from objects.gui.pause_menu import PauseMenu
+from .gui.health_meter_handler import HealthMeterHandler
+from .gui.poo_handler import PooMeterHandler
+from .gui.pause_menu_handler import PauseMenuHandler
 
 
 object_handlers: dict[str, type[ObjectHandler]] = {

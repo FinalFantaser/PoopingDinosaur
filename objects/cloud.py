@@ -1,6 +1,6 @@
 import core.paths
 import core.video
-from objects.object import Layer, Object, Rect
+from objects.object import ObjectLayer, Object, Rect
 
 
 class Cloud(Object):
@@ -8,7 +8,7 @@ class Cloud(Object):
     ID_STUB: str = "cloud_%d"
     TEXTURE_NAME: str = "cloud.png"
     SIZE: tuple[float, float] = 32.0, 16.0
-    LAYER: Layer = Layer.BACKGROUND_3
+    LAYER: ObjectLayer = ObjectLayer.BACKGROUND_3
     PARALLAX_FACTOR: float = 0.6
     _total: int = 0
     

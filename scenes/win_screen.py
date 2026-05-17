@@ -2,9 +2,9 @@ import pygame.time
 from pygame import Surface
 import core
 from scenes.scene import Scene
-from objects import Ground, Allosaurus, Camera
+from objects import Ground, TRex, Camera
 from data_containers import objects as obj_container
-from object_handlers import AllosaurusHandler
+from object_handlers import TRexHandler
 
 
 class WinScreen(Scene):
@@ -16,9 +16,9 @@ class WinScreen(Scene):
 
         self.camera: Camera = Camera((0, 0))
         self.ground = Ground(int(core.video.get_screen_rect().width/Ground.BLOCK_W))
-        self.allosaurus: Allosaurus = Allosaurus((
-            core.video.get_screen_rect().centerx - Allosaurus.SIZE[0]/2,
-            self.ground.touch_level - Allosaurus.SIZE[1] * 3,
+        self.allosaurus: TRex = TRex((
+            core.video.get_screen_rect().centerx - TRex.SIZE[0] / 2,
+            self.ground.touch_level - TRex.SIZE[1] * 3,
         ))
 
         obj_container.clear()
@@ -41,12 +41,12 @@ class WinScreen(Scene):
     def update(self) -> None:
         if self.allosaurus.rect.bottom >= self.ground.touch_level:
             if pygame.time.get_ticks() - self.last_jumped_at >= self.next_jump_in:
-                self.allosaurus.vel_y = Allosaurus.BASE_JUMP_ACCEL
+                self.allosaurus.vel_y = TRex.BASE_JUMP_ACCEL
 
-        AllosaurusHandler.update(self.allosaurus)
+        TRexHandler.update(self.allosaurus)
 
     def draw(self):
-        self.allosaurus.x = core.video.get_screen_rect().centerx - Allosaurus.SIZE[0]/2
+        self.allosaurus.x = core.video.get_screen_rect().centerx - TRex.SIZE[0] / 2
         self.allosaurus.animate()
         self.allosaurus.draw(obj_container.get_camera().rect)
 

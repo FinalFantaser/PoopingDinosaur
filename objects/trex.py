@@ -1,15 +1,22 @@
+from enum import Enum
 import pygame.time
 import pygame.transform
 import core.video
-from objects.object import Object, Layer, Rect
+from objects.object import Object, ObjectLayer, Rect
 
 
-class Allosaurus(Object):
+class TRexAction(Enum):
+    RUN = 0
+    BITE = 1
+
+
+class TRex(Object):
     __slots__ = (
         *Object.__slots__,
         'vel_y',
         'vel_x_modifier',
         '_hitbox',
+        '_action',
         'invincibility',
         'last_blink',
         'visible',
@@ -19,12 +26,16 @@ class Allosaurus(Object):
     )
 
     ID: str = 'player'
-    TOTAL_FRAMES: int = 2
-    ANIM_INTERVAL: int = 250
     SIZE: tuple[float, float] = (53, 16)
-    TEXTURE_NAME: str = 'allosaurus.png'
-    LAYER: Layer = Layer.MAIN
-    HANDLER_NAME: str = 'AllosaurusHandler'
+    TEXTURE_NAME: str = 'trex.png'
+    LAYER: ObjectLayer = ObjectLayer.MAIN
+    HANDLER_NAME: str = 'TRexHandler'
+
+    ANIM_INTERVAL: int = 250
+    ANIMATION_FRAMES: dict[TRexAction, int] = {
+        TRexAction.RUN: 2,
+        TRexAction.BITE: 3,
+    }
 
     VEL_X_CONST: float = 175.0
     VEL_X_MODIFIER: float = VEL_X_CONST / 4
@@ -33,7 +44,7 @@ class Allosaurus(Object):
     BLINK_INTERVAL: int = 100
     POOP_INTERVAL: int = 1000
 
-    MAX_HEALTH: int = 5
+    MAX_HEALTH: int = 3
     MAX_POOS: int = 4
     BASE_WEIGHT: float = 5000.0
     POO_WEIGHT: float = BASE_WEIGHT / 50
@@ -49,10 +60,10 @@ class Allosaurus(Object):
             pos=pos,
             size=self.SIZE,
             texture_name=self.TEXTURE_NAME,
-            total_frames=self.TOTAL_FRAMES,
             anim_interval=self.ANIM_INTERVAL,
         )
 
+        self._action: TRexAction = TRexAction.RUN
         self.vel_x_modifier: float = 0.0
         self.vel_y: float = vel_y
         self._hitbox: Rect = Rect(self.x, self.y, self.HITBOX_SIZE[0], self.HITBOX_SIZE[1])
@@ -70,7 +81,7 @@ class Allosaurus(Object):
 
         area: tuple[int, int, int, int] = (
             int(self.curr_frame * self.width),
-            0,
+            int(self.action.value * self.SIZE[1]),
             int(self.width),
             int(self.height)
         )
@@ -115,11 +126,22 @@ class Allosaurus(Object):
         return self._hitbox
 
     def animate(self) -> None:
-        # Animation interval is affected by dinousaur's current speed
-        anim_interval: int = int(self.ANIM_INTERVAL - self.vel_x_modifier * 2)    
+        anim_interval: int = self.ANIM_INTERVAL
+
+        # Run animation interval is affected by dinousaur's current speed
+        if self.action == TRexAction.RUN:
+            anim_interval: int = int(self.ANIM_INTERVAL - self.vel_x_modifier * 2)
     
         if pygame.time.get_ticks() - self.last_frame_change >= anim_interval:
             self.last_frame_change = pygame.time.get_ticks()
-            self.curr_frame += 1
-            if self.curr_frame >= self.TOTAL_FRAMES:
-                self.curr_frame = 0
+            self.curr_frame = (self.curr_frame + 1) % self.ANIMATION_FRAMES[self.action]
+
+    @property
+    def action(self) -> TRexAction:
+        return self._action
+
+    @action.setter
+    def action(self, new_action: TRexAction) -> None:
+        self.last_frame_change = pygame.time.get_ticks()
+        self._action = new_action
+        self.curr_frame = 0

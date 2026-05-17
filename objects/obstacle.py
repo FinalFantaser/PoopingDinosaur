@@ -1,7 +1,7 @@
 from enum import Enum
 from pygame import Rect as PygameRect
 import core.video
-from objects.object import Layer, Object, Rect
+from objects.object import ObjectLayer, Object, Rect
 
 
 class ObstacleType(Enum):
@@ -11,7 +11,7 @@ class ObstacleType(Enum):
 class Obstacle(Object):
     __slots__ = *Object.__slots__, 'ob_type'
 
-    LAYER: Layer = Layer.MAIN
+    LAYER: ObjectLayer = ObjectLayer.MAIN
 
     TEXTURE_NAME: str = 'obstacles.png'
 

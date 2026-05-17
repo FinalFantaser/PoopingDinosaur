@@ -19,24 +19,26 @@ class Test(Scene):
         objects.clear()
         objects.add(self.camera)
         objects.add(self.ground)
-        objects.add(Allosaurus((8, self.ground.y - 64)))
+        objects.add(TRex((8, self.ground.y - 64)))
         objects.add(HealthMeter(0))
         objects.add(PooMeter(0))
 
-        objects.get_player().poos = Allosaurus.MAX_POOS
+        objects.get_player().poos = TRex.MAX_POOS
 
         # Distributing clouds and obstacles
         draw_x: float = 0.0
         for _ in range(self.ground.total_tiles):
-            if random.randint(1, 100) >= 90:
-                objects.add(Obstacle(ObstacleType.CACTUS, (draw_x, self.ground.touch_level - 16)))
-
             if random.randint(1, 100) >= 80:
                 cloud_pos: tuple[float, float] = (
                     draw_x,
                     core.video.get_screen_rect().height/4 + Cloud.SIZE[1] * random.randint(-1, 1),
                 )
                 objects.add(Cloud(cloud_pos))
+
+            if random.randint(1, 100) >= 90:
+                objects.add(Obstacle(ObstacleType.CACTUS, (draw_x, self.ground.touch_level - 16)))
+            elif random.randint(1, 100) >= 95:
+                objects.add(Austroraptor((draw_x, self.ground.touch_level - Austroraptor.SIZE[1])))
 
             draw_x += Cloud.SIZE[0]
 
@@ -82,7 +84,7 @@ class Test(Scene):
         if pause_menu is not None:
             PauseMenuHandler.read_input(pause_menu)
         else:
-            AllosaurusHandler.read_input(objects.get(Allosaurus.ID))
+            TRexHandler.read_input(objects.get(TRex.ID))
             if core.input.pressed("pause"):
                 objects.add(PauseMenu())
 

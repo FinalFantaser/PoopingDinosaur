@@ -1,4 +1,4 @@
-from objects import Camera, Ground, Allosaurus
+from objects import Camera, Ground, TRex
 from data_containers import objects as obj_container
 from object_handlers.object_handler import ObjectHandler
 
@@ -7,7 +7,7 @@ class CameraHandler(ObjectHandler):
     @classmethod
     def update(cls, obj: Camera) -> None:
         ground: Ground = obj_container.get(Ground.ID)
-        allosaurus: Allosaurus = obj_container.get(Allosaurus.ID)
+        allosaurus: TRex = obj_container.get(TRex.ID)
 
         obj.rect.center_x = allosaurus.rect.center_x + obj.rect.width/4
 

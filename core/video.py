@@ -149,12 +149,12 @@ def texture_has(key: str) -> bool:
     return key in _textures_pool
 
 
-def texture_add(key: str, surface: Surface, unique: bool = False) -> Surface:
+def texture_add(surface: Surface, key: str, unique: bool = False) -> Surface:
     """
     Add an existing surface to the texture pool.
 
-    :param key: key to store the texture with.
     :param surface: texture to be added.
+    :param key: key to store the texture with.
     :param unique: raise KeyError if the key already exists.
     :raises KeyError: if the key already exists and the **unique** parameter is ``True``.
     :return: Added texture.

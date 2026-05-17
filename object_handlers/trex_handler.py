@@ -6,9 +6,13 @@ from data_containers import objects as obj_container, game_data
 from object_handlers.object_handler import ObjectHandler
 
 
-class AllosaurusHandler(ObjectHandler):
+class TRexHandler(ObjectHandler):
+    _EDIBLES: tuple[type[Object], ...] = (
+        Austroraptor,
+    )
+
     @classmethod
-    def update(cls, obj: Allosaurus) -> None:
+    def update(cls, obj: TRex) -> None:
         ground: Ground = obj_container.get(Ground.ID)
         update_delta: int = obj.update_delta
 
@@ -40,10 +44,12 @@ class AllosaurusHandler(ObjectHandler):
 
         # Collision check
         for other_obj in obj_container.visible().values():
+            # Skipping oneself
             if other_obj.id == obj.id or isinstance(other_obj, Ground):
                 continue
 
             if obj.hitbox.overlaps(other_obj.rect):
+                # Obstacle
                 if isinstance(other_obj, Obstacle) and other_obj.ob_type == ObstacleType.CACTUS and obj.invincibility < 1:
                     obj.health = max(0, obj.health - 1)
                     obj.invincibility = 3000
@@ -55,6 +61,20 @@ class AllosaurusHandler(ObjectHandler):
                     else:
                         obj.vel_y = -(obj.BASE_JUMP_ACCEL/6 - obj.vel_x_modifier)
 
+            # Edibles
+            if isinstance(other_obj, cls._EDIBLES) and obj.poos < obj.MAX_POOS:
+                if obj.action != TRexAction.BITE:
+                    if other_obj.rect.left > obj.rect.right and other_obj.rect.left - obj.rect.right <= obj.SIZE[0] * 1.5:
+                        obj.action = TRexAction.BITE
+                elif (
+                        obj.hitbox.overlaps(other_obj.rect)
+                        and obj.action == TRexAction.BITE
+                        and obj.curr_frame == obj.ANIMATION_FRAMES[TRexAction.BITE] - 1
+                ):
+                    obj.poos += 1
+                    obj.health = min(obj.health + 1, obj.MAX_HEALTH)
+                    obj_container.queue_delete(other_obj)
+
         # Blink if invincible
         obj.invincibility = max(0, obj.invincibility - update_delta)
         if obj.invincibility > 0 and pygame.time.get_ticks() - obj.last_blink >= obj.BLINK_INTERVAL:
@@ -64,11 +84,16 @@ class AllosaurusHandler(ObjectHandler):
         if obj.invincibility < 1:
             obj.visible = True
 
+        # Switch to run after the bite animation ends
+        if obj.action == TRexAction.BITE:
+            if obj.curr_frame >= obj.ANIMATION_FRAMES[obj.action] - 1 and pygame.time.get_ticks() - obj.last_frame_change >= obj.ANIM_INTERVAL:
+                obj.action = TRexAction.RUN
+
         obj.last_update = pygame.time.get_ticks()
 
 
     @classmethod
-    def read_input(cls, obj: Allosaurus) -> None:
+    def read_input(cls, obj: TRex) -> None:
         ground: Ground = obj_container.get(Ground.ID)
 
         accel: float = obj.VEL_X_MODIFIER / 250 * obj.update_delta
@@ -92,7 +117,7 @@ class AllosaurusHandler(ObjectHandler):
             obj.poos -= 1
             obj.last_pooped_at = pygame.time.get_ticks()
             obj_container.queue_add(
-                Poo((obj.hitbox.left, obj.y), Allosaurus.POO_WEIGHT)
+                Poo((obj.hitbox.left, obj.y), TRex.POO_WEIGHT)
             )
 
             if obj.rect.bottom >= ground.touch_level and obj.vel_y == 0.0:

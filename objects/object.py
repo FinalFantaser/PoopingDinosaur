@@ -6,7 +6,7 @@ import core.video
 from objects.rect import Rect
 
 
-class Layer(Enum):
+class ObjectLayer(Enum):
     BACKGROUND_3 = -3
     BACKGROUND_2 = -2
     BACKGROUND_1 = -1
@@ -15,17 +15,36 @@ class Layer(Enum):
     FOREGROUND_2 = 2
     GUI = 3
 
-    def __lt__(self, other: 'Layer'):
+    def __lt__(self, other: 'ObjectLayer'):
         return self.value < other.value
 
-    def __le__(self, other: 'Layer'):
+    def __le__(self, other: 'ObjectLayer'):
         return self.value <= other.value
 
-    def __gt__(self, other: 'Layer'):
+    def __gt__(self, other: 'ObjectLayer'):
         return self.value > other.value
 
-    def __ge__(self, other: 'Layer'):
+    def __ge__(self, other: 'ObjectLayer'):
         return self.value >= other.value
+
+
+class Direction(Enum):
+    LEFT = -1, 0
+    RIGHT = 1, 0
+    UP = 0, 1
+    DOWN = 0, -1
+
+    def __str__(self) -> str:
+        if self.value == self.UP.value:
+            return 'UP'
+        elif self.value == self.DOWN.value:
+            return 'DOWN'
+        elif self.value == self.LEFT.value:
+            return 'LEFT'
+        elif self.value == self.RIGHT.value:
+            return 'RIGHT'
+        else:
+            return 'UNKNOWN'
 
 
 class Object:
@@ -41,7 +60,7 @@ class Object:
     )
 
     VISIBLE: bool = True
-    LAYER: Layer = Layer.MAIN
+    LAYER: ObjectLayer = ObjectLayer.MAIN
     HANDLER_NAME: str|None = None
 
     def __init__(

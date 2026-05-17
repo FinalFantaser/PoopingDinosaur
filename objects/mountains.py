@@ -1,6 +1,6 @@
 import pygame.time
 import core.video
-from objects.object import Rect, Layer, Object
+from objects.object import Rect, ObjectLayer, Object
 
 
 class Mountains(Object):
@@ -8,7 +8,7 @@ class Mountains(Object):
     ID_STUB: str = "mountains_%d"
     TEXTURE_NAME: str = 'bg_mountains.png'
     SIZE: tuple[float, float] = 64.0, 64.0
-    LAYER: Layer = Layer.BACKGROUND_2
+    LAYER: ObjectLayer = ObjectLayer.BACKGROUND_2
     PARALLAX_FACTOR: float = 0.7
     _total: int = 0
 
