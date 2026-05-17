@@ -66,6 +66,10 @@ def delete(obj: Object, throw: bool = False) -> Object|None:
     return _all.pop(obj.id)
 
 
+def all() -> dict[str, Object]:
+    return _all
+
+
 def get(id: str, throw: bool = False) -> Object|None:
     obj: Object|None = _all.get(id)
 

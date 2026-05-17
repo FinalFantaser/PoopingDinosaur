@@ -70,10 +70,9 @@ class Test(Scene):
         else:
             self.fps = 30
 
-    def draw(self) -> None:
-        for mountain in self.mountains:
-            mountain.draw(self.camera.viewpoint)
+        objects.process_task_queue()
 
+    def draw(self) -> None:
         for obj in objects.visible().values():
             obj.animate()
             obj.draw(viewpoint=objects.get_camera().rect)
