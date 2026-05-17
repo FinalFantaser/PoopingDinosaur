@@ -1,31 +1,30 @@
-import core.paths
+import pygame.time
 import core.video
-from objects.object import Layer, Object, Rect
+from objects.object import Rect, Layer, Object
 
 
-class Cloud(Object):
+class Mountains(Object):
     __slots__ = *Object.__slots__, 'last_draw_pos'
-    ID_STUB: str = "cloud_%d"
-    TEXTURE_NAME: str = "cloud.png"
-    SIZE: tuple[float, float] = 32.0, 16.0
-    LAYER: Layer = Layer.BACKGROUND_3
-    PARALLAX_FACTOR: float = 0.6
+    ID_STUB: str = "mountains_%d"
+    TEXTURE_NAME: str = 'bg_mountains.png'
+    SIZE: tuple[float, float] = 64.0, 64.0
+    LAYER: Layer = Layer.BACKGROUND_2
+    PARALLAX_FACTOR: float = 0.7
     _total: int = 0
-    
+
     def __init__(self, pos: tuple[int|float, int|float]) -> None:
-        Cloud._total += 1
-        
+        Mountains._total += 1
+
         super().__init__(
-            id=self.ID_STUB % Cloud._total,
+            id=self.ID_STUB % Mountains._total,
             pos=pos,
             size=self.SIZE
         )
 
         self.last_draw_pos: tuple[float, float] = 0, 0
-        
-        if not core.video.texture_has(self.TEXTURE_NAME):
-            core.video.texture_load(core.paths.TEXTURES / self.TEXTURE_NAME, self.TEXTURE_NAME)
-    
+
+        core.video.texture_load(core.paths.TEXTURES / self.TEXTURE_NAME, self.TEXTURE_NAME)
+
     def draw(self, viewpoint: Rect) -> None:
         viewpoint_parallax: Rect = Rect(
             x=viewpoint.x * self.PARALLAX_FACTOR,
@@ -41,5 +40,5 @@ class Cloud(Object):
             self.x - viewpoint_parallax.x,
             self.y - viewpoint_parallax.y
         )
-            
+
         core.video.texture_blit(self.TEXTURE_NAME, draw_pos)

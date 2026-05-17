@@ -7,6 +7,7 @@ from objects.rect import Rect
 
 
 class Layer(Enum):
+    BACKGROUND_3 = -3
     BACKGROUND_2 = -2
     BACKGROUND_1 = -1
     MAIN = 0

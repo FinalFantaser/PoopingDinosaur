@@ -185,14 +185,14 @@ def texture_load(filepath: Path, key: str, unique: bool = False) -> Surface:
     """
     Load a texture from file to the pool under the specified key.
 
-    If **unique** is ``False`` and such key already exists in the pool, the existing texture will be replaced
-    by the new one under the same key.
+    If **unique** is ``False`` and such key already exists in the pool, new texture won't be loaded,
+    and the one stored under the specified key will be returned.
 
     :param filepath: Path to the texture file.
     :param key: Key for the pool.
     :param unique: Raise KeyError if such key already exists in the pool.
     :raises KeyError: if such key already exists and **unique** is ``True``.
-    :return: Loaded texture.
+    :return: New or existing texture.
     """
     if key in _textures_pool:
         if unique:

@@ -12,21 +12,24 @@ class Test(Scene):
     def __init__(self):
         super().__init__()
 
+        self.camera: Camera = Camera((0, 0))
+        self.ground: Ground = Ground(1000)
+        self.mountains: list[Mountains] = []
+
         objects.clear()
-        objects.add(Camera((0, 0)))
-        ground: Ground = Ground(1000)
-        objects.add(ground)
-        objects.add(Allosaurus((8, ground.y - 64)))
+        objects.add(self.camera)
+        objects.add(self.ground)
+        objects.add(Allosaurus((8, self.ground.y - 64)))
         objects.add(HealthMeter(0))
         objects.add(PooMeter(0))
 
         objects.get_player().poos = Allosaurus.MAX_POOS
 
-        # Distributing clouds randomly
+        # Distributing clouds and obstacles
         draw_x: float = 0.0
-        for _ in range(ground.total_tiles):
+        for _ in range(self.ground.total_tiles):
             if random.randint(1, 100) >= 90:
-                objects.add(Obstacle(ObstacleType.CACTUS, (draw_x, ground.touch_level - 16)))
+                objects.add(Obstacle(ObstacleType.CACTUS, (draw_x, self.ground.touch_level - 16)))
 
             if random.randint(1, 100) >= 80:
                 cloud_pos: tuple[float, float] = (
@@ -34,7 +37,7 @@ class Test(Scene):
                     core.video.get_screen_rect().height/4 + Cloud.SIZE[1] * random.randint(-1, 1),
                 )
                 objects.add(Cloud(cloud_pos))
-            
+
             draw_x += Cloud.SIZE[0]
 
         # Loading sounds and music
@@ -49,7 +52,7 @@ class Test(Scene):
             game_data.quit = False
             return
 
-        if objects.get_player().rect.right >= objects.get_ground().rect.right:
+        if objects.get_player().rect.right >= self.ground.rect.right:
             self.done = True
             self.next_scene = 'WinScreen'
             return
@@ -67,9 +70,10 @@ class Test(Scene):
         else:
             self.fps = 30
 
-        objects.process_task_queue()
-
     def draw(self) -> None:
+        for mountain in self.mountains:
+            mountain.draw(self.camera.viewpoint)
+
         for obj in objects.visible().values():
             obj.animate()
             obj.draw(viewpoint=objects.get_camera().rect)
