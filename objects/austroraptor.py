@@ -18,13 +18,13 @@ class Austroraptor(Object):
     ANIM_INTERVAL: int = 250
     TOTAL_FRAMES: int = 2
 
-    TRIGGER_AREA_SIZE: tuple[float, float] = SIZE[0] * 10, SIZE[1] * 10
+    TRIGGER_AREA_SIZE: tuple[float, float] = SIZE[0] * 20, SIZE[1] * 5
     VEL_X_MIN: float = 100.0
     VEL_X_MAX: float = VEL_X_MIN * 2
-    VEL_X_MAX_IN: float = 3 # Seconds to reach maximum speed
+    VEL_X_MAX_IN: float = 1 # Seconds to reach maximum speed
     WEIGHT: float = 300.0
     WEIGHT_FACTOR: float = 0.5
-    JUMP_ACCEL: float = -(WEIGHT * 0.5)
+    JUMP_ACCEL: float = -(WEIGHT * 0.6)
 
     HANDLER_NAME: str = "AustroraptorHandler"
 
@@ -35,6 +35,7 @@ class Austroraptor(Object):
         IDLE = auto()
         STARTLED = auto()
         RUNNING = auto()
+        DEAD = auto()
 
     def __init__(self, pos: tuple[int|float, int|float]) -> None:
         Austroraptor._total += 1
@@ -71,16 +72,28 @@ class Austroraptor(Object):
         if not viewpoint.overlaps(self.rect):
             return
 
-        core.video.texture_blit(
-            f"{self.TEXTURE_NAME}_{self.direction}",
-            (self.x - viewpoint.x, self.y - viewpoint.y),
-            (
-                int(self.curr_frame * self.SIZE[0]),
-                0,
-                int(self.SIZE[0]),
-                int(self.SIZE[1]),
+        if self.state == Austroraptor.State.DEAD:
+            core.video.texture_blit(
+                f"{self.TEXTURE_NAME}_{Direction.RIGHT}",
+                (self.x - viewpoint.x, self.y - viewpoint.y),
+                (
+                    0,
+                    int(self.SIZE[1]),
+                    int(self.SIZE[0]),
+                    int(self.SIZE[1]),
+                )
             )
-        )
+        else:
+            core.video.texture_blit(
+                f"{self.TEXTURE_NAME}_{self.direction}",
+                (self.x - viewpoint.x, self.y - viewpoint.y),
+                (
+                    int(self.curr_frame * self.SIZE[0]),
+                    0,
+                    int(self.SIZE[0]),
+                    int(self.SIZE[1]),
+                )
+            )
 
     def animate(self) -> None:
         if self.vel_x == 0.0:

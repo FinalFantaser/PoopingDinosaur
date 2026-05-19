@@ -29,10 +29,10 @@ class ObjectLayer(Enum):
 
 
 class Direction(Enum):
-    LEFT = -1, 0
-    RIGHT = 1, 0
     UP = 0, 1
     DOWN = 0, -1
+    LEFT = -1, 0
+    RIGHT = 1, 0
 
     def __str__(self) -> str:
         if self.value == self.UP.value:
@@ -45,6 +45,16 @@ class Direction(Enum):
             return 'RIGHT'
         else:
             return 'UNKNOWN'
+
+    def opposite(self) -> 'Direction':
+        if self.value == self.UP.value:
+            return self.DOWN
+        elif self.value == self.DOWN.value:
+            return self.UP
+        elif self.value == self.LEFT.value:
+            return self.RIGHT
+        elif self.value == self.RIGHT.value:
+            return self.LEFT
 
 
 class Object:
