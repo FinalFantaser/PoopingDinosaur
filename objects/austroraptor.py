@@ -15,7 +15,7 @@ class Austroraptor(Object):
     TEXTURE_KEY_LEFT: str = f"{TEXTURE_NAME}_{Direction.LEFT}"
     TEXTURE_KEY_RIGHT: str = f"{TEXTURE_NAME}_{Direction.RIGHT}"
 
-    ANIM_INTERVAL: int = 250
+    ANIM_INTERVAL: int = 125
     TOTAL_FRAMES: int = 2
 
     TRIGGER_AREA_SIZE: tuple[float, float] = SIZE[0] * 20, SIZE[1] * 5
@@ -96,11 +96,11 @@ class Austroraptor(Object):
             )
 
     def animate(self) -> None:
-        if self.vel_x == 0.0:
+        if self.vel_x == 0.0 or self.state == self.State.DEAD:
             return
 
         # Run animation interval is affected by dinousaur's current speed
-        anim_interval: int = int(self.ANIM_INTERVAL * (self.VEL_X_MAX/self.vel_x))
+        anim_interval: int = int(self.ANIM_INTERVAL * min(self.VEL_X_MAX/self.vel_x, 2))
 
         if pygame.time.get_ticks() - self.last_frame_change >= anim_interval:
             self.curr_frame = (self.curr_frame + 1) % self.TOTAL_FRAMES

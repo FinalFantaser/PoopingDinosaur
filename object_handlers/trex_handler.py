@@ -64,7 +64,7 @@ class TRexHandler(ObjectHandler):
             # Edibles
             if isinstance(other_obj, cls._EDIBLES) and obj.poos < obj.MAX_POOS:
                 if obj.action != TRexAction.BITE:
-                    if other_obj.rect.left > obj.rect.right and other_obj.rect.left - obj.rect.right <= obj.SIZE[0] * 1.5:
+                    if obj.bite_hitbox.overlaps(other_obj.rect):
                         obj.action = TRexAction.BITE
                 elif (
                         obj.hitbox.overlaps(other_obj.rect)

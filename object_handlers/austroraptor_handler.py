@@ -1,5 +1,5 @@
 import pygame.time
-from objects import Rect, Direction, Object, Austroraptor, TRex, Ground, Obstacle
+from objects import Rect, Direction, Object, Austroraptor, TRex, Ground, Obstacle, Poo
 from data_containers import objects as obj_container, game_data
 from .object_handler import ObjectHandler
 
@@ -30,7 +30,7 @@ class AustroraptorHandler(ObjectHandler):
 
         # Reacting to other dinosaurs
         for other_obj in obj_container.visible().values():
-            if obj.id == other_obj.id:
+            if obj.id == other_obj.id or isinstance(other_obj, Ground):
                 continue
 
             # Get startled and attempt to escape a hunter
@@ -53,7 +53,7 @@ class AustroraptorHandler(ObjectHandler):
                     obj.state = Austroraptor.State.RUNNING
                     obj.direction = Direction.RIGHT if obj.rect.center_x >= other_obj.rect.center_x else Direction.LEFT
 
-            elif isinstance(other_obj, Obstacle):
+            elif isinstance(other_obj, Obstacle|Poo):
                 # Attempt to jump over the obstacle when running
                 if obj.state == Austroraptor.State.RUNNING:
                     visinity: Rect = Rect(

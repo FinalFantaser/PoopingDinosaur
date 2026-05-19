@@ -16,6 +16,7 @@ class TRex(Object):
         'vel_y',
         'vel_x_modifier',
         '_hitbox',
+        '_bite_hitbox',
         '_action',
         'invincibility',
         'last_blink',
@@ -40,7 +41,8 @@ class TRex(Object):
     VEL_X_CONST: float = 175.0
     VEL_X_MODIFIER: float = VEL_X_CONST / 4
     VEL_Y_MIN: float = 40.0
-    HITBOX_SIZE: tuple[float, float] = (24, SIZE[1])
+    HITBOX_SIZE: tuple[float, float] = 24, SIZE[1]
+    BITE_HITBOX_SIZE: tuple[float, float] = SIZE[0]/4, SIZE[1]
     BLINK_INTERVAL: int = 100
     POOP_INTERVAL: int = 1000
 
@@ -66,7 +68,8 @@ class TRex(Object):
         self._action: TRexAction = TRexAction.RUN
         self.vel_x_modifier: float = 0.0
         self.vel_y: float = vel_y
-        self._hitbox: Rect = Rect(self.x, self.y, self.HITBOX_SIZE[0], self.HITBOX_SIZE[1])
+        self._hitbox: Rect = Rect(*self.pos, *self.HITBOX_SIZE)
+        self._bite_hitbox: Rect = Rect(*self.pos, *self.BITE_HITBOX_SIZE)
         self.invincibility: int = 0
         self.last_blink: int = pygame.time.get_ticks()
         self.visible: bool = True
@@ -124,6 +127,12 @@ class TRex(Object):
         self._hitbox.y = self.y
 
         return self._hitbox
+
+    @property
+    def bite_hitbox(self) -> Rect:
+        self._bite_hitbox.x = self.rect.right
+        self._bite_hitbox.center_y = self.rect.center_y
+        return self._bite_hitbox
 
     def animate(self) -> None:
         anim_interval: int = self.ANIM_INTERVAL
