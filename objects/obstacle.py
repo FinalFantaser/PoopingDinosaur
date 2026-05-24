@@ -1,11 +1,11 @@
-from enum import Enum
+from enum import IntEnum, auto
 from pygame import Rect as PygameRect
 import core.video
 from objects.object import ObjectLayer, Object, Rect
 
 
-class ObstacleType(Enum):
-    CACTUS = 0,
+class ObstacleType(IntEnum):
+    CACTUS = auto(),
 
 
 class Obstacle(Object):

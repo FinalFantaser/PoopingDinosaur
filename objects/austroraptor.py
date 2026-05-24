@@ -1,4 +1,4 @@
-from enum import Enum, auto
+from enum import IntEnum, auto
 from pygame import Surface
 import pygame.transform
 import core.video
@@ -31,7 +31,7 @@ class Austroraptor(Object):
 
     _total: int = 0
 
-    class State(Enum):
+    class State(IntEnum):
         IDLE = auto()
         STARTLED = auto()
         RUNNING = auto()
