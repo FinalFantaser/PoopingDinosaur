@@ -1,4 +1,5 @@
-from enum import Enum
+from typing import Literal, Self
+from enum import IntEnum, Enum
 from pygame import Surface
 import pygame.time
 import core.paths
@@ -6,7 +7,7 @@ import core.video
 from objects.rect import Rect
 
 
-class ObjectLayer(Enum):
+class ObjectLayer(IntEnum):
     BACKGROUND_3 = -3
     BACKGROUND_2 = -2
     BACKGROUND_1 = -1
@@ -15,18 +16,6 @@ class ObjectLayer(Enum):
     FOREGROUND_2 = 2
     GUI = 3
 
-    def __lt__(self, other: 'ObjectLayer'):
-        return self.value < other.value
-
-    def __le__(self, other: 'ObjectLayer'):
-        return self.value <= other.value
-
-    def __gt__(self, other: 'ObjectLayer'):
-        return self.value > other.value
-
-    def __ge__(self, other: 'ObjectLayer'):
-        return self.value >= other.value
-
 
 class Direction(Enum):
     UP = 0, 1
@@ -34,7 +23,7 @@ class Direction(Enum):
     LEFT = -1, 0
     RIGHT = 1, 0
 
-    def __str__(self) -> str:
+    def __str__(self) -> Literal["UP", "DOWN", "LEFT", "RIGHT", "UNKNOWN"]:
         if self.value == self.UP.value:
             return 'UP'
         elif self.value == self.DOWN.value:
@@ -46,7 +35,7 @@ class Direction(Enum):
         else:
             return 'UNKNOWN'
 
-    def opposite(self) -> 'Direction':
+    def opposite(self) -> Self:
         if self.value == self.UP.value:
             return self.DOWN
         elif self.value == self.DOWN.value:
@@ -55,6 +44,8 @@ class Direction(Enum):
             return self.RIGHT
         elif self.value == self.RIGHT.value:
             return self.LEFT
+        else:
+            raise ValueError('Unknown direction value')
 
 
 class Object:

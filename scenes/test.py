@@ -7,6 +7,7 @@ from scenes.scene import Scene
 from objects import *
 from data_containers import objects, game_data
 from object_handlers import *
+from utilities.generators import BiomeGenerator
 
 class Test(Scene):
     def __init__(self):
@@ -25,16 +26,11 @@ class Test(Scene):
 
         objects.get_player().poos = TRex.MAX_POOS
 
-        # Distributing clouds and obstacles
+        self.generator: BiomeGenerator = BiomeGenerator(self.camera)
+
+        # Distributing obstacles and dinosaurs
         draw_x: float = 0.0
         for _ in range(self.ground.total_tiles):
-            if random.randint(1, 100) >= 80:
-                cloud_pos: tuple[float, float] = (
-                    draw_x,
-                    core.video.get_screen_rect().height/4 + Cloud.SIZE[1] * random.randint(-1, 1),
-                )
-                objects.add(Cloud(cloud_pos))
-
             if random.randint(1, 100) >= 90:
                 objects.add(Obstacle(ObstacleType.CACTUS, (draw_x, self.ground.touch_level - 16)))
             elif random.randint(1, 100) >= 95:
@@ -65,6 +61,7 @@ class Test(Scene):
             return
 
         if objects.get(PauseMenu.ID) is None:
+            self.generator.background_3()
             self.fps = core.video.get_fps()
 
             for obj in objects.with_handlers().values():

@@ -36,3 +36,19 @@ class Camera(Object):
     @right.setter
     def right(self, new_right: float) -> None:
         self.rect.right = new_right
+
+    @property
+    def top(self) -> float:
+        return self.rect.top
+
+    @top.setter
+    def top(self, new_top: float) -> None:
+        self.rect.top = new_top
+
+    @property
+    def bottom(self) -> float:
+        return self.rect.bottom
+
+    @bottom.setter
+    def bottom(self, new_bottom: float) -> None:
+        self.rect.bottom = new_bottom

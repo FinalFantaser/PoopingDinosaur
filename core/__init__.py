@@ -1,3 +1,5 @@
+"""Tools for basic video, audio, input, GUI and localization features."""
+
 import core.paths
 import core.gui
 import core.config
