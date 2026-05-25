@@ -26,7 +26,7 @@ class Test(Scene):
 
         objects.get_player().poos = TRex.MAX_POOS
 
-        self.generator: BiomeGenerator = BiomeGenerator(self.camera)
+        self.generator: BiomeGenerator = BiomeGenerator()
 
         # Distributing obstacles and dinosaurs
         draw_x: float = 0.0

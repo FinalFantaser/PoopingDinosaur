@@ -1,6 +1,6 @@
 import random
 import core.video
-from objects import Rect, Camera, Cloud
+from objects import Camera, Ground, Obstacle, Cloud
 from data_containers import objects as obj_container
 
 
@@ -14,12 +14,16 @@ class BiomeGenerator:
     SKY_CENTER_LINE: float = core.video.get_screen_rect().height/4
     CLOUD_RATE: int = 85
 
-    def __init__(self, camera: Camera) -> None:
+    def __init__(self) -> None:
         """
         :param camera: Camera to determine borders to place objects.
         """
-        self.camera: Camera = camera
+        self.camera: Camera = obj_container.get_camera()
+        self.ground: Ground = obj_container.get_ground()
+
         self.last_cloud_pos: tuple[float, float] = self.camera.x - Cloud.SIZE[0], self.SKY_CENTER_LINE
+        self.last_obstacle_pos: tuple[float, float] = 0, self.ground.touch_level
+        self.last_npc_pos: tuple[float, float] = 0, self.ground.touch_level
 
     def clouds(self) -> None:
         """Generate clouds in the sky as the camera moves along."""
@@ -41,7 +45,13 @@ class BiomeGenerator:
 
 
     def background_3(self):
-        """
-        Generator for objects at the BACKGROUND_3 layer
-        """
+        """Creates objects at the BACKGROUND_3 layer"""
         self.clouds()
+
+    def obstacles(self):
+        """Creates obstacles within vicinity"""
+        pass
+
+    def npc(self):
+        """Creates NPCs within vicinity"""
+        pass

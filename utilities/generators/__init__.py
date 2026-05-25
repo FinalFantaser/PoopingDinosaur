@@ -1,1 +1,2 @@
 from .biome_generator import BiomeGenerator
+from .desert_generator import DesertGenerator
