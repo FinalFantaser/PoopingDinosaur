@@ -7,7 +7,7 @@ from scenes.scene import Scene
 from objects import *
 from data_containers import objects, game_data
 from object_handlers import *
-from utilities.generators import BiomeGenerator
+from utilities.generators import DesertGenerator
 
 class Test(Scene):
     def __init__(self):
@@ -26,17 +26,17 @@ class Test(Scene):
 
         objects.get_player().poos = TRex.MAX_POOS
 
-        self.generator: BiomeGenerator = BiomeGenerator()
+        self.generator: DesertGenerator = DesertGenerator()
 
         # Distributing obstacles and dinosaurs
-        draw_x: float = 0.0
-        for _ in range(self.ground.total_tiles):
-            if random.randint(1, 100) >= 90:
-                objects.add(Obstacle(ObstacleType.CACTUS, (draw_x, self.ground.touch_level - 16)))
-            elif random.randint(1, 100) >= 95:
-                objects.add(Austroraptor((draw_x, self.ground.touch_level - Austroraptor.SIZE[1])))
-
-            draw_x += Cloud.SIZE[0]
+        # draw_x: float = 0.0
+        # for _ in range(self.ground.total_tiles):
+        #     if random.randint(1, 100) >= 90:
+        #         objects.add(Obstacle(ObstacleType.CACTUS, (draw_x, self.ground.touch_level - 16)))
+        #     elif random.randint(1, 100) >= 95:
+        #         objects.add(Austroraptor((draw_x, self.ground.touch_level - Austroraptor.SIZE[1])))
+        #
+        #     draw_x += Cloud.SIZE[0]
 
         # Loading sounds and music
         for idx in range(1, 3):
@@ -62,6 +62,9 @@ class Test(Scene):
 
         if objects.get(PauseMenu.ID) is None:
             self.generator.background_3()
+            self.generator.obstacles()
+            self.generator.npc()
+
             self.fps = core.video.get_fps()
 
             for obj in objects.with_handlers().values():
@@ -77,7 +80,7 @@ class Test(Scene):
             obj.draw(viewpoint=objects.get_camera().rect)
 
     def read_input(self) -> None:
-        pause_menu: PauseMenuHandler|None = objects.get(PauseMenu.ID)
+        pause_menu: PauseMenu|None = objects.get(PauseMenu.ID)
         if pause_menu is not None:
             PauseMenuHandler.read_input(pause_menu)
         else:
