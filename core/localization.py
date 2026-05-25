@@ -3,16 +3,13 @@
 from pathlib import Path
 import yaml
 
-_DIR = "localization"
+_DIR: Path = Path("localization")
 """Path to the localization directory."""
 
-_FALLBACK_LANGUAGE = "English"
+_FALLBACK_LANGUAGE: str = "English"
 """Language to use as fallback in case if localization load failed."""
 
-_available_languages: dict[str, str] = { # TODO Move to an external file to allow adding languages without re-building
-    "English": "english.yml",
-    "Russian": "russian.yml",
-}
+_available_languages: dict[str, str] = {}
 """List of available languages."""
 
 _language: str = _FALLBACK_LANGUAGE
@@ -30,11 +27,11 @@ def load_translation(filename: str) -> None:
     :param filename: name of the file to load.
     """
     global _language, _translation
-    filename = Path(_DIR) / filename
+    filename = _DIR / filename
 
     if not filename.exists():
         _language = _FALLBACK_LANGUAGE
-        filename = Path(_DIR) / _available_languages[_language]
+        filename = _DIR / _available_languages[_language]
 
     with open(filename, "r", encoding="utf-8") as file:
         _translation = yaml.safe_load(file)
@@ -59,6 +56,11 @@ def init(config_data) -> None:
     Set the language specified in the config file and load a translation file.
     :param config_data: Data from the "video" section of the config file.
     """
+    global _available_languages
+
+    with open(_DIR / "_lang_.yml", "r", encoding="utf-8") as file:
+        _available_languages = yaml.safe_load(file)
+
     change_language(config_data["language"])
 
 
