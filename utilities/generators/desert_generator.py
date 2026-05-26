@@ -40,7 +40,7 @@ class DesertGenerator(BiomeGenerator):
         getattr(objects, Austroraptor.__name__),
     )
 
-    OBSTACLES: tuple[ObstacleType, ... ] = ObstacleType.CACTUS
+    OBSTACLES: tuple[ObstacleType, ... ] = ObstacleType.CACTUS,
 
     def npc(self) -> None:
         edge: float = self.camera.right + Austroraptor.SIZE[0]
@@ -61,7 +61,7 @@ class DesertGenerator(BiomeGenerator):
         draw_x: float = max(self.last_obstacle_pos[0], self.camera.left - Austroraptor.SIZE[0])
 
         while draw_x < edge:
-            obstacle_type: ObstacleType = random.choice(tuple(ObstacleType))
+            obstacle_type: ObstacleType = random.choice(self.OBSTACLES)
 
             if random.randint(1, 100) <= self.OBSTACLE_RATE[obstacle_type]:
                 new_obstacle: Obstacle = Obstacle(obstacle_type, (draw_x, 0))
