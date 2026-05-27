@@ -9,7 +9,7 @@ class Cloud(Object):
     TEXTURE_NAME: str = "cloud.png"
     SIZE: tuple[float, float] = 32.0, 16.0
     LAYER: ObjectLayer = ObjectLayer.BACKGROUND_3
-    PARALLAX_FACTOR: float = 0.6
+    PARALLAX_FACTOR: float = 0.1
     _total: int = 0
     
     def __init__(self, pos: tuple[int|float, int|float]) -> None:

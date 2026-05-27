@@ -4,6 +4,7 @@ from .camera import Camera
 from .ground import Ground
 from .cloud import Cloud
 from .mountains import Mountains
+from .forest import Forest
 from .obstacle import ObstacleType, Obstacle
 from .poo import Poo
 

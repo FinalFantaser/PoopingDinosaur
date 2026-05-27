@@ -15,11 +15,12 @@ class Test(Scene):
 
         self.camera: Camera = Camera((0, 0))
         self.ground: Ground = Ground(1000)
-        self.mountains: list[Mountains] = []
+        self.forest: Forest = Forest(self.ground.total_tiles)
 
         objects.clear()
         objects.add(self.camera)
         objects.add(self.ground)
+        objects.add(self.forest)
         objects.add(TRex((8, self.ground.y - 64)))
         objects.add(HealthMeter(0))
         objects.add(PooMeter(0))
@@ -27,16 +28,6 @@ class Test(Scene):
         objects.get_player().poos = TRex.MAX_POOS
 
         self.generator: DesertGenerator = DesertGenerator()
-
-        # Distributing obstacles and dinosaurs
-        # draw_x: float = 0.0
-        # for _ in range(self.ground.total_tiles):
-        #     if random.randint(1, 100) >= 90:
-        #         objects.add(Obstacle(ObstacleType.CACTUS, (draw_x, self.ground.touch_level - 16)))
-        #     elif random.randint(1, 100) >= 95:
-        #         objects.add(Austroraptor((draw_x, self.ground.touch_level - Austroraptor.SIZE[1])))
-        #
-        #     draw_x += Cloud.SIZE[0]
 
         # Loading sounds and music
         for idx in range(1, 3):
