@@ -16,17 +16,8 @@ class AustroraptorHandler(ObjectHandler):
         update_delta: int = obj.update_delta
         ground: Ground = obj_container.get_ground()
 
-        # Gravity
-        if obj.rect.bottom < ground.touch_level:
-            fall_accel: float = game_data.GRAVITY_PIXELS * obj.WEIGHT_FACTOR
-            obj.vel_y += fall_accel / 1000 * update_delta
-
-        obj.y += obj.vel_y / 1000 * update_delta
-        if obj.rect.bottom >= ground.touch_level:
-            obj.vel_y = 0.0
-            obj.rect.bottom = ground.touch_level
-
-        obj.x += (obj.vel_x / 1000 * update_delta) * obj.direction.value[0]
+        # Gravity and horizontal movement
+        cls.physics(obj)
 
         # Reacting to other dinosaurs
         for other_obj in obj_container.visible().values():
@@ -56,13 +47,13 @@ class AustroraptorHandler(ObjectHandler):
             elif isinstance(other_obj, Obstacle|Poo):
                 # Attempt to jump over the obstacle when running
                 if obj.state == Austroraptor.State.RUNNING:
-                    visinity: Rect = Rect(
+                    vicinity: Rect = Rect(
                         obj.rect.left - obj.rect.width * 3 if obj.direction == Direction.LEFT else obj.rect.right,
                         obj.rect.y,
                         *obj.rect.size
                     )
 
-                    if visinity.overlaps(other_obj.rect) and obj.rect.bottom >= ground.touch_level:
+                    if vicinity.overlaps(other_obj.rect) and obj.rect.bottom >= ground.touch_level:
                         obj.vel_y = obj.JUMP_ACCEL
 
                 if obj.rect.overlaps(other_obj.rect) and obj.state != Austroraptor.State.DEAD:

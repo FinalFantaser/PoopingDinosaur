@@ -1,9 +1,16 @@
+# System objects
 from .object_handler import ObjectHandler
 from .camera_handler import CameraHandler
+
+# Dinosaurs
 from .trex_handler import TRexHandler
 from .austroraptor_handler import AustroraptorHandler
+from .velociraptor_handler import VelociraptorHandler
+
+# Environment
 from .poo_handler import PooHandler
 
+# GUI
 from .gui.health_meter_handler import HealthMeterHandler
 from .gui.poo_handler import PooMeterHandler
 from .gui.pause_menu_handler import PauseMenuHandler
