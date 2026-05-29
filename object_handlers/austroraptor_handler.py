@@ -36,7 +36,7 @@ class AustroraptorHandler(ObjectHandler):
             # Get startled and attempt to escape a hunter
             if isinstance(other_obj, cls._HUNTERS):
                 # If idle, get startled and jump
-                if obj.state == Austroraptor.State.IDLE and obj.trigger_area.overlaps(other_obj.rect):
+                if obj.state == Austroraptor.State.IDLE and obj.fov.overlaps(other_obj.rect):
                     obj.state = Austroraptor.State.STARTLED
                     if obj.rect.bottom >= ground.touch_level:
                         obj.vel_y = obj.JUMP_ACCEL * 0.5
