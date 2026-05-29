@@ -5,7 +5,7 @@ from .dinosaur import Dinosaur
 class Velociraptor(Dinosaur):
     ID_STUB: str = "velociraptor_%d"
     SIZE: tuple[float, float] = 8, 7
-    TEXTURE_NAME: str = "velociraptor,png"
+    TEXTURE_NAME: str = "velociraptor.png"
     ANIM_INTERVAL: int = 125
     TOTAL_FRAMES: int = 2
     DRAW_AREA: PygameRect = PygameRect(0, 0, *SIZE)
