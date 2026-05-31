@@ -99,11 +99,10 @@ class BiomeGenerator:
         :param block: Block of ground where the pack will be placed.
         """
 
+        camera: Camera = obj_container.get_camera()
         ground: Ground = obj_container.get_ground()
         end_point: int = min(block + Velociraptor.PACK_SIZE[1], ground.total_tiles - 1)
         pack_size: int = min(end_point - block, Velociraptor.calc_pack_size())
 
         if pack_size < 1:
             return
-
-        # ...
