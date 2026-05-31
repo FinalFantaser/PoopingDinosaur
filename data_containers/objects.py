@@ -1,6 +1,6 @@
 from enum import Enum
 import pygame.time
-from objects import Object, Camera, TRex, Ground
+from objects import Direction, Object, Camera, TRex, Ground
 
 
 class _TaskType(int, Enum):

@@ -1,8 +1,4 @@
-from enum import IntEnum, auto
-from pygame import Surface, Rect as PygameRect
-import pygame.transform
-import core.video
-from objects.object import Rect, Object, Direction
+from pygame import Rect as PygameRect
 from .dinosaur import Dinosaur
 
 

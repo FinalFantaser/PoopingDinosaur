@@ -50,7 +50,7 @@ class TRexHandler(ObjectHandler):
 
             if obj.hitbox.overlaps(other_obj.rect):
                 # Obstacle
-                if isinstance(other_obj, Obstacle) and other_obj.ob_type == ObstacleType.CACTUS and obj.invincibility < 1:
+                if isinstance(other_obj, Obstacle) and other_obj.ob_type == Obstacle.Type.CACTUS and obj.invincibility < 1:
                     obj.health = max(0, obj.health - 1)
                     obj.invincibility = 3000
 

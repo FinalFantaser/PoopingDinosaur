@@ -2,14 +2,36 @@ import core
 import pygame.transform, pygame.time
 from pygame import Surface, Rect as PygameRect
 from enum import IntEnum, auto
-from .object import Direction, Rect, Object
+from .direction import Direction
+from .rect import Rect
+from .object import Object
 
 class Dinosaur(Object):
-    """Basic dinosaur class with common features"""
+    """
+    Basic dinosaur class with common features. The properties are limited since dinosaurs mosntly run all the time.
+
+    Attributes:
+        ID_STUB: Stub for an object id. Typically, it's a dinosaur's name with total count.
+        SIZE: Size of the dinosaur.
+        TEXTURE_NAME: Name of a texture used.
+        ANIM_INTERVAL: Basic interval of animation frame change.
+        TOTAL_FRAMES: Total number of frames.
+    """
 
     __slots__ = *Object.__slots__, "direction", "state", 'vel_x', 'vel_y', '_fov'
 
     class State(IntEnum):
+        """
+        Finite states determining dinosaur's behavior.
+
+        Attributes:
+            IDLE: Dinosaur is idle, chilling.
+            STARTLED: Dinosaur sees an enemy for the first time.
+            RUNNING: Dinosaur runs away from its enemies.
+            CHASING: Dinosaur chases its prey.
+            CORNERED: Dinosaur got nowhere to run and panics, waiting to get eaten.
+            DEAD: Dinosaur is dead.
+        """
         IDLE = auto(),
         STARTLED = auto(),
         RUNNING = auto(),

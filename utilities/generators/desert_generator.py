@@ -1,6 +1,6 @@
 import random
 import objects
-from objects import Camera, Ground, ObstacleType, Obstacle, Austroraptor
+from objects import Camera, Ground, Obstacle, Austroraptor
 from data_containers import objects as obj_container
 from .biome_generator import BiomeGenerator
 
@@ -28,19 +28,19 @@ class DesertGenerator(BiomeGenerator):
         Austroraptor.__name__: (8, 10),
     }
 
-    OBSTACLE_RATE: dict[ObstacleType, int] = {
-        ObstacleType.CACTUS: 60,
+    OBSTACLE_RATE: dict[Obstacle.Type, int] = {
+        Obstacle.Type.CACTUS: 60,
     }
 
-    OBSTACLE_INTERVAL: dict[ObstacleType, tuple[int, int]] = {
-        ObstacleType.CACTUS: (1, 10),
+    OBSTACLE_INTERVAL: dict[Obstacle.Type, tuple[int, int]] = {
+        Obstacle.Type.CACTUS: (1, 10),
     }
 
     DINOSAURS: tuple[type[Austroraptor], ...] = (
         getattr(objects, Austroraptor.__name__),
     )
 
-    OBSTACLES: tuple[ObstacleType, ... ] = ObstacleType.CACTUS,
+    OBSTACLES: tuple[Obstacle.Type, ... ] = Obstacle.Type.CACTUS,
 
     def npc(self) -> None:
         edge: float = self.camera.right + Austroraptor.SIZE[0]
@@ -61,7 +61,7 @@ class DesertGenerator(BiomeGenerator):
         draw_x: float = max(self.last_obstacle_pos[0], self.camera.left - Austroraptor.SIZE[0])
 
         while draw_x < edge:
-            obstacle_type: ObstacleType = random.choice(self.OBSTACLES)
+            obstacle_type: Obstacle.Type = random.choice(self.OBSTACLES)
 
             if random.randint(1, 100) <= self.OBSTACLE_RATE[obstacle_type]:
                 new_obstacle: Obstacle = Obstacle(obstacle_type, (draw_x, 0))

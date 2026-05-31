@@ -3,13 +3,13 @@ from pygame import Rect as PygameRect, Surface, key
 import core.video
 import core.gui
 import core.localization
-from objects.object import ObjectLayer, Rect, Object
+from objects.object import Rect, Object
 
 
 class PauseMenu(Object):
     __slots__ = *Object.__slots__, "labels", "entries", "labels_pos", "selected"
     ID: str = "pause_menu"
-    LAYER: ObjectLayer = ObjectLayer.GUI
+    LAYER: Object.Layer = Object.Layer.GUI
     HANDLER_NAME: str | None = None
     CURSOR_RADIUS: float = 2
     INPUT_READ_INTERVAL: int = 125

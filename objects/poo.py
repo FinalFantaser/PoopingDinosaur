@@ -1,7 +1,7 @@
 import pygame.time
 from pygame import Rect as PygameRect
 import core.video
-from objects.object import ObjectLayer, Rect, Object
+from objects.object import Rect, Object
 
 
 class Poo(Object):

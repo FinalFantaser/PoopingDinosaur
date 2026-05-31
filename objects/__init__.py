@@ -1,6 +1,7 @@
 # System objects
 from .rect import Rect
-from .object import ObjectLayer, Direction, Object
+from .direction import Direction
+from .object import Object
 from .camera import Camera
 
 # Environment
@@ -8,7 +9,7 @@ from .ground import Ground
 from .cloud import Cloud
 from .mountains import Mountains
 from .forest import Forest
-from .obstacle import ObstacleType, Obstacle
+from .obstacle import Obstacle
 from .poo import Poo
 
 # Dinosaurs

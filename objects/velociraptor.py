@@ -1,3 +1,4 @@
+import random
 from pygame import Rect as PygameRect
 from .dinosaur import Dinosaur
 
@@ -18,4 +19,16 @@ class Velociraptor(Dinosaur):
     JUMP_ACCEL: float = -(WEIGHT * 8)
     HANDLER_NAME: str = None
 
+    PACK_SIZE: tuple[int, int] = 1, 3
+    """Size range of a velociraptor pack"""
+
     _total: int = 0
+
+
+    @classmethod
+    def calc_pack_size(cls) -> int:
+        """
+        Calculate random size of a velociraptor pack.
+        :return: Value within the range specified by cls.PACK_SIZE.
+        """
+        return random.randint(*cls.PACK_SIZE)

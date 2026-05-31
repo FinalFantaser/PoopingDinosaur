@@ -1,11 +1,11 @@
 import core.video
-from objects.object import ObjectLayer, Object, Rect
+from objects.object import Object, Rect
 
 
 class HealthMeter(Object):
     __slots__ = *Object.__slots__, "value"
 
-    LAYER: ObjectLayer = ObjectLayer.GUI
+    LAYER: Object.Layer = Object.Layer.GUI
     HANDLER_NAME: str | None = "HealthMeterHandler"
 
     ID: str = "gui_health_meter"

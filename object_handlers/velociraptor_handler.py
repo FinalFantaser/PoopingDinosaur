@@ -61,9 +61,9 @@ class VelociraptorHandler(ObjectHandler):
 
 
     @classmethod
-    def react_to_obstacle(cls, obj: Velociraptor, other_obj: TRex|Dinosaur) -> None:
+    def react_to_obstacle(cls, obj: Velociraptor, obstacle: Obstacle) -> None:
         # If touched:
-        # ...
+
 
         # If obstacle is in the way, switch to CORNERED state
         pass

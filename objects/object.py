@@ -4,49 +4,7 @@ from pygame import Surface
 import pygame.time
 import core.paths
 import core.video
-from objects.rect import Rect
-
-
-class ObjectLayer(IntEnum):
-    BACKGROUND_3 = -3
-    BACKGROUND_2 = -2
-    BACKGROUND_1 = -1
-    MAIN = 0
-    FOREGROUND_1 = 1
-    FOREGROUND_2 = 2
-    GUI = 3
-
-
-class Direction(Enum):
-    UP = 0, 1
-    DOWN = 0, -1
-    LEFT = -1, 0
-    RIGHT = 1, 0
-
-    def __str__(self) -> Literal["UP", "DOWN", "LEFT", "RIGHT", "UNKNOWN"]:
-        if self.value == self.UP.value:
-            return 'UP'
-        elif self.value == self.DOWN.value:
-            return 'DOWN'
-        elif self.value == self.LEFT.value:
-            return 'LEFT'
-        elif self.value == self.RIGHT.value:
-            return 'RIGHT'
-        else:
-            return 'UNKNOWN'
-
-    def opposite(self) -> Self:
-        if self.value == self.UP.value:
-            return self.DOWN
-        elif self.value == self.DOWN.value:
-            return self.UP
-        elif self.value == self.LEFT.value:
-            return self.RIGHT
-        elif self.value == self.RIGHT.value:
-            return self.LEFT
-        else:
-            raise ValueError('Unknown direction value')
-
+from .rect import Rect
 
 class Object:
     __slots__ = (
@@ -60,8 +18,17 @@ class Object:
         'last_update'
     )
 
+    class Layer(IntEnum):
+        BACKGROUND_3 = -3
+        BACKGROUND_2 = -2
+        BACKGROUND_1 = -1
+        MAIN = 0
+        FOREGROUND_1 = 1
+        FOREGROUND_2 = 2
+        GUI = 3
+
     VISIBLE: bool = True
-    LAYER: ObjectLayer = ObjectLayer.MAIN
+    LAYER: Layer = Layer.MAIN
     HANDLER_NAME: str|None = None
 
     def __init__(

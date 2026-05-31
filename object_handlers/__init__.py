@@ -8,6 +8,7 @@ from .austroraptor_handler import AustroraptorHandler
 from .velociraptor_handler import VelociraptorHandler
 
 # Environment
+from .obstacle_handler import ObstacleHandler
 from .poo_handler import PooHandler
 
 # GUI

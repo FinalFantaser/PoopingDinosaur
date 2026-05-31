@@ -2,7 +2,7 @@ from enum import Enum
 import pygame.time
 import pygame.transform
 import core.video
-from objects.object import Object, ObjectLayer, Rect
+from objects.object import Object, Rect
 
 
 class TRexAction(Enum):
@@ -29,7 +29,7 @@ class TRex(Object):
     ID: str = 'player'
     SIZE: tuple[float, float] = (53, 16)
     TEXTURE_NAME: str = 'trex.png'
-    LAYER: ObjectLayer = ObjectLayer.MAIN
+    LAYER: Object.Layer = Object.Layer.MAIN
     HANDLER_NAME: str = 'TRexHandler'
 
     ANIM_INTERVAL: int = 250
