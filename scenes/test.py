@@ -7,27 +7,26 @@ from scenes.scene import Scene
 from objects import *
 from data_containers import objects, game_data
 from object_handlers import *
-from utilities.generators import DesertGenerator
+from utilities.generators import ForestGenerator
 
 class Test(Scene):
     def __init__(self):
         super().__init__()
+        objects.clear()
 
         self.camera: Camera = Camera((0, 0))
-        self.ground: Ground = Ground(1000)
+        objects.add(self.camera)
+
+        self.generator: ForestGenerator = ForestGenerator(1000)
+        self.ground: Ground = objects.get_ground()
         self.forest: Forest = Forest(self.ground.total_tiles)
 
-        objects.clear()
-        objects.add(self.camera)
-        objects.add(self.ground)
         objects.add(self.forest)
         objects.add(TRex((8, self.ground.y - 64)))
         objects.add(HealthMeter(0))
         objects.add(PooMeter(0))
 
         objects.get_player().poos = TRex.MAX_POOS
-
-        self.generator: DesertGenerator = DesertGenerator()
 
         # Loading sounds and music
         for idx in range(1, 3):

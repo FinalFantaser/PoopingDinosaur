@@ -1,6 +1,7 @@
 import random
 import core.video
 from objects import (
+    Rect,
     Camera,
     Ground,
     Cloud,
@@ -25,9 +26,9 @@ class BiomeGenerator:
         CLOUD_RATE: Determines how frequently clouds are placed.
         NPC_RATE: Determines how frequently NPCs are placed depending on their type.
         NPC_INTERVAL: Determines how frequently NPCs are placed.
+        NPC: set of NPCs to be randomly picked from.
         OBSTACLE_RATE: Determines how frequently obstacles are placed depending on their type.
         OBSTACLE_INTERVAL: Determines how frequently NPCs are placed.
-        NPC: set of NPCs to be randomly picked from.
         OBSTACLES: set of obstacles to be randomly picked from.
 
         camera: Game camera. Obtained via data_containers.objects.get_camera()
@@ -35,26 +36,36 @@ class BiomeGenerator:
         last_cloud_pos: Position of the last cloud placed.
         last_npc_pos: Position of the last NPC placed.
         last_obstacle_pos: Position of the last obstacle placed.
+
+    Args:
+        total_tiles: Size of the generated biome in ground tiles.
     """
 
     CLOUD_INTERVAL: tuple[int, int] = 2, 4
     SKY_CENTER_LINE: float = core.video.get_screen_rect().height/4
     CLOUD_RATE: int = 85
 
-    NPC_RATE: dict[type[Dinosaur], tuple[int, int]] = {}
+    NPC_RATE: dict[type[Dinosaur], int] = {}
     NPC_INTERVAL: tuple[int, int] = 8, 10
-    OBSTACLE_RATE: dict[type[Obstacle], tuple[int, int]] = {}
-    OBSTACLE_INTERVAL: tuple[int, int] = 15, 20
     NPC: tuple[type[Dinosaur], ... ] = ()
+    OBSTACLE_RATE: dict[Obstacle.Type, int] = {}
+    OBSTACLE_INTERVAL: tuple[int, int] = 15, 20
     OBSTACLES: tuple[Obstacle.Type, ...] = ()
 
-    def __init__(self) -> None:
+    def __init__(self, total_tiles: int) -> None:
         self.camera: Camera = obj_container.get_camera()
-        self.ground: Ground = obj_container.get_ground()
+        self.ground: Ground = Ground(total_tiles)
+        obj_container.add(self.ground)
 
         self.last_cloud_pos: tuple[float, float] = self.camera.x - Cloud.SIZE[0], self.SKY_CENTER_LINE
         self.last_obstacle_pos: tuple[float, float] = 0, self.ground.touch_level
         self.last_npc_pos: tuple[float, float] = 0, self.ground.touch_level
+
+    def generate(self) -> None:
+        """Wrapper calling generating methods for all layers, obstacles and NPCs."""
+        self.background_3()
+        self.obstacles()
+        self.npc()
 
     def clouds(self) -> None:
         """Generate clouds in the sky as the camera moves along."""
@@ -81,28 +92,82 @@ class BiomeGenerator:
 
     def obstacles(self):
         """Creates obstacles within vicinity"""
-        pass
+        if not self._area_big_enough(self.last_obstacle_pos[0], self.OBSTACLE_INTERVAL[0]):
+            return
+
+        area: Rect = self._make_area(self.last_obstacle_pos[0])
+
+        if area.left - self.last_obstacle_pos[0] >= self.OBSTACLE_INTERVAL[1] * Ground.BLOCK_W:
+            self.last_obstacle_pos = area.left, self.last_obstacle_pos[1]
+
+        draw_x: float = self.last_obstacle_pos[0]
+
+        while draw_x < area.right:
+            interval_multiplier: int = 1
+
+            ob_type: Obstacle.Type = random.choice(self.OBSTACLES)
+            if self.OBSTACLE_RATE[ob_type] <= random.randint(1, 100):
+                new_obstacle: Obstacle = Obstacle(ob_type, (draw_x, 0))
+                new_obstacle.rect.bottom = self.ground.touch_level
+                obj_container.queue_add(new_obstacle)
+                self.last_obstacle_pos = new_obstacle.pos
+                interval_multiplier = random.randint(*self.OBSTACLE_INTERVAL)
+
+            draw_x += Ground.BLOCK_W * interval_multiplier
 
     def npc(self):
         """Creates NPCs within vicinity"""
-        pass
-
-    def velociraptor(self, block: int) -> None:
-        """
-        Place a velociraptor pack in the specified block of ground.
-
-        If the block is not empty (taken by an obstacle, etc.), it will be skipped. If there isn't enough space
-        for a raptor pack, the generated pack will be sized to the available blocks.
-
-        If a raptor was placed, sets last_npc_pos to its position.
-
-        :param block: Block of ground where the pack will be placed.
-        """
-
-        camera: Camera = obj_container.get_camera()
-        ground: Ground = obj_container.get_ground()
-        end_point: int = min(block + Velociraptor.PACK_SIZE[1], ground.total_tiles - 1)
-        pack_size: int = min(end_point - block, Velociraptor.calc_pack_size())
-
-        if pack_size < 1:
+        if not self._area_big_enough(self.last_npc_pos[0], self.NPC_INTERVAL[0]):
             return
+
+        area: Rect = self._make_area(self.last_npc_pos[0])
+        draw_x: float = self.last_npc_pos[0]
+        obstacles_cache: filter = filter(
+            lambda obj: isinstance(obj, Obstacle) and obj.rect.overlaps(area),
+            obj_container.visible().values(),
+        )
+
+        while draw_x < area.right:
+            interval_multiplier: int = 1
+            npc_class: type[Dinosaur] = random.choice(self.NPC)
+            tile_rect: Rect = Rect(
+                draw_x,
+                self.ground.touch_level - npc_class.SIZE[1],
+                Ground.BLOCK_W, npc_class.SIZE[1]
+            )
+
+            if self.NPC_RATE[npc_class] <= random.randint(1, 100):
+                for obs in obstacles_cache:
+                    if obs.rect.overlaps(tile_rect):
+                        break
+                else:
+                    new_npc: Dinosaur = npc_class((draw_x, 0))
+                    new_npc.rect.bottom = self.ground.touch_level
+                    obj_container.queue_add(new_npc)
+                    self.last_npc_pos = new_npc.pos
+                    interval_multiplier = random.randint(*self.NPC_INTERVAL)
+
+            draw_x += Ground.BLOCK_W * interval_multiplier
+
+
+
+    def _area_big_enough(self, start_point: float, min_interval: int) -> bool:
+        """
+        Check if an area after last object is large enough to start another generation.
+        :param start_point: Left edge of the area.
+        :param min_interval: Minimum interval between the generated objects.
+        :return: ``True`` if area is sufficient, ``False`` otherwise.
+        """
+        return self.camera.right - start_point >= min_interval * Ground.BLOCK_W
+
+    def _make_area(self, start_point: float) -> Rect:
+        """
+        Make an area to generate objects within.
+
+        Positioned at: start_point : 0.
+
+        Size (self.camera.right - start_point) x camera viewpoint height.
+
+        :param start_point: Left edge of the area.
+        """
+        return Rect(start_point, 0, self.camera.right - start_point, self.camera.height)

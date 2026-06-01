@@ -60,10 +60,3 @@ class Obstacle(Object):
             (self.x - viewpoint.x, self.y - viewpoint.y),
             self._DRAW_AREAS[self.ob_type],
         )
-
-    @classmethod
-    def place(cls, ob_type: Type, x: int | float, ground_level: int | float) -> Self:
-        return cls(
-            ob_type,
-            (x, ground_level - cls.SIZES[ob_type][1]),
-        )
