@@ -29,10 +29,10 @@ class Obstacle(Object):
     _ID_STUB: str = "obstacle_%d"
 
     _DRAW_AREAS: dict[Type, PygameRect] = {
-        Type.CACTUS: PygameRect((0, 0), SIZES[Type.CACTUS]),
-        Type.THORNS: PygameRect((8, 0), SIZES[Type.THORNS]),
-        Type.STONE: PygameRect((24, 0), SIZES[Type.STONE]),
-        Type.TREE: PygameRect((32, 0), SIZES[Type.TREE]),
+        Type.CACTUS: PygameRect(0, 0, *SIZES[Type.CACTUS]),
+        Type.THORNS: PygameRect(8, 8, *SIZES[Type.THORNS]),
+        Type.STONE: PygameRect(24, 8, *SIZES[Type.STONE]),
+        Type.TREE: PygameRect(32, 0, *SIZES[Type.TREE]),
     }
 
     _total: int = 0
@@ -58,5 +58,5 @@ class Obstacle(Object):
         core.video.texture_blit(
             self.TEXTURE_NAME,
             (self.x - viewpoint.x, self.y - viewpoint.y),
-            self._DRAW_AREAS[self.ob_type],
+            self._DRAW_AREAS[self.ob_type]
         )

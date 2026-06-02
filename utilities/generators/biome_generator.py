@@ -49,7 +49,7 @@ class BiomeGenerator:
     NPC_INTERVAL: tuple[int, int] = 8, 10
     NPC: tuple[type[Dinosaur], ... ] = ()
     OBSTACLE_RATE: dict[Obstacle.Type, int] = {}
-    OBSTACLE_INTERVAL: tuple[int, int] = 15, 20
+    OBSTACLE_INTERVAL: tuple[int, int] = 3, 6
     OBSTACLES: tuple[Obstacle.Type, ...] = ()
 
     def __init__(self, total_tiles: int) -> None:
@@ -58,14 +58,14 @@ class BiomeGenerator:
         obj_container.add(self.ground)
 
         self.last_cloud_pos: tuple[float, float] = self.camera.x - Cloud.SIZE[0], self.SKY_CENTER_LINE
-        self.last_obstacle_pos: tuple[float, float] = 0, self.ground.touch_level
-        self.last_npc_pos: tuple[float, float] = 0, self.ground.touch_level
+        self.last_obstacle_pos: tuple[float, float] = 0, 0
+        self.last_npc_pos: tuple[float, float] = 0, 0
 
     def generate(self) -> None:
         """Wrapper calling generating methods for all layers, obstacles and NPCs."""
         self.background_3()
         self.obstacles()
-        # self.npc()
+        self.npc()
 
     def clouds(self) -> None:
         """Generate clouds in the sky as the camera moves along."""
@@ -92,26 +92,50 @@ class BiomeGenerator:
 
     def obstacles(self):
         """Creates obstacles within vicinity"""
-        start: float = max(self.last_obstacle_pos[0], self.camera.left)
-        end: float = min(self.ground.rect.right, self.camera.right + Ground.BLOCK_W)
+        end: float = self.camera.right
+        draw_x: float = max(self.last_obstacle_pos[0], self.camera.left)
 
-        draw_x = start
         while draw_x < end:
-            interval_multiplier: int = 1
+            multiplier: int = 1
 
             ob_type: Obstacle.Type = random.choice(self.OBSTACLES)
 
-            if random.randint(1, 100) >= self.OBSTACLE_RATE[ob_type]:
-                new_obstacle: Obstacle = Obstacle(ob_type, (draw_x, 0))
-                new_obstacle.rect.bottom = self.ground.rect.bottom
-                obj_container.add(new_obstacle)
+            if random.randint(0, 100) >= self.OBSTACLE_RATE[ob_type]:
+                new_obstacle: Obstacle = Obstacle(
+                    ob_type,
+                    (draw_x, 0)
+                )
+                new_obstacle.rect.bottom = self.ground.touch_level
+
+                obj_container.queue_add(new_obstacle)
 
                 self.last_obstacle_pos = new_obstacle.pos
-                interval_multiplier = random.randint(*self.OBSTACLE_INTERVAL)
 
-            draw_x += random.randint(*self.OBSTACLE_INTERVAL) * interval_multiplier
+                multiplier = random.randint(*self.OBSTACLE_INTERVAL)
+
+            draw_x += multiplier * Ground.BLOCK_W
+            self.last_obstacle_pos = draw_x, self.last_obstacle_pos[1]
 
 
     def npc(self):
         """Creates NPCs within vicinity"""
-        pass
+        end: float = self.camera.right
+        draw_x: float = max(self.last_npc_pos[0], self.camera.left)
+
+        while draw_x < end:
+            multiplier: int = 1
+
+            npc_class: type[Dinosaur] = random.choice(self.NPC)
+
+            if random.randint(0, 100) >= self.NPC_RATE[npc_class]:
+                new_npc: Dinosaur = npc_class((draw_x, 0))
+                new_npc.rect.bottom = self.ground.touch_level
+
+                obj_container.queue_add(new_npc)
+
+                self.last_npc_pos = new_npc.pos
+
+                multiplier = random.randint(*self.NPC_INTERVAL)
+
+            draw_x += multiplier * Ground.BLOCK_W
+            self.last_npc_pos = draw_x, self.last_npc_pos[1]
