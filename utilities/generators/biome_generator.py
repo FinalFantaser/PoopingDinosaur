@@ -92,82 +92,26 @@ class BiomeGenerator:
 
     def obstacles(self):
         """Creates obstacles within vicinity"""
-        if not self._area_big_enough(self.last_obstacle_pos[0], self.OBSTACLE_INTERVAL[0]):
-            return
+        start: float = max(self.last_obstacle_pos[0], self.camera.left)
+        end: float = min(self.ground.rect.right, self.camera.right + Ground.BLOCK_W)
 
-        area: Rect = self._make_area(self.last_obstacle_pos[0])
-
-        if area.left - self.last_obstacle_pos[0] >= self.OBSTACLE_INTERVAL[1] * Ground.BLOCK_W:
-            self.last_obstacle_pos = area.left, self.last_obstacle_pos[1]
-
-        draw_x: float = self.last_obstacle_pos[0]
-
-        while draw_x < area.right:
+        draw_x = start
+        while draw_x < end:
             interval_multiplier: int = 1
 
             ob_type: Obstacle.Type = random.choice(self.OBSTACLES)
-            if self.OBSTACLE_RATE[ob_type] <= random.randint(1, 100):
+
+            if random.randint(1, 100) >= self.OBSTACLE_RATE[ob_type]:
                 new_obstacle: Obstacle = Obstacle(ob_type, (draw_x, 0))
-                new_obstacle.rect.bottom = self.ground.touch_level
-                obj_container.queue_add(new_obstacle)
+                new_obstacle.rect.bottom = self.ground.rect.bottom
+                obj_container.add(new_obstacle)
+
                 self.last_obstacle_pos = new_obstacle.pos
                 interval_multiplier = random.randint(*self.OBSTACLE_INTERVAL)
 
-            draw_x += Ground.BLOCK_W * interval_multiplier
+            draw_x += random.randint(*self.OBSTACLE_INTERVAL) * interval_multiplier
+
 
     def npc(self):
         """Creates NPCs within vicinity"""
-        if not self._area_big_enough(self.last_npc_pos[0], self.NPC_INTERVAL[0]):
-            return
-
-        area: Rect = self._make_area(self.last_npc_pos[0])
-        draw_x: float = self.last_npc_pos[0]
-        obstacles_cache: filter = filter(
-            lambda obj: isinstance(obj, Obstacle) and obj.rect.overlaps(area),
-            obj_container.visible().values(),
-        )
-
-        while draw_x < area.right:
-            interval_multiplier: int = 1
-            npc_class: type[Dinosaur] = random.choice(self.NPC)
-            tile_rect: Rect = Rect(
-                draw_x,
-                self.ground.touch_level - npc_class.SIZE[1],
-                Ground.BLOCK_W, npc_class.SIZE[1]
-            )
-
-            if self.NPC_RATE[npc_class] <= random.randint(1, 100):
-                for obs in obstacles_cache:
-                    if obs.rect.overlaps(tile_rect):
-                        break
-                else:
-                    new_npc: Dinosaur = npc_class((draw_x, 0))
-                    new_npc.rect.bottom = self.ground.touch_level
-                    obj_container.queue_add(new_npc)
-                    self.last_npc_pos = new_npc.pos
-                    interval_multiplier = random.randint(*self.NPC_INTERVAL)
-
-            draw_x += Ground.BLOCK_W * interval_multiplier
-
-
-
-    def _area_big_enough(self, start_point: float, min_interval: int) -> bool:
-        """
-        Check if an area after last object is large enough to start another generation.
-        :param start_point: Left edge of the area.
-        :param min_interval: Minimum interval between the generated objects.
-        :return: ``True`` if area is sufficient, ``False`` otherwise.
-        """
-        return self.camera.right - start_point >= min_interval * Ground.BLOCK_W
-
-    def _make_area(self, start_point: float) -> Rect:
-        """
-        Make an area to generate objects within.
-
-        Positioned at: start_point : 0.
-
-        Size (self.camera.right - start_point) x camera viewpoint height.
-
-        :param start_point: Left edge of the area.
-        """
-        return Rect(start_point, 0, self.camera.right - start_point, self.camera.height)
+        pass
