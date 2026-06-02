@@ -65,7 +65,7 @@ class BiomeGenerator:
         """Wrapper calling generating methods for all layers, obstacles and NPCs."""
         self.background_3()
         self.obstacles()
-        self.npc()
+        # self.npc()
 
     def clouds(self) -> None:
         """Generate clouds in the sky as the camera moves along."""

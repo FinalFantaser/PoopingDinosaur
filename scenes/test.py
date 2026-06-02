@@ -51,9 +51,7 @@ class Test(Scene):
             return
 
         if objects.get(PauseMenu.ID) is None:
-            self.generator.background_3()
-            self.generator.obstacles()
-            self.generator.npc()
+            self.generator.generate()
 
             self.fps = core.video.get_fps()
 
