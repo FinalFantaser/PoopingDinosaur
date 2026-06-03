@@ -1,6 +1,7 @@
 import pygame.time
-from objects import Rect, Direction, Object, Austroraptor, TRex, Ground, Obstacle, Poo
-from data_containers import objects as obj_container, game_data
+from objects import Rect, Direction, Object, Dinosaur, Austroraptor, TRex, Ground, Obstacle, Poo
+from data_containers import objects as obj_container
+
 from .object_handler import ObjectHandler
 
 class AustroraptorHandler(ObjectHandler):

@@ -22,15 +22,12 @@ class VelociraptorHandler(ObjectHandler):
             if obj.id == other_obj.id:
                 continue
 
-            if isinstance(other_obj, (Ground, Velociraptor)):
-                continue
-
             if not obj.fov.overlaps(other_obj.rect):
                 continue
 
-            if isinstance(other_obj, cls._HUNTERS) and isinstance(obj, Dinosaur) and obj.state != obj.State.DEAD:
-                cls.react_to_dinosaur(obj, other_obj)
-            else:
+            if isinstance(other_obj, cls._HUNTERS):
+                cls.react_to_hunter(obj, other_obj)
+            elif isinstance(other_obj, Obstacle):
                 cls.react_to_obstacle(obj, other_obj)
 
         # Accelerate to maximum speed when running
@@ -45,7 +42,11 @@ class VelociraptorHandler(ObjectHandler):
 
 
     @classmethod
-    def react_to_dinosaur(cls, obj: Velociraptor, other_obj: TRex|Dinosaur) -> None:
+    def react_to_hunter(cls, obj: Velociraptor, other_obj: TRex | Dinosaur) -> None:
+        # Do nothing if a dangerous dinosaur is dead
+        if isinstance(obj, Dinosaur) and obj.state == obj.State.DEAD:
+            return
+
         ground: Ground = obj_container.get_ground()
 
         # If velociraptor is idle, get startled and jump
