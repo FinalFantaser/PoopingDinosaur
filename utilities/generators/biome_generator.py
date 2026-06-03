@@ -49,7 +49,7 @@ class BiomeGenerator:
     NPC_INTERVAL: tuple[int, int] = 8, 10
     NPC: tuple[type[Dinosaur], ... ] = ()
     OBSTACLE_RATE: dict[Obstacle.Type, int] = {}
-    OBSTACLE_INTERVAL: tuple[int, int] = 3, 6
+    OBSTACLE_INTERVAL: tuple[int, int] = 10, 15
     OBSTACLES: tuple[Obstacle.Type, ...] = ()
 
     def __init__(self, total_tiles: int) -> None:

@@ -37,6 +37,8 @@ class ForestGenerator(BiomeGenerator):
         Austroraptor: 15,
     }
 
+    NPC_INTERVAL: tuple[int, int] = 15, 20
+
     NPC: tuple[type[Dinosaur], ...] = (
         Velociraptor,
         Austroraptor,

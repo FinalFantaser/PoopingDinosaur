@@ -8,6 +8,7 @@ from object_handlers.object_handler import ObjectHandler
 
 class TRexHandler(ObjectHandler):
     _EDIBLES: tuple[type[Object], ...] = (
+        Velociraptor,
         Austroraptor,
     )
 
@@ -49,17 +50,49 @@ class TRexHandler(ObjectHandler):
                 continue
 
             if obj.hitbox.overlaps(other_obj.rect):
-                # Obstacle
-                if isinstance(other_obj, Obstacle) and other_obj.ob_type == Obstacle.Type.CACTUS and obj.invincibility < 1:
-                    obj.health = max(0, obj.health - 1)
-                    obj.invincibility = 3000
+                # Obstacles
+                if isinstance(other_obj, Obstacle) and obj.invincibility < 1:
+                    # Cactus
+                    if other_obj.ob_type == Obstacle.Type.CACTUS:
+                        obj.health = max(0, obj.health - 1)
+                        obj.invincibility = 3000
 
-                    obj.vel_x_modifier = -obj.VEL_X_MODIFIER * 6
+                        obj.vel_x_modifier = -obj.VEL_X_MODIFIER * 6
 
-                    if obj.rect.bottom >= ground.touch_level:
-                        obj.vel_y = -(obj.BASE_JUMP_ACCEL/8 - obj.vel_x_modifier)
-                    else:
-                        obj.vel_y = -(obj.BASE_JUMP_ACCEL/6 - obj.vel_x_modifier)
+                        # Throw back
+                        if obj.rect.bottom >= ground.touch_level:
+                            obj.vel_y = obj.BASE_JUMP_ACCEL/10 + obj.vel_x_modifier
+                        else:
+                            obj.vel_y = obj.BASE_JUMP_ACCEL/12 + obj.vel_x_modifier
+
+                    # Thorns
+                    elif other_obj.ob_type == Obstacle.Type.THORNS:
+                        obj.health = max(0, obj.health - 1)
+                        obj.invincibility = 3000
+
+                        # Jump in pain
+                        obj.vel_y = obj.BASE_JUMP_ACCEL/2.5
+
+                        obj.vel_x_modifier = -(obj.VEL_X_CONST/2)
+
+                    # Stone
+                    elif other_obj.ob_type == Obstacle.Type.STONE:
+                        if obj.rect.bottom >= ground.touch_level:
+                            obj.vel_y = obj.BASE_JUMP_ACCEL/25 - obj.vel_x_modifier
+                        else:
+                            obj.vel_y = obj.BASE_JUMP_ACCEL/30 - obj.vel_x_modifier
+
+                        obj.vel_x_modifier = obj.VEL_X_MODIFIER * 2.5
+
+                    # Tree
+                    elif other_obj.ob_type == Obstacle.Type.TREE:
+                        obj.vel_x_modifier = -obj.VEL_X_MODIFIER * 6
+
+                        # Throw back
+                        if obj.rect.bottom >= ground.touch_level:
+                            obj.vel_y = obj.BASE_JUMP_ACCEL / 10 + obj.vel_x_modifier
+                        else:
+                            obj.vel_y = obj.BASE_JUMP_ACCEL / 12 + obj.vel_x_modifier
 
             # Edibles
             if isinstance(other_obj, cls._EDIBLES) and obj.poos < obj.MAX_POOS:
