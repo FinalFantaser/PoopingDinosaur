@@ -30,6 +30,7 @@ class Dinosaur(Object):
             RUNNING: Dinosaur runs away from its enemies.
             CHASING: Dinosaur chases its prey.
             CORNERED: Dinosaur got nowhere to run and panics, waiting to get eaten.
+            BITING: Dinosaur tries to bite its prey.
             DEAD: Dinosaur is dead.
         """
         IDLE = auto(),
@@ -37,6 +38,7 @@ class Dinosaur(Object):
         RUNNING = auto(),
         CHASING = auto(),
         CORNERED = auto(),
+        BITING = auto(),
         DEAD = auto(),
 
     ID_STUB: str = "dinosaur_%d"
@@ -82,9 +84,22 @@ class Dinosaur(Object):
         self._fov: Rect = Rect(*self.rect.center, *self.FOV_SIZE)
 
     @property
-    def fov(self) -> Rect:
+    def fov_around(self) -> Rect:
         self._fov.center = self.rect.center
         return self._fov
+
+    @property
+    def fov_ahead(self) -> Rect:
+        return Rect(
+            self.rect.left - self.fov_around.width / 2 if self.direction == Direction.LEFT else self.rect.right,
+            self.rect.y,
+            self.fov_around.width / 2,
+            self.fov_around.height
+        )
+
+    @property
+    def hitbox(self) -> Rect:
+        return self.rect
 
     def draw(self, viewpoint: Rect) -> None:
         if not viewpoint.overlaps(self.rect):

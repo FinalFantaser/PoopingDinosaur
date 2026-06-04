@@ -28,7 +28,7 @@ class AustroraptorHandler(ObjectHandler):
             # Get startled and attempt to escape a hunter
             if isinstance(other_obj, cls._HUNTERS):
                 # If idle, get startled and jump
-                if obj.state == Austroraptor.State.IDLE and obj.fov.overlaps(other_obj.rect):
+                if obj.state == Austroraptor.State.IDLE and obj.fov_around.overlaps(other_obj.rect):
                     obj.state = Austroraptor.State.STARTLED
                     if obj.rect.bottom >= ground.touch_level:
                         obj.vel_y = obj.JUMP_ACCEL * 0.5
@@ -46,7 +46,7 @@ class AustroraptorHandler(ObjectHandler):
                     obj.direction = Direction.RIGHT if obj.rect.center_x >= other_obj.rect.center_x else Direction.LEFT
 
             elif isinstance(other_obj, Obstacle|Poo):
-                # Attempt to jump over the obstacle when running
+                # Attempt to jump over an obstacle when running
                 if obj.state == Austroraptor.State.RUNNING:
                     vicinity: Rect = Rect(
                         obj.rect.left - obj.rect.width * 3 if obj.direction == Direction.LEFT else obj.rect.right,

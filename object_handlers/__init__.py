@@ -3,6 +3,7 @@ from .object_handler import ObjectHandler
 from .camera_handler import CameraHandler
 
 # Dinosaurs
+from .dinosaur_handler import DinosaurHandler
 from .trex_handler import TRexHandler
 from .austroraptor_handler import AustroraptorHandler
 from .velociraptor_handler import VelociraptorHandler

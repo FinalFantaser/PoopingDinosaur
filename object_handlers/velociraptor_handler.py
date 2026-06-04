@@ -2,9 +2,10 @@ import pygame.time
 from objects import Direction, Ground, Camera, TRex, Dinosaur, Austroraptor, Velociraptor, Obstacle
 from data_containers import objects as obj_container
 from .object_handler import ObjectHandler
+from .dinosaur_handler import DinosaurHandler
 
 
-class VelociraptorHandler(ObjectHandler):
+class VelociraptorHandler(ObjectHandler, DinosaurHandler):
     _HUNTERS: tuple[type[TRex|Dinosaur], ...] = TRex, Austroraptor
 
     @classmethod
@@ -22,13 +23,13 @@ class VelociraptorHandler(ObjectHandler):
             if obj.id == other_obj.id:
                 continue
 
-            if not obj.fov.overlaps(other_obj.rect):
+            if not obj.fov_around.overlaps(other_obj.rect):
                 continue
 
             if isinstance(other_obj, cls._HUNTERS):
                 cls.react_to_hunter(obj, other_obj)
             elif isinstance(other_obj, Obstacle):
-                cls.react_to_obstacle(obj, other_obj)
+                cls.react_to_obstacles(obj, other_obj)
 
         # Accelerate to maximum speed when running
         if obj.state == obj.State.RUNNING:
@@ -40,40 +41,10 @@ class VelociraptorHandler(ObjectHandler):
 
         obj.last_update = pygame.time.get_ticks()
 
+    @classmethod
+    def thorns_touch(cls, dinosaur: Dinosaur, thorns: Obstacle) -> None:
+        obj_container.queue_delete(dinosaur)
 
     @classmethod
-    def react_to_hunter(cls, obj: Velociraptor, other_obj: TRex | Dinosaur) -> None:
-        # Do nothing if a dangerous dinosaur is dead
-        if isinstance(obj, Dinosaur) and obj.state == obj.State.DEAD:
-            return
-
-        ground: Ground = obj_container.get_ground()
-
-        # If velociraptor is idle, get startled and jump
-        if obj.state == obj.State.IDLE:
-            obj.state = obj.State.STARTLED
-
-            if obj.rect.bottom >= ground.touch_level:
-                obj.vel_y = obj.JUMP_ACCEL / 2
-
-        # If startled and landed after the jump, run away from the hunter
-        elif obj.state == obj.State.STARTLED and obj.rect.bottom >= ground.touch_level:
-            obj.state = obj.State.RUNNING
-            obj.direction = Direction.RIGHT if obj.rect.center_x >= other_obj.rect.center_x else Direction.LEFT
-
-        #  If running and got behind the hunter, run to opposite direction
-        elif obj.state == obj.State.RUNNING:
-            old_dir: Direction = obj.direction
-            obj.direction = Direction.RIGHT if obj.rect.center_x >= other_obj.rect.center_x else Direction.LEFT
-            if obj.direction != old_dir:
-                obj.vel_x = abs(obj.vel_x/2) * obj.direction.value[0]
-
-
-
-    @classmethod
-    def react_to_obstacle(cls, obj: Velociraptor, obstacle: Obstacle) -> None:
-        # If touched:
-        # ...
-
-        # If obstacle is in the way, switch to CORNERED state
+    def thorns_see(cls, dinosaur: Dinosaur, thorns: Obstacle) -> None:
         pass
