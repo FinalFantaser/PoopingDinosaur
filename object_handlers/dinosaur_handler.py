@@ -40,7 +40,7 @@ class DinosaurHandler:
             prey.state = prey.State.STARTLED
 
             if prey.rect.bottom >= ground.touch_level:
-                prey.vel_y = prey.JUMP_ACCEL / 2
+                prey.vel_y = prey.JUMP_ACCEL / 4
 
         # If startled and landed after the jump, run away from the hunter
         elif prey.state == prey.State.STARTLED and prey.rect.bottom >= ground.touch_level:
@@ -132,7 +132,11 @@ class DinosaurHandler:
         """
         if dinosaur.state == Dinosaur.State.RUNNING:
             if dinosaur.fov_ahead.overlaps(obstacle.rect) and dinosaur.rect.bottom >= obj_container.get_ground().touch_level:
-                dinosaur.vel_y = dinosaur.JUMP_ACCEL
+                obstacle_edge: float = obstacle.rect.right if dinosaur.direction.value[0] < 0 else obstacle.rect.left
+                dinosaur_edge: float = dinosaur.rect.left if dinosaur.direction.value[0] < 0 else dinosaur.rect.right
+
+                if abs(obstacle_edge - dinosaur_edge) <= dinosaur.width * 1.5:
+                    dinosaur.vel_y = dinosaur.JUMP_ACCEL
 
     @classmethod
     def cactus_see(cls, dinosaur: Dinosaur, cactus: Obstacle) -> None:

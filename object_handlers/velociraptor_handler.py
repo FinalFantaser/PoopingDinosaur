@@ -12,7 +12,9 @@ class VelociraptorHandler(ObjectHandler, DinosaurHandler):
     def update(cls, obj: Velociraptor) -> None:
         update_delta: int = obj.update_delta
 
-        cls.delete_if_passed_camera(obj)
+        if cls.delete_if_passed_camera(obj):
+            return
+
         cls.physics(obj)
 
         if obj.state == obj.State.DEAD:
@@ -20,7 +22,7 @@ class VelociraptorHandler(ObjectHandler, DinosaurHandler):
 
         # Reacting to environment
         for other_obj in obj_container.visible().values():
-            if obj.id == other_obj.id:
+            if obj.id == other_obj.id or isinstance(other_obj, Ground):
                 continue
 
             if not obj.fov_around.overlaps(other_obj.rect):
