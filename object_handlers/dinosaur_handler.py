@@ -68,11 +68,9 @@ class DinosaurHandler:
             return
 
         # If seen
-        if dinosaur.hitbox.overlaps(obstacle.rect):
+        if dinosaur.fov_ahead.overlaps(obstacle.rect):
             method_name: str = cls.REACTIONS_SEE[obstacle.ob_type]
             getattr(cls, method_name)(dinosaur, obstacle)
-            return
-
 
     @classmethod
     def cactus_touch(cls, dinosaur: Dinosaur, cactus: Obstacle) -> None:

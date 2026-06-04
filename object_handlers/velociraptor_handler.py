@@ -6,7 +6,7 @@ from .dinosaur_handler import DinosaurHandler
 
 
 class VelociraptorHandler(ObjectHandler, DinosaurHandler):
-    _HUNTERS: tuple[type[TRex|Dinosaur], ...] = TRex, Austroraptor
+    _HUNTERS: tuple[type[TRex|Dinosaur], ...] = TRex, #Austroraptor
 
     @classmethod
     def update(cls, obj: Velociraptor) -> None:
@@ -42,9 +42,29 @@ class VelociraptorHandler(ObjectHandler, DinosaurHandler):
         obj.last_update = pygame.time.get_ticks()
 
     @classmethod
+    def cactus_see(cls, dinosaur: Dinosaur, cactus: Obstacle) -> None:
+        cls.get_cornered(dinosaur, cactus)
+
+    @classmethod
     def thorns_touch(cls, dinosaur: Dinosaur, thorns: Obstacle) -> None:
         obj_container.queue_delete(dinosaur)
 
     @classmethod
     def thorns_see(cls, dinosaur: Dinosaur, thorns: Obstacle) -> None:
         pass
+
+    @classmethod
+    def get_cornered(cls, dinosaur: Dinosaur, obstacle: Obstacle) -> None:
+        if dinosaur.state == dinosaur.State.RUNNING:
+            obstacle_edge: float = obstacle.rect.right if dinosaur.direction.value[0] < 0 else obstacle.rect.left
+            dinosaur_edge: float = dinosaur.rect.left if dinosaur.direction.value[0] < 0 else dinosaur.rect.right
+
+            if abs(obstacle_edge - dinosaur_edge) <= dinosaur.width * 1.5:
+                dinosaur.vel_x = 0
+
+                if dinosaur.rect.bottom >= obj_container.get_ground().touch_level:
+                    dinosaur.vel_y = dinosaur.JUMP_ACCEL
+
+    @classmethod
+    def stone_see(cls, dinosaur: Dinosaur, stone: Obstacle) -> None:
+        cls.get_cornered(dinosaur, stone)
