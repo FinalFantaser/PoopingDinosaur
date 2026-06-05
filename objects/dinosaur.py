@@ -47,7 +47,7 @@ class Dinosaur(Object):
     ANIM_INTERVAL: int = 250
     TOTAL_FRAMES: int = 2
     DRAW_AREA: PygameRect = PygameRect(0, 0, *SIZE)
-    FOV_SIZE: tuple[float, float] = SIZE[0] * 20, SIZE[1] * 5
+    FOV_SIZE: tuple[float, float] = core.video.get_screen_rect().width / 2, core.video.get_screen_rect().height / 4
     VEL_X_MIN: float = 175
     VEL_X_MAX: float = VEL_X_MIN * 2.5
     VEL_X_MAX_IN: float = 1.75  # Seconds to reach maximum speed

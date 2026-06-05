@@ -17,6 +17,7 @@ from .dinosaur import Dinosaur
 from .trex import TRexAction, TRex
 from .austroraptor import Austroraptor
 from .velociraptor import Velociraptor
+from .pterodactyl import Pterodactyl
 
 # GUI
 from objects.gui.health_meter import HealthMeter
