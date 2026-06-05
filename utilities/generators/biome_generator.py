@@ -8,7 +8,7 @@ from objects import (
     Obstacle,
     Dinosaur,
     Velociraptor,
-    Austroraptor
+    Austroraptor, Pterodactyl, Direction
 )
 
 
@@ -129,7 +129,12 @@ class BiomeGenerator:
 
             if random.randint(0, 100) >= self.NPC_RATE[npc_class]:
                 new_npc: Dinosaur = npc_class((draw_x, 0))
-                new_npc.rect.bottom = self.ground.touch_level
+
+                if isinstance(new_npc, Pterodactyl):
+                    new_npc.direction = Direction.RIGHT
+                    new_npc.rect.center_y = self.SKY_CENTER_LINE + random.randint(int(-new_npc.height), int(new_npc.height))
+                else:
+                    new_npc.rect.bottom = self.ground.touch_level
 
                 obj_container.queue_add(new_npc)
 
