@@ -12,6 +12,7 @@ class Pterodactyl(Dinosaur):
         VEL_Y_MAX_ALLOWED: When reaching this speed, pterodactyl must flap its wings
         ANIM_INTERVAL: Minimum interval between wings flapping (microseconds)
         JUMP_ACCEL: Despite same name, it's a vertical acceleration per wings flap
+        MAX_ALTITUDE: Maximum altitude a pterodactyl can gain
     """
 
     ID_STUB: str = "pterodactyl_%d"
@@ -22,35 +23,35 @@ class Pterodactyl(Dinosaur):
     DRAW_AREA: PygameRect = PygameRect(0, 0, *SIZE)
     FOV_SIZE: tuple[float, float] = core.video.get_screen_rect().width / 2, core.video.get_screen_rect().height / 4
     VEL_X_MIN: float = 125
-    VEL_X_MAX: float = VEL_X_MIN * 2.5
-    VEL_X_MAX_IN: float = 1  # Seconds to reach maximum speed
-    VEL_X_ACCEL: float = VEL_X_MAX_IN / VEL_X_MIN
+    VEL_X_MAX: float = VEL_X_MIN * 3
+    VEL_X_MAX_IN: float = 0.5  # Seconds to reach maximum speed
+    VEL_X_ACCEL: float = VEL_X_MAX / VEL_X_MAX_IN
     VEL_Y_MIN: float = -50
     VEL_Y_MAX_ALLOWED: float = abs(VEL_Y_MIN)/2
     WEIGHT: float = 15.0
-    WEIGHT_FACTOR: float = 0.1
+    WEIGHT_FACTOR: float = 0.3
     JUMP_ACCEL: float = WEIGHT * 8
+    MAX_ALTITUDE: float = SIZE[1]
     HANDLER_NAME: str|None = 'PterodactylHandler'
 
     def animate(self) -> None:
         # Switch back to free fall after flapped wings
-        if self.curr_frame == 0 and pygame.time.get_ticks() - self.last_frame_change >= self.ANIM_INTERVAL:
-            self.curr_frame = 1
+        if self.curr_frame == 1 and pygame.time.get_ticks() - self.last_frame_change >= self.ANIM_INTERVAL:
+            self.curr_frame = 0
             self.last_frame_change = pygame.time.get_ticks()
 
 
     def flap_wings(self) -> None:
-        print('FLAP!!!!')
+        print(f"{self.id} flap_wings")
         """Flap one's wings to gain vertical and horizontal acceleration according to current direction."""
-        if self.curr_frame == 1 and pygame.time.get_ticks() - self.last_frame_change >= self.ANIM_INTERVAL:
-            print('NOW!!!')
-            self.curr_frame = 0
+        if self.curr_frame == 0 and pygame.time.get_ticks() - self.last_frame_change >= self.ANIM_INTERVAL:
+            self.curr_frame = 1
             self.last_frame_change = pygame.time.get_ticks()
             self.vel_y = max(self.vel_y - self.JUMP_ACCEL, self.VEL_Y_MIN)
 
+            accel_x: float = self.VEL_X_ACCEL/1000 * self.update_delta
+
             if self.direction == Direction.LEFT:
-                self.vel_x = max(self.vel_x - self.VEL_X_ACCEL, -self.VEL_X_MAX)
+                self.vel_x = max(self.vel_x - accel_x, -self.VEL_X_MAX)
             elif self.direction == Direction.RIGHT:
-                self.vel_x = min(self.vel_x + self.VEL_X_ACCEL, self.VEL_X_MAX)
-        else:
-            print('NOT YET')
+                self.vel_x = min(self.vel_x + accel_x, self.VEL_X_MAX)
