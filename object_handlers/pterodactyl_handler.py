@@ -19,7 +19,6 @@ class PterodactylHandler(ObjectHandler, DinosaurHandler):
             return
 
         if obj.vel_y >= obj.VEL_Y_MAX_ALLOWED or obj.rect.bottom >= obj_container.get_ground().touch_level:
-            print(f"{obj.id} падает")
             obj.flap_wings()
 
         obj.last_update = pygame.time.get_ticks()

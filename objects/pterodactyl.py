@@ -42,7 +42,6 @@ class Pterodactyl(Dinosaur):
 
 
     def flap_wings(self) -> None:
-        print(f"{self.id} flap_wings")
         """Flap one's wings to gain vertical and horizontal acceleration according to current direction."""
         if self.curr_frame == 0 and pygame.time.get_ticks() - self.last_frame_change >= self.ANIM_INTERVAL:
             self.curr_frame = 1
