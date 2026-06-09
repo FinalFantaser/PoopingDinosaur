@@ -9,11 +9,13 @@ class PterodactylHandler(ObjectHandler, DinosaurHandler):
     @classmethod
     def update(cls, obj: Pterodactyl) -> None:
         if cls.delete_if_passed_camera(obj):
+            return
+
+        if cls.delete_if_passed_camera(obj):
             obj_container.queue_delete(obj)
             return
 
         cls.physics(obj)
-        obj.y = max(obj.y, Pterodactyl.MAX_ALTITUDE)
 
         if obj.state == obj.State.DEAD:
             return
@@ -36,7 +38,8 @@ class PterodactylHandler(ObjectHandler, DinosaurHandler):
                 obj.vel_x = 0.0
                 obj.last_turn_pos = obj.rect.center_x
         elif obj.state == obj.State.RUNNING:
-            pass
+            if abs(obj.rect.center_x - obj.last_turn_pos) >= obj.MAX_ROAM_DISTANCE:
+                obj.altitude_limit = None
 
         obj.last_update = pygame.time.get_ticks()
 
@@ -55,6 +58,10 @@ class PterodactylHandler(ObjectHandler, DinosaurHandler):
             obj.vel_y = 0.0
             obj.rect.bottom = ground.touch_level
 
+        # Vertical flight
+        if obj.altitude_limit is not None:
+            obj.y = max(obj.y, obj.altitude_limit)
+
         # Horizontal movement
         accel_x = obj.vel_x/1000 * update_delta
         obj.x += accel_x
@@ -67,6 +74,7 @@ class PterodactylHandler(ObjectHandler, DinosaurHandler):
         if prey.state == prey.State.IDLE:
             if prey.fov_around.overlaps(hunter.rect):
                 cls.change_direction(prey, hunter)
+                prey.vel_x = prey.VEL_X_MIN / 3
                 prey.state = prey.State.RUNNING
                 prey.last_turn_pos = prey.x
                 prey.gear = 2

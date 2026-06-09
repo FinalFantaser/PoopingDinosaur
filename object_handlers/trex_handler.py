@@ -10,6 +10,7 @@ class TRexHandler(ObjectHandler):
     _EDIBLES: tuple[type[Object], ...] = (
         Velociraptor,
         Austroraptor,
+        Pterodactyl,
     )
 
     @classmethod

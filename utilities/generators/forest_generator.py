@@ -42,8 +42,8 @@ class ForestGenerator(BiomeGenerator):
     NPC_INTERVAL: tuple[int, int] = 15, 20
 
     NPC: tuple[type[Dinosaur], ...] = (
-        # Velociraptor,
-        # Austroraptor,
+        Velociraptor,
+        Austroraptor,
         Pterodactyl,
         # ... More will be added as implemented
     )
