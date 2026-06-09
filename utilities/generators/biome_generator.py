@@ -131,8 +131,8 @@ class BiomeGenerator:
                 new_npc: Dinosaur = npc_class((draw_x, 0))
 
                 if isinstance(new_npc, Pterodactyl):
-                    new_npc.direction = Direction.RIGHT
                     new_npc.rect.center_y = self.SKY_CENTER_LINE + random.randint(int(-new_npc.height), int(new_npc.height))
+                    new_npc.direction = random.choice((Direction.LEFT, Direction.RIGHT))
                 else:
                     new_npc.rect.bottom = self.ground.touch_level
 

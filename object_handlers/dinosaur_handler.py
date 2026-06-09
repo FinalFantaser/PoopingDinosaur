@@ -35,7 +35,7 @@ class DinosaurHandler:
 
         ground: Ground = obj_container.get_ground()
 
-        # If velociraptor is idle, get startled and jump
+        # If idle, get startled and jump
         if prey.state == prey.State.IDLE:
             prey.state = prey.State.STARTLED
 
