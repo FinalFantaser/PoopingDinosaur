@@ -13,6 +13,8 @@ class Obstacle(Object):
         THORNS = auto(),
         STONE = auto(),
         TREE = auto(),
+        FERN = auto(),
+        SKELETON = auto(),
 
 
     LAYER: Object.Layer = Object.Layer.MAIN
