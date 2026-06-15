@@ -52,12 +52,14 @@ class ForestGenerator(BiomeGenerator):
         Obstacle.Type.TREE: 25,
         Obstacle.Type.STONE: 10,
         Obstacle.Type.THORNS: 42,
+        Obstacle.Type.FERN: 15,
     }
 
     OBSTACLES: tuple[type[Obstacle], ...] = (
         Obstacle.Type.TREE,
         Obstacle.Type.STONE,
         Obstacle.Type.THORNS,
+        Obstacle.Type.FERN,
     )
 
 

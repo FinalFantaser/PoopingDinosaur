@@ -26,6 +26,8 @@ class Obstacle(Object):
         Type.THORNS: (16, 8),
         Type.STONE: (8, 8),
         Type.TREE: (16, 16),
+        Type.FERN: (32, 16),
+        Type.SKELETON: (32, 9),
     }
 
     _ID_STUB: str = "obstacle_%d"
@@ -35,6 +37,8 @@ class Obstacle(Object):
         Type.THORNS: PygameRect(8, 8, *SIZES[Type.THORNS]),
         Type.STONE: PygameRect(24, 8, *SIZES[Type.STONE]),
         Type.TREE: PygameRect(32, 0, *SIZES[Type.TREE]),
+        Type.FERN: PygameRect(48, 0, *SIZES[Type.FERN]),
+        Type.SKELETON: PygameRect(80, 7, *SIZES[Type.SKELETON]),
     }
 
     _total: int = 0

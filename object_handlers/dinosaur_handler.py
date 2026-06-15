@@ -13,6 +13,8 @@ class DinosaurHandler:
         Obstacle.Type.THORNS: 'thorns_touch',
         Obstacle.Type.STONE: 'stone_touch',
         Obstacle.Type.TREE: 'tree_touch',
+        Obstacle.Type.FERN: 'fern_touch',
+        Obstacle.Type.SKELETON: 'skeleton_touch',
     }
 
     REACTIONS_SEE: dict[Obstacle.Type, str] = {
@@ -20,6 +22,8 @@ class DinosaurHandler:
         Obstacle.Type.THORNS: 'thorns_see',
         Obstacle.Type.STONE: 'stone_see',
         Obstacle.Type.TREE: 'tree_see',
+        Obstacle.Type.FERN: 'fern_see',
+        Obstacle.Type.SKELETON: 'skeleton_see',
     }
 
     @classmethod
@@ -73,13 +77,33 @@ class DinosaurHandler:
             getattr(cls, method_name)(dinosaur, obstacle)
 
     @classmethod
+    def jump_over_obstacle(cls, dinosaur: Dinosaur, obstacle: Obstacle) -> None:
+        """
+        Attempt to jump over an obstacle when running. Considered as a general behaviour.
+        :param dinosaur: Jumping dinosaur.
+        :param obstacle: Obstacle to jump over.
+        """
+        if dinosaur.state == Dinosaur.State.RUNNING:
+            if dinosaur.fov_ahead.overlaps(obstacle.rect) and dinosaur.rect.bottom >= obj_container.get_ground().touch_level:
+                obstacle_edge: float = obstacle.rect.right if dinosaur.direction.value[0] < 0 else obstacle.rect.left
+                dinosaur_edge: float = dinosaur.rect.left if dinosaur.direction.value[0] < 0 else dinosaur.rect.right
+
+                if abs(obstacle_edge - dinosaur_edge) <= dinosaur.width * 1.5:
+                    dinosaur.vel_y = dinosaur.JUMP_ACCEL
+
+    @classmethod
+    def bounce_back(cls, dinosaur: Dinosaur, obstacle: Obstacle) -> None:
+        dinosaur.vel_x = dinosaur.VEL_X_MIN / 4 * dinosaur.direction.opposite().value[0]
+        dinosaur.vel_y = dinosaur.JUMP_ACCEL / 2
+
+    @classmethod
     def cactus_touch(cls, dinosaur: Dinosaur, cactus: Obstacle) -> None:
         """
         React to touching cactus.
         :param dinosaur: Reacting dinosaur.
         :param cactus: Cactus to react to.
         """
-        # Swtich to DEAD and throw the dinosaur back
+        # Switch to DEAD and throw the dinosaur back
         dinosaur.state = Dinosaur.State.DEAD
         dinosaur.vel_x = dinosaur.VEL_X_MIN / 4 * dinosaur.direction.opposite().value[0]
         dinosaur.vel_y = dinosaur.JUMP_ACCEL / 4
@@ -92,7 +116,7 @@ class DinosaurHandler:
         :param thorns: Thorns to react to.
         """
         # Slow down
-        dinosaur.vel_x = min(dinosaur.vel_x/2, dinosaur.VEL_X_MIN/2)
+        dinosaur.vel_x = min(dinosaur.vel_x/2, dinosaur.VEL_X_MIN/2) * dinosaur.direction.value[0]
 
     @classmethod
     def stone_touch(cls, dinosaur: Dinosaur, stone: Obstacle) -> None:
@@ -119,24 +143,26 @@ class DinosaurHandler:
         :param dinosaur: Reacting dinosaur.
         :param tree: Tree to react to.
         """
-        # Bounce back
-        dinosaur.vel_x = dinosaur.VEL_X_MIN / 4 * dinosaur.direction.opposite().value[0]
-        dinosaur.vel_y = dinosaur.JUMP_ACCEL / 2
+        cls.bounce_back(dinosaur, tree)
 
     @classmethod
-    def jump_over_obstacle(cls, dinosaur: Dinosaur, obstacle: Obstacle) -> None:
+    def fern_touch(cls, dinosaur: Dinosaur, fern: Obstacle) -> None:
         """
-        Attempt to jump over an obstacle when running. Considered as a general behaviour.
-        :param dinosaur: Jumping dinosaur.
-        :param obstacle: Obstacle to jump over.
+        React to touching ferns.
+        :param dinosaur: Reacting dinosaur.
+        :param fern: Thorns to react to.
         """
-        if dinosaur.state == Dinosaur.State.RUNNING:
-            if dinosaur.fov_ahead.overlaps(obstacle.rect) and dinosaur.rect.bottom >= obj_container.get_ground().touch_level:
-                obstacle_edge: float = obstacle.rect.right if dinosaur.direction.value[0] < 0 else obstacle.rect.left
-                dinosaur_edge: float = dinosaur.rect.left if dinosaur.direction.value[0] < 0 else dinosaur.rect.right
+        # Slow down
+        dinosaur.vel_x = min(dinosaur.vel_x / 2, dinosaur.VEL_X_MIN / 2) * dinosaur.direction.value[0]
 
-                if abs(obstacle_edge - dinosaur_edge) <= dinosaur.width * 1.5:
-                    dinosaur.vel_y = dinosaur.JUMP_ACCEL
+    @classmethod
+    def skeleton_touch(cls, dinosaur: Dinosaur, skeleton: Obstacle) -> None:
+        """
+        React to touching a skeleton.
+        :param dinosaur: Reacting dinosaur.
+        :param skeleton: Thorns to react to.
+        """
+        pass
 
     @classmethod
     def cactus_see(cls, dinosaur: Dinosaur, cactus: Obstacle) -> None:
@@ -153,3 +179,11 @@ class DinosaurHandler:
     @classmethod
     def tree_see(cls, dinosaur: Dinosaur, tree: Obstacle) -> None:
         cls.jump_over_obstacle(dinosaur, tree)
+
+    @classmethod
+    def fern_see(cls, dinosaur: Dinosaur, fern: Obstacle) -> None:
+        cls.jump_over_obstacle(dinosaur, fern)
+
+    @classmethod
+    def skeleton_see(cls, dinosaur: Dinosaur, skeleton: Obstacle) -> None:
+        pass
