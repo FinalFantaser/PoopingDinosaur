@@ -66,15 +66,19 @@ class TRexHandler(ObjectHandler):
                         else:
                             obj.vel_y = obj.BASE_JUMP_ACCEL/12 + obj.vel_x_modifier
 
-                    # Thorns
-                    elif other_obj.ob_type == Obstacle.Type.THORNS:
-                        obj.health = max(0, obj.health - 1)
-                        obj.invincibility = 3000
+                    # Thorns or ferns
+                    elif other_obj.ob_type == Obstacle.Type.THORNS or other_obj.ob_type == Obstacle.Type.FERN:
+                        # Slow down
+                        obj.vel_x_modifier = -(obj.VEL_X_CONST / 2)
 
-                        # Jump in pain
-                        obj.vel_y = obj.BASE_JUMP_ACCEL/2.5
+                        # Hurt if touching thorns
+                        if other_obj.ob_type == Obstacle.Type.THORNS:
+                            obj.health = max(0, obj.health - 1)
+                            obj.invincibility = 3000
 
-                        obj.vel_x_modifier = -(obj.VEL_X_CONST/2)
+                            # Jump in pain
+                            obj.vel_y = obj.BASE_JUMP_ACCEL/2.5
+
 
                     # Stone
                     elif other_obj.ob_type == Obstacle.Type.STONE:
@@ -85,11 +89,11 @@ class TRexHandler(ObjectHandler):
 
                         obj.vel_x_modifier = obj.VEL_X_MODIFIER * 2.5
 
-                    # Tree
-                    elif other_obj.ob_type == Obstacle.Type.TREE:
+                    # Tree or skeleton
+                    elif other_obj.ob_type == Obstacle.Type.TREE or other_obj.ob_type == Obstacle.Type.SKELETON:
                         obj.vel_x_modifier = -obj.VEL_X_MODIFIER * 6
 
-                        # Throw back
+                        # Bounce back
                         if obj.rect.bottom >= ground.touch_level:
                             obj.vel_y = obj.BASE_JUMP_ACCEL / 10 + obj.vel_x_modifier
                         else:
