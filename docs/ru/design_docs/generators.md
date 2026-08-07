@@ -20,19 +20,7 @@
 
 ## ForestGenerator
 
-Лесной биом.
-
-Препятствия:
-- [Камень](obstacles.md#камень)
-- [Дерево](obstacles.md#дерево)
-- [Колючки](obstacles.md#колючка)
-- [Папоротники](obstacles.md#папоротник)
-
-Динозавры:
-- [Велоцираптор](dinosaurs.md#велоцираптор)
-- [Птеродактиль](dinosaurs.md#птеродактиль)
-- [Стегозавр](dinosaurs.md#стегозавр)
-- [Трицератопс](dinosaurs.md#трицератопс)
+[Лесной биом](biomes.md#лес)
 
 ## UndergroundGenerator
 
