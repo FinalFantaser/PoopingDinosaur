@@ -8,6 +8,7 @@ from .trex_handler import TRexHandler
 from .austroraptor_handler import AustroraptorHandler
 from .velociraptor_handler import VelociraptorHandler
 from .pterodactyl_handler import PterodactylHandler
+from .triceratops_handler import TriceratopsHandler
 
 # Environment
 from .obstacle_handler import ObstacleHandler

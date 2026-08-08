@@ -8,7 +8,7 @@ from .object import Object
 
 class Dinosaur(Object):
     """
-    Basic dinosaur class with common features. The properties are limited since dinosaurs mosntly run all the time.
+    Basic dinosaur class with common features. The properties are limited since dinosaurs mostly run all the time.
 
     Attributes:
         ID_STUB: Stub for an object id. Typically, it's a dinosaur's name with total count.
