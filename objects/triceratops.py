@@ -13,7 +13,8 @@ class Triceratops(Dinosaur):
         SIZE_BODY: Body size of the triceratops.
         SIZE_HEAD: Head size of the triceratops.
         TEXTURE_NAME: Name of a texture used.
-        ANIM_INTERVAL: Basic interval of animation frame change.
+        ANIM_INTERVAL: Animation interval for the body (microseconds).
+        ANIM_INTERVAL_HEAD: Animation interval for the head (microseconds).
         TOTAL_FRAMES: Total number of frames.
         DRAW_AREA: Texture area of the triceratops body.
         DRAW_AREA_HEAD: Texture area of the triceratops head.
@@ -29,15 +30,12 @@ class Triceratops(Dinosaur):
         last_frame_change: Timestamp of the last frame change for the body.
         curr_frame_head: Current frame of the head.
         total_frames_head: Total number of frames for the head.
-        anim_interval_head: Animation microseconds interval for the head.
         last_frame_change_head: Timestamp of the last frame change for the head.
 
     """
 
     __slots__ = Dinosaur.__slots__ + (
         "curr_frame_head",
-        "total_frames_head",
-        "anim_interval_head",
         "last_frame_change_head",
     )
 
@@ -48,6 +46,8 @@ class Triceratops(Dinosaur):
     SIZE_HEAD: tuple[float, float] = 13, 13
     HEAD_POS: tuple[float, float] = 26, 0
     TEXTURE_NAME: str = "triceratops.png"
+    ANIM_INTERVAL_HEAD: int = 100
+    TOTAL_FRAMES_HEAD: int = 3
     DRAW_AREA: PygameRect = PygameRect(0, 0, *SIZE_BODY)
     DRAW_AREA_HEAD: PygameRect = PygameRect(0, 0, *SIZE_HEAD)
     VEL_X_MIN: float = 175
@@ -59,8 +59,6 @@ class Triceratops(Dinosaur):
     def __init__(self, pos: tuple[int|float, int|float]) -> None:
         super().__init__(pos)
         self.curr_frame_head = 0
-        self.total_frames_head = 3
-        self.anim_interval_head = 100
         self.last_frame_change_head = pygame.time.get_ticks()
 
     def draw(self, viewpoint: Rect) -> None:
@@ -86,4 +84,12 @@ class Triceratops(Dinosaur):
         )
 
     def animate(self) -> None:
-        pass
+        # Body
+        if pygame.time.get_ticks() - self.last_frame_change >= self.ANIM_INTERVAL:
+            self.last_frame_change = pygame.time.get_ticks()
+            self.curr_frame = (self.curr_frame + 1) % self.TOTAL_FRAMES
+
+        # Head
+        if pygame.time.get_ticks() - self.last_frame_change_head >= self.ANIM_INTERVAL_HEAD:
+            self.last_frame_change_head = pygame.time.get_ticks()
+            self.curr_frame_head = (self.curr_frame_head + 1) % self.TOTAL_FRAMES_HEAD
