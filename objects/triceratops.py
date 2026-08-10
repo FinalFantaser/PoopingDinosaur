@@ -20,6 +20,7 @@ class Triceratops(Dinosaur):
         DRAW_AREA_HEAD: Texture area of the triceratops head.
         VEL_X_MIN: Minimum velocity of a dinosaur.
         VEL_X_MAX: Maximum velocity of a dinosaur.
+        VEL_X_MAX_IN: Time to reach maximum velocity (seconds).
         WEIGHT: Weight of the dinosaur.
         WEIGHT_FACTOR: Weight factor for the dinosaur physics.
         HITBOX_ATTACK: Area which inflicts damage on collision (head and horns).
@@ -51,7 +52,8 @@ class Triceratops(Dinosaur):
     DRAW_AREA: PygameRect = PygameRect(0, 0, *SIZE_BODY)
     DRAW_AREA_HEAD: PygameRect = PygameRect(0, 0, *SIZE_HEAD)
     VEL_X_MIN: float = 175
-    VEL_X_MAX: float = VEL_X_MIN * 2.5
+    VEL_X_MAX: float = VEL_X_MIN * 1.3
+    VEL_X_MAX_IN: float = 1
     WEIGHT: float = 5000
     WEIGHT_FACTOR: float = 0.9
     HITBOX_ATTACK: Rect = Rect(*HEAD_POS, *SIZE_HEAD)
@@ -93,3 +95,18 @@ class Triceratops(Dinosaur):
         if pygame.time.get_ticks() - self.last_frame_change_head >= self.ANIM_INTERVAL_HEAD:
             self.last_frame_change_head = pygame.time.get_ticks()
             self.curr_frame_head = (self.curr_frame_head + 1) % self.TOTAL_FRAMES_HEAD
+
+    @property
+    def hitbox(self) -> Rect:
+        """Whole body hitbox (head included)"""
+        return Rect(*self.SIZE, *self.pos)
+
+    @property
+    def hitbox_body(self) -> Rect:
+        """Body hitbox (no head)"""
+        return Rect(*self.pos, *self.SIZE_BODY)
+
+    @property
+    def hitbox_head(self) -> Rect:
+        """Head hitbox (no body)"""
+        return Rect(*self.pos, *self.SIZE_HEAD)
