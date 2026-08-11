@@ -13,7 +13,7 @@ from .obstacle import Obstacle
 from .poo import Poo
 
 # Dinosaurs
-from .dinosaur import Dinosaur
+from .dinosaur import Direction, Dinosaur
 from .trex import TRexAction, TRex
 from .austroraptor import Austroraptor
 from .velociraptor import Velociraptor

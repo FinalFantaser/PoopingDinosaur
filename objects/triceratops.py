@@ -88,9 +88,7 @@ class Triceratops(Dinosaur):
 
     def animate(self) -> None:
         # Body
-        if pygame.time.get_ticks() - self.last_frame_change >= self.ANIM_INTERVAL:
-            self.last_frame_change = pygame.time.get_ticks()
-            self.curr_frame = (self.curr_frame + 1) % self.TOTAL_FRAMES
+        super().animate()
 
         # Head
         if pygame.time.get_ticks() - self.last_frame_change_head >= self.ANIM_INTERVAL_HEAD:

@@ -1,6 +1,8 @@
 import pygame.time
 
-from objects import Object, Obstacle, Dinosaur, Triceratops
+from objects import Obstacle, Dinosaur, TRex, Triceratops, Velociraptor
+from objects.dinosaur import Direction
+
 from .object_handler import ObjectHandler
 from data_containers import objects as obj_container
 
@@ -38,7 +40,16 @@ class TriceratopsHandler(ObjectHandler):
 
     @classmethod
     def coll_dinosaur(cls, triceratops: Triceratops, other_dino: Dinosaur) -> None:
-        pass
+        # Head/horns collision (attack)
+        if other_dino.hitbox.overlaps(triceratops.hitbox_head):
+            obj_container.queue_delete(other_dino)
+            # TODO Create explosion, then skeleton
+
+        # Body collision - bounce
+        direction: Direction = triceratops.direction.opposite() if triceratops.center_x - other_dino.center_x < 0 else triceratops.direction
+        other_dino.vel_x = other_dino.vel_x * 1.5 * direction.value
+        other_dino.vel_y = min(Velociraptor.JUMP_ACCEL, -other_dino.WEIGHT * 0.7)
+
 
     @classmethod
     def coll_human(cls, triceratops: Triceratops, human) -> None:
