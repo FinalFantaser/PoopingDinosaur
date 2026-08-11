@@ -3,7 +3,7 @@ import pygame.time
 
 import core.video
 from .rect import Rect
-from .dinosaur import Dinosaur
+from .dinosaur import Dinosaur, Direction
 
 class Triceratops(Dinosaur):
     """
@@ -60,6 +60,7 @@ class Triceratops(Dinosaur):
 
     def __init__(self, pos: tuple[int|float, int|float]) -> None:
         super().__init__(pos)
+        self.direction = Direction.RIGHT
         self.curr_frame_head = 0
         self.last_frame_change_head = pygame.time.get_ticks()
 
