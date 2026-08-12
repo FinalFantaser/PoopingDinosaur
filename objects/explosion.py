@@ -34,4 +34,3 @@ class Explosion(Object):
         )
 
         self.spawn: Object|None = spawn
-

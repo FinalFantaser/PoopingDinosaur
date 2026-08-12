@@ -1,6 +1,6 @@
 import pygame.time
 
-from objects import Obstacle, Dinosaur, TRex, Triceratops, Velociraptor
+from objects import Obstacle, Dinosaur, TRex, Triceratops, Velociraptor, Explosion
 from objects.dinosaur import Direction
 
 from .object_handler import ObjectHandler
@@ -42,8 +42,27 @@ class TriceratopsHandler(ObjectHandler):
     def coll_dinosaur(cls, triceratops: Triceratops, other_dino: Dinosaur) -> None:
         # Head/horns collision (attack)
         if other_dino.hitbox.overlaps(triceratops.hitbox_head):
-            obj_container.queue_delete(other_dino)
-            # TODO Create explosion, then skeleton
+            if isinstance(other_dino, TRex) and other_dino.invincibility < 1:
+                other_dino.health = max(0, other_dino.health - 1)
+                other_dino.invincibility = 3000
+
+                other_dino.vel_x_modifier = other_dino.VEL_X_MODIFIER * 2.5
+
+            elif isinstance(other_dino, Dinosaur):
+                skeleton = Obstacle(
+                    Obstacle.Type.SKELETON,
+                    (
+                        other_dino.x,
+                        other_dino.y - Obstacle.SIZES[Obstacle.Type.SKELETON][1]/2,
+                    )
+                )
+
+                explosion = Explosion(other_dino.pos, skeleton)
+
+                obj_container.queue_delete(other_dino)
+                obj_container.queue_add(explosion)
+
+            return
 
         # Body collision - bounce
         direction: Direction = triceratops.direction.opposite() if triceratops.center_x - other_dino.center_x < 0 else triceratops.direction
@@ -57,4 +76,7 @@ class TriceratopsHandler(ObjectHandler):
 
     @classmethod
     def coll_obstacle(cls, triceratops: Triceratops, obstacle: Obstacle) -> None:
-        pass
+        explosion = Explosion(obstacle.pos)
+
+        obj_container.queue_delete(obstacle)
+        obj_container.queue_add(explosion)

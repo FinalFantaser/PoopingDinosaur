@@ -11,6 +11,7 @@ from .mountains import Mountains
 from .forest import Forest
 from .obstacle import Obstacle
 from .poo import Poo
+from .explosion import Explosion
 
 # Dinosaurs
 from .dinosaur import Direction, Dinosaur
