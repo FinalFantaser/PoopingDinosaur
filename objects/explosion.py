@@ -22,7 +22,7 @@ class Explosion(Object):
     total: int = 0
 
     def __init__(self, pos: tuple[int | float, int | float] = (0, 0), spawn: Object|None = None):
-        self.total += 1
+        self.__class__.total += 1
 
         super().__init__(
             id=self.ID_STUB % self.total,

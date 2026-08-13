@@ -1,5 +1,5 @@
 from enum import Enum
-from objects import Direction, Object, Camera, TRex, Ground
+from objects import Direction, Object, Camera, TRex, Ground, Dinosaur
 
 
 class _TaskType(int, Enum):
@@ -81,6 +81,8 @@ def get(id: str, throw: bool = False) -> Object|None:
 def visible() -> dict[str, Object]:
     return {obj_id: _all[obj_id] for obj_id in _idx_visible}
 
+def dinosaurs(family: type = Dinosaur) -> dict[str, Dinosaur]:
+    return {obj_id: _all[obj_id] for obj_id in _idx_visible if isinstance(_all[obj_id], family)}
 
 def hidden() -> dict[str, Object]:
     return {obj_id: _all[obj_id] for obj_id in _idx_hidden}

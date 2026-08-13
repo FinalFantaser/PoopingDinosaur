@@ -16,9 +16,10 @@ class Dinosaur(Object):
         TEXTURE_NAME: Name of a texture used.
         ANIM_INTERVAL: Basic interval of animation frame change.
         TOTAL_FRAMES: Total number of frames.
+        flippable: indicates if the dinosaur can be flipped horizontally.
     """
 
-    __slots__ = *Object.__slots__, "direction", "state", 'vel_x', 'vel_y', '_fov'
+    __slots__ = *Object.__slots__, "flippable", "direction", "state", 'vel_x', 'vel_y', '_fov'
 
     class State(IntEnum):
         """
@@ -57,25 +58,29 @@ class Dinosaur(Object):
 
     _total: int = 0
 
-    def __init__(self, pos: tuple[int|float, int|float]) -> None:
+    def __init__(self, pos: tuple[int|float, int|float], flippable: bool = True) -> None:
         self.__class__._total += 1
+        self.flippable: bool = flippable
         super().__init__(
             id=self.ID_STUB % self._total,
             pos=pos,
             size=self.SIZE
         )
 
-        core.video.texture_load(core.paths.TEXTURES / self.TEXTURE_NAME, f"{self.TEXTURE_NAME}_{Direction.RIGHT}")
+        if flippable:
+            core.video.texture_load(core.paths.TEXTURES / self.TEXTURE_NAME, f"{self.TEXTURE_NAME}_{Direction.RIGHT}")
 
-        if not core.video.texture_has(f"{self.TEXTURE_NAME}_{Direction.LEFT}"):
-            flipped_surf: Surface = pygame.transform.flip(
-                core.video.texture_get(f"{self.TEXTURE_NAME}_{Direction.RIGHT}"),
-                *Direction.LEFT.value
-            )
+            if not core.video.texture_has(f"{self.TEXTURE_NAME}_{Direction.LEFT}"):
+                flipped_surf: Surface = pygame.transform.flip(
+                    core.video.texture_get(f"{self.TEXTURE_NAME}_{Direction.RIGHT}"),
+                    *Direction.LEFT.value
+                )
 
-            flipped_surf.set_colorkey(core.video.COLOR_KEY)
+                flipped_surf.set_colorkey(core.video.COLOR_KEY)
 
-            core.video.texture_add(flipped_surf, f"{self.TEXTURE_NAME}_{Direction.LEFT}")
+                core.video.texture_add(flipped_surf, f"{self.TEXTURE_NAME}_{Direction.LEFT}")
+        else:
+            core.video.texture_load(core.paths.TEXTURES / self.TEXTURE_NAME, self.TEXTURE_NAME)
 
         self.direction: Direction = Direction.LEFT
         self.state = self.State.IDLE
@@ -108,11 +113,11 @@ class Dinosaur(Object):
         texture_name: str
 
         if self.state == self.State.DEAD:
-            texture_name = f"{self.TEXTURE_NAME}_{Direction.RIGHT}"
+            texture_name = f"{self.TEXTURE_NAME}_{Direction.RIGHT}" if self.flippable else self.TEXTURE_NAME
             self.DRAW_AREA.x = 0
             self.DRAW_AREA.y = int(self.SIZE[1])
         else:
-            texture_name = f"{self.TEXTURE_NAME}_{self.direction}"
+            texture_name = f"{self.TEXTURE_NAME}_{self.direction}" if self.flippable else self.TEXTURE_NAME
             self.DRAW_AREA.x = int(self.curr_frame * self.SIZE[0])
             self.DRAW_AREA.y = 0
 

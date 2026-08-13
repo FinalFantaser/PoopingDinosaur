@@ -10,6 +10,9 @@ from data_containers import objects as obj_container
 class TriceratopsHandler(ObjectHandler):
     @classmethod
     def update(cls, obj: Triceratops) -> None:
+        if cls.delete_if_passed_camera(obj):
+            return
+
         cls.physics(obj)
 
         # Accelerate
@@ -65,8 +68,8 @@ class TriceratopsHandler(ObjectHandler):
             return
 
         # Body collision - bounce
-        direction: Direction = triceratops.direction.opposite() if triceratops.center_x - other_dino.center_x < 0 else triceratops.direction
-        other_dino.vel_x = other_dino.vel_x * 1.5 * direction.value
+        direction: Direction = triceratops.direction.opposite() if triceratops.rect.center_x - other_dino.rect.center_x < 0 else triceratops.direction
+        other_dino.vel_x = other_dino.vel_x * 1.5 * direction.value[0]
         other_dino.vel_y = min(Velociraptor.JUMP_ACCEL, -other_dino.WEIGHT * 0.7)
 
 

@@ -50,7 +50,7 @@ class Triceratops(Dinosaur):
     ANIM_INTERVAL_HEAD: int = 100
     TOTAL_FRAMES_HEAD: int = 3
     DRAW_AREA: PygameRect = PygameRect(0, 0, *SIZE_BODY)
-    DRAW_AREA_HEAD: PygameRect = PygameRect(0, 0, *SIZE_HEAD)
+    DRAW_AREA_HEAD: PygameRect = PygameRect(0, 16, *SIZE_HEAD)
     VEL_X_MIN: float = 175
     VEL_X_MAX: float = VEL_X_MIN * 1.3
     VEL_X_MAX_IN: float = 1
@@ -59,7 +59,7 @@ class Triceratops(Dinosaur):
     HITBOX_ATTACK: Rect = Rect(*HEAD_POS, *SIZE_HEAD)
 
     def __init__(self, pos: tuple[int|float, int|float]) -> None:
-        super().__init__(pos)
+        super().__init__(pos, False)
         self.direction = Direction.RIGHT
         self.curr_frame_head = 0
         self.last_frame_change_head = pygame.time.get_ticks()
@@ -91,9 +91,10 @@ class Triceratops(Dinosaur):
         super().animate()
 
         # Head
-        if pygame.time.get_ticks() - self.last_frame_change_head >= self.ANIM_INTERVAL_HEAD:
-            self.last_frame_change_head = pygame.time.get_ticks()
-            self.curr_frame_head = (self.curr_frame_head + 1) % self.TOTAL_FRAMES_HEAD
+        if self.state == self.State.BITING:
+            if pygame.time.get_ticks() - self.last_frame_change_head >= self.ANIM_INTERVAL_HEAD:
+                self.last_frame_change_head = pygame.time.get_ticks()
+                self.curr_frame_head = (self.curr_frame_head + 1) % self.TOTAL_FRAMES_HEAD
 
     @property
     def hitbox(self) -> Rect:

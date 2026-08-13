@@ -1,11 +1,14 @@
 from objects import (
+    Camera,
+
     Obstacle,
     Forest,
+    Ground,
 
     Dinosaur,
     Velociraptor,
     Austroraptor,
-    Pterodactyl,
+    Pterodactyl, Triceratops,
 )
 
 from data_containers import objects as obj_container
@@ -68,3 +71,18 @@ class ForestGenerator(BiomeGenerator):
 
         self.forest: Forest = Forest(total_tiles)
         obj_container.add(self.forest)
+
+    def npc(self):
+        """Creates NPCs within vicinity"""
+        super().npc()
+
+        # if len(obj_container.dinosaurs(Triceratops)) < 1:
+        #     camera: Camera = obj_container.get_camera()
+        #     ground: Ground = obj_container.get_ground()
+        #
+        #     new_triceratops = Triceratops((
+        #         camera.x - Triceratops.SIZE[0],
+        #         ground.touch_level
+        #     ))
+        #
+        #     obj_container.queue_add(new_triceratops)
