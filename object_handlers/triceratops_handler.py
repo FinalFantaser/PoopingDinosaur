@@ -79,7 +79,8 @@ class TriceratopsHandler(ObjectHandler):
 
     @classmethod
     def coll_obstacle(cls, triceratops: Triceratops, obstacle: Obstacle) -> None:
-        explosion = Explosion(obstacle.pos)
+        explosion = Explosion()
+        explosion.rect.center = obstacle.rect.center
 
         obj_container.queue_delete(obstacle)
         obj_container.queue_add(explosion)

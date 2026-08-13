@@ -1,5 +1,7 @@
-from .object import Object
+from pygame.time import get_ticks
 
+import core.video
+from .object import Object, Rect
 
 class Explosion(Object):
     __slots__ = *Object.__slots__, "spawn"
@@ -16,7 +18,7 @@ class Explosion(Object):
     ID_STUB: str = "explosion_%d"
     SIZE: tuple[float, float] = 32, 32
     TEXTURE_NAME: str = "explosion.png"
-    ANIM_INTERVAL: int = 100
+    ANIM_INTERVAL: int = 150
     TOTAL_FRAMES = 3
 
     total: int = 0
@@ -34,3 +36,20 @@ class Explosion(Object):
         )
 
         self.spawn: Object|None = spawn
+
+    def animate(self) -> None:
+        if get_ticks() - self.last_frame_change >= self.ANIM_INTERVAL:
+            self.curr_frame = (self.curr_frame + 1) % self.TOTAL_FRAMES
+            self.last_frame_change = get_ticks() - self.last_frame_change
+
+    def draw(self, viewpoint: Rect) -> None:
+        core.video.texture_blit(
+            self.TEXTURE_NAME,
+            (self.x - viewpoint.x, self.y - viewpoint.y),
+            (
+                int(self.curr_frame * self.SIZE[0]),
+                0,
+                int(self.SIZE[0]),
+                int(self.SIZE[1]),
+            )
+        )
