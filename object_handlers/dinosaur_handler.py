@@ -1,5 +1,5 @@
-from copy import copy
-from objects import Rect, Direction, Dinosaur, Ground, Obstacle
+from typing import Callable
+from objects import Direction, Dinosaur, Ground, Obstacle
 from data_containers import objects as obj_container
 
 class DinosaurHandler:
@@ -25,6 +25,9 @@ class DinosaurHandler:
         Obstacle.Type.FERN: 'fern_see',
         Obstacle.Type.SKELETON: 'skeleton_see',
     }
+
+    # TODO Health check (heavier dinosaurs leave skeletons)
+    # ...
 
     @classmethod
     def react_to_hunter(cls, prey: Dinosaur, hunter: Dinosaur) -> None:
@@ -65,16 +68,23 @@ class DinosaurHandler:
         :param dinosaur: Reacting dinosaur.
         :param obstacle: Obstacle to react to.
         """
-        # If touched
-        if dinosaur.hitbox.overlaps(obstacle.rect):
-            method_name: str = cls.REACTIONS_TOUCH[obstacle.ob_type]
-            getattr(cls, method_name)(dinosaur, obstacle)
-            return
+        for hitbox, method_list in (
+            (dinosaur.hitbox, cls.REACTIONS_TOUCH), # If touched
+            (dinosaur.fov_ahead, cls.REACTIONS_SEE), # If seen
+        ):
+            if hitbox.overlaps(obstacle.rect):
+                method_name: str = method_list[obstacle.ob_type]
+                if method_name is None:
+                    break
 
-        # If seen
-        if dinosaur.fov_ahead.overlaps(obstacle.rect):
-            method_name: str = cls.REACTIONS_SEE[obstacle.ob_type]
-            getattr(cls, method_name)(dinosaur, obstacle)
+                method: Callable | None = getattr(cls, method_name)
+
+                if method is None:
+                    raise NotImplementedError(f"{cls.__name__}.{method_name}")
+
+                method(dinosaur, obstacle)
+
+                break
 
     @classmethod
     def jump_over_obstacle(cls, dinosaur: Dinosaur, obstacle: Obstacle) -> None:

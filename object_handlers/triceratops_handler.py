@@ -1,19 +1,51 @@
-import pygame.time
+from pygame.time import get_ticks
 
-from objects import Obstacle, Dinosaur, TRex, Triceratops, Velociraptor, Explosion
+from objects import Camera, Obstacle, Dinosaur, TRex, Triceratops, Velociraptor, Explosion
 from objects.dinosaur import Direction
 
 from .object_handler import ObjectHandler
+from .dinosaur_handler import DinosaurHandler
 from data_containers import objects as obj_container
 
 
-class TriceratopsHandler(ObjectHandler):
+class TriceratopsHandler(ObjectHandler, DinosaurHandler):
+    REACTIONS_SEE: dict[Obstacle.Type, str] = {
+        Obstacle.Type.CACTUS: None,
+        Obstacle.Type.THORNS: 'start_biting',
+        Obstacle.Type.STONE: None,
+        Obstacle.Type.TREE: None,
+        Obstacle.Type.FERN: 'start_biting',
+        Obstacle.Type.SKELETON: None,
+    }
+
+    REACTIONS_TOUCH: dict[Obstacle.Type, str] = {
+        Obstacle.Type.CACTUS: 'destroy_obstacle',
+        Obstacle.Type.THORNS: 'eat_obstacle',
+        Obstacle.Type.STONE: 'destroy_obstacle',
+        Obstacle.Type.TREE: 'destroy_obstacle',
+        Obstacle.Type.FERN: 'eat_obstacle',
+        Obstacle.Type.SKELETON: 'destroy_obstacle',
+    }
+
     @classmethod
     def update(cls, obj: Triceratops) -> None:
         if cls.delete_if_passed_camera(obj):
             return
 
+        # TODO Health check
+        # ...
+
         cls.physics(obj)
+
+        # Stop biting
+        if (
+            obj.state == Triceratops.State.BITING
+            and obj.curr_frame_head >= obj.TOTAL_FRAMES_HEAD - 1
+            and get_ticks() - obj.last_frame_change_head >= obj.ANIM_INTERVAL_HEAD
+        ):
+            obj.curr_frame_head = 0
+            obj.state = obj.State.CHASING
+
 
         # Accelerate
         if obj.vel_x < obj.VEL_X_MAX:
@@ -21,28 +53,31 @@ class TriceratopsHandler(ObjectHandler):
             obj.vel_x = min(obj.VEL_X_MAX, obj.vel_x + accel)
 
 
-        # Handle collisions:
+        # React to environment
         camera = obj_container.get_camera()
         for other_obj in obj_container.visible().values():
             # Skip oneself, different layer, not touched ones
-            if other_obj.id == obj.id or obj.LAYER != obj.LAYER.MAIN or not obj.hitbox.overlaps(other_obj.rect):
+            if other_obj.id == obj.id or obj.LAYER != obj.LAYER.MAIN or not obj.fov_around.overlaps(other_obj.rect):
                 continue
 
-            # Dinosaurs
+            # NPC
             if isinstance(other_obj, Dinosaur):
-                cls.coll_dinosaur(obj, other_obj)
-
-            # Humans
-            # ...
+                cls.react_to_npc(obj, other_obj)
 
             # Obstacles
             elif isinstance(other_obj, Obstacle):
-                cls.coll_obstacle(obj, other_obj)
+                cls.react_to_obstacles(obj, other_obj)
+            # TODO Reaction to touching the poop
 
-        obj.last_update = pygame.time.get_ticks()
+        # TODO Poop if belly's full
+        # ...
+
+        obj.last_update = get_ticks()
 
     @classmethod
-    def coll_dinosaur(cls, triceratops: Triceratops, other_dino: Dinosaur) -> None:
+    def react_to_npc(cls, triceratops: Triceratops, other_dino: Dinosaur) -> None:
+        # TODO Damage all dinosaurs just by HP, let their handlers do deletion and explosions
+
         # Head/horns collision (attack)
         if other_dino.hitbox.overlaps(triceratops.hitbox_head):
             if isinstance(other_dino, TRex) and other_dino.invincibility < 1:
@@ -52,15 +87,15 @@ class TriceratopsHandler(ObjectHandler):
                 other_dino.vel_x_modifier = other_dino.VEL_X_MODIFIER * 2.5
 
             elif isinstance(other_dino, Dinosaur):
-                skeleton = Obstacle(
-                    Obstacle.Type.SKELETON,
-                    (
-                        other_dino.x,
-                        other_dino.y - Obstacle.SIZES[Obstacle.Type.SKELETON][1]/2,
-                    )
-                )
+                # TODO Check humans as well
+                explosion = Explosion(other_dino.pos)
 
-                explosion = Explosion(other_dino.pos, skeleton)
+                # TODO Heavier dinosaurs leave skeletons
+                # TODO Skeleton are to be implemented as a standalone object class
+                # skeleton = Obstacle(Obstacle.Type.SKELETON, (0, 0))
+                # skeleton.rect.center_x = other_dino.rect.center_x
+                # skeleton.rect.center_y = other_dino.rect.center_y - skeleton.height / 2
+                # explosion.spawn = skeleton
 
                 obj_container.queue_delete(other_dino)
                 obj_container.queue_add(explosion)
@@ -72,15 +107,39 @@ class TriceratopsHandler(ObjectHandler):
         other_dino.vel_x = other_dino.vel_x * 1.5 * direction.value[0]
         other_dino.vel_y = min(Velociraptor.JUMP_ACCEL, -other_dino.WEIGHT * 0.7)
 
+    @classmethod
+    def start_biting(cls, dinosaur: Triceratops, obstacle: Obstacle) -> None:
+        if dinosaur.state != dinosaur.State.BITING:
+            dinosaur.state = Triceratops.State.BITING
 
     @classmethod
-    def coll_human(cls, triceratops: Triceratops, human) -> None:
-        pass
+    def eat_obstacle(cls, dinosaur: Triceratops, obstacle: Obstacle) -> None:
+        if (
+            dinosaur.state == dinosaur.State.BITING
+            and dinosaur.curr_frame_head >= dinosaur.TOTAL_FRAMES_HEAD - 1
+            and dinosaur.hitbox_bite.overlaps(obstacle.rect)
+        ):
+            # TODO Restore dinosaur's health
+            # ...
+
+            obj_container.queue_delete(obstacle)
 
     @classmethod
-    def coll_obstacle(cls, triceratops: Triceratops, obstacle: Obstacle) -> None:
+    def destroy_obstacle(cls, triceratops: Triceratops, obstacle: Obstacle) -> None:
         explosion = Explosion()
-        explosion.rect.center = obstacle.rect.center
+        explosion.rect.center_x = obstacle.rect.center_x
+        explosion.rect.center_y = obstacle.rect.center_y
 
         obj_container.queue_delete(obstacle)
         obj_container.queue_add(explosion)
+
+        triceratops.vel_x = max(triceratops.VEL_X_MIN, triceratops.vel_x / 1.5)
+
+
+    @classmethod
+    def delete_if_passed_camera(cls, obj: Triceratops) -> bool:
+        if obj.rect.left >= obj_container.get_camera().rect.right:
+            obj_container.queue_delete(obj)
+            return True
+
+        return False

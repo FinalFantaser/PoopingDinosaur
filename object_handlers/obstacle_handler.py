@@ -8,3 +8,4 @@ class ObstacleHandler(ObjectHandler):
     def update(cls, obj: Obstacle) -> None:
         if obj.rect.right < obj_container.get_camera().rect.left:
             obj_container.queue_delete(obj)
+            return

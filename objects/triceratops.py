@@ -23,14 +23,13 @@ class Triceratops(Dinosaur):
         VEL_X_MAX_IN: Time to reach maximum velocity (seconds).
         WEIGHT: Weight of the dinosaur.
         WEIGHT_FACTOR: Weight factor for the dinosaur physics.
-        HITBOX_ATTACK: Area which inflicts damage on collision (head and horns).
+        HITBOX_BITE_SIZE: Size of the area of bite.
 
         curr_frame: Current frame of the body.
         total_frames: Total number of frames for the body.
         anim_interval: Animation microseconds interval for the body.
         last_frame_change: Timestamp of the last frame change for the body.
         curr_frame_head: Current frame of the head.
-        total_frames_head: Total number of frames for the head.
         last_frame_change_head: Timestamp of the last frame change for the head.
 
     """
@@ -51,16 +50,18 @@ class Triceratops(Dinosaur):
     TOTAL_FRAMES_HEAD: int = 3
     DRAW_AREA: PygameRect = PygameRect(0, 0, *SIZE_BODY)
     DRAW_AREA_HEAD: PygameRect = PygameRect(0, 16, *SIZE_HEAD)
+    FOV_SIZE = SIZE_BODY[0] * 3.5, SIZE_BODY[1]
     VEL_X_MIN: float = 175
     VEL_X_MAX: float = VEL_X_MIN * 1.3
     VEL_X_MAX_IN: float = 1
     WEIGHT: float = 5000
     WEIGHT_FACTOR: float = 0.9
-    HITBOX_ATTACK: Rect = Rect(*HEAD_POS, *SIZE_HEAD)
+    HITBOX_BITE_SIZE: tuple[float, float] = SIZE_HEAD
 
     def __init__(self, pos: tuple[int|float, int|float]) -> None:
         super().__init__(pos, False)
         self.direction = Direction.RIGHT
+        self.state = self.State.CHASING
         self.curr_frame_head = 0
         self.last_frame_change_head = pygame.time.get_ticks()
 
@@ -110,3 +111,8 @@ class Triceratops(Dinosaur):
     def hitbox_head(self) -> Rect:
         """Head hitbox (no body)"""
         return Rect(*self.pos, *self.SIZE_HEAD)
+
+    @property
+    def hitbox_bite(self) -> Rect:
+        """Bite area hitbox"""
+        return Rect(self.pos[0] + self.SIZE[0], self.pos[1], *self.SIZE_HEAD)
