@@ -27,10 +27,16 @@ class ObjectHandler:
             if not hasattr(obj, att):
                 return
 
+        cls.gravity(obj)
+
+        # Horizontal movement
+        obj.x += (obj.vel_x / 1000 * obj.update_delta) * obj.direction.value[0]
+
+    @classmethod
+    def gravity(cls, obj: Object) -> None:
         update_delta: int = obj.update_delta
         ground: Ground = obj_container.get_ground()
 
-        # Gravity
         if obj.rect.bottom < ground.touch_level:
             fall_accel: float = game_data.GRAVITY_PIXELS * obj.WEIGHT_FACTOR
             obj.vel_y += fall_accel / 1000 * update_delta
@@ -39,6 +45,3 @@ class ObjectHandler:
         if obj.rect.bottom >= ground.touch_level:
             obj.vel_y = 0.0
             obj.rect.bottom = ground.touch_level
-
-        # Horizontal movement
-        obj.x += (obj.vel_x / 1000 * update_delta) * obj.direction.value[0]

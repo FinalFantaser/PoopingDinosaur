@@ -14,8 +14,10 @@ from .poo import Poo
 from .explosion import Explosion
 
 # Dinosaurs
-from .dinosaur import Direction, Dinosaur
+from .dinosaur import Dinosaur
+from .separate_head_dinosaur import SeparateHeadDinosaur
 from .trex import TRexAction, TRex
+from .trex_new import TRexNew
 from .austroraptor import Austroraptor
 from .velociraptor import Velociraptor
 from .pterodactyl import Pterodactyl

@@ -5,6 +5,7 @@ from .camera_handler import CameraHandler
 # Dinosaurs
 from .dinosaur_handler import DinosaurHandler
 from .trex_handler import TRexHandler
+from .trex_new_handler import TRexNewHandler
 from .austroraptor_handler import AustroraptorHandler
 from .velociraptor_handler import VelociraptorHandler
 from .pterodactyl_handler import PterodactylHandler

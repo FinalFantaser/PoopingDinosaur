@@ -3,9 +3,9 @@ import pygame.time
 
 import core.video
 from .rect import Rect
-from .dinosaur import Dinosaur, Direction
+from .separate_head_dinosaur import SeparateHeadDinosaur, Direction
 
-class Triceratops(Dinosaur):
+class Triceratops(SeparateHeadDinosaur):
     """
     Attributes:
         ID_STUB: Stub for a dinosaur.
@@ -21,7 +21,7 @@ class Triceratops(Dinosaur):
         VEL_X_MIN: Minimum velocity of a dinosaur.
         VEL_X_MAX: Maximum velocity of a dinosaur.
         VEL_X_MAX_IN: Time to reach maximum velocity (seconds).
-        WEIGHT: Weight of the dinosaur.
+        WEIGHT: Weight of the dinosaur (kg).
         WEIGHT_FACTOR: Weight factor for the dinosaur physics.
         HITBOX_BITE_SIZE: Size of the area of bite.
 
@@ -33,11 +33,6 @@ class Triceratops(Dinosaur):
         last_frame_change_head: Timestamp of the last frame change for the head.
 
     """
-
-    __slots__ = Dinosaur.__slots__ + (
-        "curr_frame_head",
-        "last_frame_change_head",
-    )
 
     HANDLER_NAME: str = "TriceratopsHandler"
     ID_STUB: str = "triceratops_%d"
@@ -58,61 +53,6 @@ class Triceratops(Dinosaur):
     WEIGHT_FACTOR: float = 0.9
     HITBOX_BITE_SIZE: tuple[float, float] = SIZE_HEAD
 
-    def __init__(self, pos: tuple[int|float, int|float]) -> None:
-        super().__init__(pos, False)
-        self.direction = Direction.RIGHT
+    def __init__(self, pos: tuple[float, float]) -> None:
+        super().__init__(pos)
         self.state = self.State.CHASING
-        self.curr_frame_head = 0
-        self.last_frame_change_head = pygame.time.get_ticks()
-
-    def draw(self, viewpoint: Rect) -> None:
-        # Body
-        self.DRAW_AREA.x = int(self.curr_frame * self.SIZE_BODY[0])
-
-        core.video.texture_blit(
-            self.TEXTURE_NAME,
-            (self.x - viewpoint.x, self.y - viewpoint.y),
-            self.DRAW_AREA
-        )
-
-        # Head
-        self.DRAW_AREA_HEAD.x = int(self.curr_frame_head * self.SIZE_HEAD[0])
-
-        core.video.texture_blit(
-            self.TEXTURE_NAME,
-            (
-                self.x + self.HEAD_POS[0] - viewpoint.x,
-                self.y + self.HEAD_POS[1] - viewpoint.y
-            ),
-            self.DRAW_AREA_HEAD
-        )
-
-    def animate(self) -> None:
-        # Body
-        super().animate()
-
-        # Head
-        if self.state == self.State.BITING:
-            if pygame.time.get_ticks() - self.last_frame_change_head >= self.ANIM_INTERVAL_HEAD:
-                self.last_frame_change_head = pygame.time.get_ticks()
-                self.curr_frame_head = (self.curr_frame_head + 1) % self.TOTAL_FRAMES_HEAD
-
-    @property
-    def hitbox(self) -> Rect:
-        """Whole body hitbox (head included)"""
-        return Rect(*self.SIZE, *self.pos)
-
-    @property
-    def hitbox_body(self) -> Rect:
-        """Body hitbox (no head)"""
-        return Rect(*self.pos, *self.SIZE_BODY)
-
-    @property
-    def hitbox_head(self) -> Rect:
-        """Head hitbox (no body)"""
-        return Rect(*self.pos, *self.SIZE_HEAD)
-
-    @property
-    def hitbox_bite(self) -> Rect:
-        """Bite area hitbox"""
-        return Rect(self.pos[0] + self.SIZE[0], self.pos[1], *self.SIZE_HEAD)

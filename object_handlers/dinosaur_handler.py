@@ -1,5 +1,5 @@
 from typing import Callable
-from objects import Direction, Dinosaur, Ground, Obstacle
+from objects import Object, Direction, Dinosaur, Ground, Obstacle
 from data_containers import objects as obj_container
 
 class DinosaurHandler:
@@ -26,8 +26,8 @@ class DinosaurHandler:
         Obstacle.Type.SKELETON: 'skeleton_see',
     }
 
-    # TODO Health check (heavier dinosaurs leave skeletons)
-    # ...
+    EDIBLES: tuple[type[Object], ...] = ()
+
 
     @classmethod
     def react_to_hunter(cls, prey: Dinosaur, hunter: Dinosaur) -> None:

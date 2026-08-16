@@ -10,6 +10,8 @@ gui_score: Счет
 
 game_mode_test_title: Тестовый режим
 game_mode_test_description: Никакого гейм-дизайна; просто тестирование функций
+game_mode_new_trex_test_title: Тест нового тираннозавра
+game_mode_new_trex_test_description: Отладка нового класса тираннозавра с отдельной головой
 
 win: Ты выиграл. Ура. Молодец. Молодцы сосут концы.
 game_over: Потрачено

@@ -19,7 +19,7 @@ class Dinosaur(Object):
         flippable: indicates if the dinosaur can be flipped horizontally.
     """
 
-    __slots__ = *Object.__slots__, "flippable", "direction", "state", 'vel_x', 'vel_y', '_fov'
+    __slots__ = *Object.__slots__, "flippable", "direction", "state", "vel_x", "vel_y", "health", "_fov"
 
     class State(IntEnum):
         """
@@ -55,6 +55,7 @@ class Dinosaur(Object):
     WEIGHT: float = 15.0
     WEIGHT_FACTOR: float = 0.3
     JUMP_ACCEL: float = -(WEIGHT * 8)
+    HEALTH_MAX: int = 1
 
     _total: int = 0
 
@@ -86,6 +87,7 @@ class Dinosaur(Object):
         self.state = self.State.IDLE
         self.vel_x: float = 0.0
         self.vel_y: float = 0.0
+        self.health = self.HEALTH_MAX
         self._fov: Rect = Rect(*self.rect.center, *self.FOV_SIZE)
 
     @property
@@ -137,3 +139,13 @@ class Dinosaur(Object):
         if pygame.time.get_ticks() - self.last_frame_change >= anim_interval:
             self.curr_frame = (self.curr_frame + 1) % self.TOTAL_FRAMES
             self.last_frame_change = pygame.time.get_ticks()
+
+    @property
+    def weight(self) -> float:
+        return self.WEIGHT
+
+    def is_dead(self) -> bool:
+        return self.health <= 0
+
+    def heal(self, plus_hp: int) -> None:
+        self.health = min(self.HEALTH_MAX, self.health + plus_hp)
