@@ -1,6 +1,6 @@
-import core
+import core.input, core.audio
 from .scene import Scene
-from objects import Camera, Ground, TRexNew, PauseMenu
+from objects import Camera, Ground, TRexNew, Poo, PauseMenu
 from object_handlers import PauseMenuHandler, TRexNewHandler, object_handlers
 from data_containers import objects as obj_container, game_data
 
@@ -15,6 +15,7 @@ class NewTrexTest(Scene):
             TRexNew.SIZE[0] * 0.5,
             self.ground.y - TRexNew.SIZE[1] * 1.5)
         )
+        self.trex_new.poos = TRexNew.MAX_POOS
 
         obj_container.add(self.camera)
         obj_container.add(self.ground)

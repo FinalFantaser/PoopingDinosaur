@@ -60,28 +60,26 @@ class TRexNewHandler(ObjectHandler, DinosaurHandler):
         total_vel_x: float = obj.vel_x + obj.vel_x_modifier
         obj.x += total_vel_x / 1000 * obj.update_delta * obj.direction.value[0]
 
-        print(f"total_vel_x: {total_vel_x}")
-
     @classmethod
     def read_input(cls, obj: TRexNew) -> None:
         ground: Ground = obj_container.get_ground()
         update_delta: int = obj.update_delta
+        accel_x: float = obj.ACCEL_X_MODIFIER_PER_MICROSECOND * update_delta
+
 
         if core.input.held("left"):
-            accel_x: float = obj.VEL_X_MODIFIER_MAX / obj.VEL_X_MAX_IN / 1000 * update_delta
             obj.vel_x_modifier = max(obj.vel_x_modifier - accel_x, obj.VEL_X_MODIFIER_MIN)
-            print(f"vel_x_modifier: {obj.vel_x_modifier}")
         elif core.input.held("right"):
-            accel_x: float = obj.VEL_X_MODIFIER_MAX / obj.VEL_X_MAX_IN / 1000 * update_delta
             obj.vel_x_modifier = min(obj.vel_x_modifier + accel_x, obj.VEL_X_MODIFIER_MAX)
-            print(f"vel_x_modifier: {obj.vel_x_modifier}")
         else:
-            # Resetting vel_x_modifier
-            # ...
-            pass
+            if obj.vel_x_modifier > 0:
+                obj.vel_x_modifier = max(obj.vel_x_modifier - accel_x, obj.VEL_X_MODIFIER_MIN)
+            else:
+                obj.vel_x_modifier = min(obj.vel_x_modifier + accel_x, obj.VEL_X_MODIFIER_MAX)
+
 
         if core.input.pressed("up") and obj.rect.bottom >= ground.touch_level:
-            obj.vel_y = obj.JUMP_ACCEL * obj.weight_factor - obj.vel_x_modifier
+            obj.vel_y = obj.JUMP_ACCEL * obj.weight_factor - obj.vel_x_modifier + (obj.poos * obj.POO_WEIGHT)
 
         if (
             core.input.pressed("poop")

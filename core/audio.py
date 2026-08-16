@@ -134,11 +134,14 @@ def sound_play(key: str) -> None:
 
     **NOTE:**: Does nothing if pygame.mixer was not initialized.
     **NOTE:**: Does nothing if sound volume is 0.
+    **NOTE:**: Does nothing if the sound not found.
 
     :param key: Key of the sound object to play.
     """
     if pygame.mixer.get_init() is not None and _sound_vol > 0.0:
-        _sounds[key].play()
+        sound = sound_get(key)
+        if sound is not None:
+            sound.play()
 
 
 def music_load(filepath: Path) -> None:
@@ -165,6 +168,7 @@ def music_play(repeat: bool = True) -> None:
 
     **NOTE:**: Does nothing if pygame.mixer was not initialized.
     **NOTE:**: Does nothing if music volume is 0.
+    **NOTE:**: Does nothing if music not found.
 
     :param repeat: ``True`` to loop the music and ``False`` to stop as the track ends.
     """

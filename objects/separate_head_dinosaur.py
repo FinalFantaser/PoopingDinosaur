@@ -66,7 +66,7 @@ class SeparateHeadDinosaur(Dinosaur):
     @property
     def hitbox(self) -> Rect:
         """Whole body hitbox (head included)"""
-        return Rect(*self.SIZE, *self.pos)
+        return Rect(*self.pos, *self.SIZE)
 
     @property
     def hitbox_body(self) -> Rect:

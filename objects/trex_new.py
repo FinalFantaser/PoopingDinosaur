@@ -32,20 +32,21 @@ class TRexNew(SeparateHeadDinosaur):
     TOTAL_FRAMES_HEAD: int = 3
     VEL_X_MIN: float = 175
     VEL_X_MIN_IN: float = 1.0 # Seconds to reach minimum velocity
-    VEL_X_MODIFIER_MIN = -VEL_X_MIN * 0.5
-    VEL_X_MODIFIER_MAX = VEL_X_MIN * 1.5
+    VEL_X_MODIFIER_MIN = -VEL_X_MIN * 0.25
+    VEL_X_MODIFIER_MAX = VEL_X_MIN * 0.5
     VEL_X_MAX: float = VEL_X_MIN + VEL_X_MODIFIER_MAX
     ACCEL_X_PER_MICROSECOND: float = VEL_X_MAX - VEL_X_MIN / VEL_X_MIN_IN / 1000
+    ACCEL_X_MODIFIER_PER_MICROSECOND: float = VEL_X_MODIFIER_MAX / VEL_X_MIN_IN / 1000
     WEIGHT: float = 5000.0
     WEIGHT_FACTOR: float = 0.8
-    JUMP_ACCEL: float = -(WEIGHT * 0.0625)
+    JUMP_ACCEL: float = -(WEIGHT * 0.05)
     HEALTH_MAX: int = 3
     HEAD_POS: tuple[float, float] = 38, 0
     DRAW_AREA: PygameRect = PygameRect(0, 0, *SIZE_BODY)
     DRAW_AREA_HEAD: PygameRect = PygameRect(0, 16, *SIZE_HEAD)
     HITBOX_BITE_SIZE: tuple[float, float] = SIZE_HEAD
     MAX_POOS: int = 4
-    POO_WEIGHT: float = WEIGHT / 50
+    POO_WEIGHT: float = abs(JUMP_ACCEL) * 0.25 / MAX_POOS
     POOP_INTERVAL: int = 1000
 
     def __init__(self, pos: tuple[float, float]) -> None:
