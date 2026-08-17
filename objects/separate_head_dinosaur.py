@@ -54,12 +54,15 @@ class SeparateHeadDinosaur(Dinosaur):
         )
 
     def animate(self) -> None:
+        if self.state == self.State.DEAD:
+            return
+
         # Body
         super().animate()
 
         # Head
         if self.state == self.State.BITING:
-            if get_ticks() - self.last_frame_change_head >= self.ANIM_INTERVAL_HEAD:
+            if get_ticks() - self.last_frame_change_head >= self.calc_anim_interval(self.ANIM_INTERVAL_HEAD):
                 self.last_frame_change_head = get_ticks()
                 self.curr_frame_head = (self.curr_frame_head + 1) % self.TOTAL_FRAMES_HEAD
 

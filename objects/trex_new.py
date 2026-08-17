@@ -68,3 +68,8 @@ class TRexNew(SeparateHeadDinosaur):
     @property
     def weight_factor(self) -> float:
         return self.weight / self.WEIGHT
+
+    def calc_anim_interval(self, init_interval: int) -> int:
+        speed = self.vel_x + self.vel_x_modifier
+        speed_ratio = min(speed / self.VEL_X_MAX, 1.0)
+        return max(50, int(init_interval * (1.0 - 0.5 * speed_ratio)))

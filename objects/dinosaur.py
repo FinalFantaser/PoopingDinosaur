@@ -133,12 +133,10 @@ class Dinosaur(Object):
         if self.vel_x == 0.0 or self.state == self.State.DEAD:
             return
 
-        # Run animation interval is affected by dinosaur's current speed
-        anim_interval: int = int(self.ANIM_INTERVAL * min(self.VEL_X_MAX / self.vel_x, 2))
-
-        if pygame.time.get_ticks() - self.last_frame_change >= anim_interval:
+        if pygame.time.get_ticks() - self.last_frame_change >= self.calc_anim_interval(self.ANIM_INTERVAL):
             self.curr_frame = (self.curr_frame + 1) % self.TOTAL_FRAMES
             self.last_frame_change = pygame.time.get_ticks()
+            print(self.calc_anim_interval(self.ANIM_INTERVAL))
 
     @property
     def weight(self) -> float:
@@ -149,3 +147,7 @@ class Dinosaur(Object):
 
     def heal(self, plus_hp: int) -> None:
         self.health = min(self.HEALTH_MAX, self.health + plus_hp)
+
+    def calc_anim_interval(self, init_interval: int) -> int:
+        speed_ratio = min(abs(self.vel_x) / self.VEL_X_MAX, 1.0)
+        return max(50, int(init_interval * (1.0 - 0.5 * speed_ratio)))
