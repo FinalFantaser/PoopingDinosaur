@@ -44,6 +44,7 @@ class TRexNew(SeparateHeadDinosaur):
     HEAD_POS: tuple[float, float] = 38, 0
     DRAW_AREA: PygameRect = PygameRect(0, 0, *SIZE_BODY)
     DRAW_AREA_HEAD: PygameRect = PygameRect(0, 16, *SIZE_HEAD)
+    FOV_SIZE: tuple[float, float] = SIZE[0] + SIZE_HEAD[0] * 2, SIZE[1]
     HITBOX_BITE_SIZE: tuple[float, float] = SIZE_HEAD
     MAX_POOS: int = 4
     POO_WEIGHT: float = abs(JUMP_ACCEL) * 0.25 / MAX_POOS

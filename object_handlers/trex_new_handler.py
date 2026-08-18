@@ -41,14 +41,22 @@ class TRexNewHandler(ObjectHandler, DinosaurHandler):
             obj.state = obj.State.RUNNING
 
         # Reacting to environment
+        trex_fov: Rect = obj.fov_ahead
+        trex_hitbox: Rect = obj.hitbox
+        trex_hitbox_bite: Rect = obj.hitbox_bite
+
         for other_obj in obj_container.visible().values():
             # Skipping oneself and ground
             if other_obj.id == obj.id or isinstance(other_obj, Ground):
                 continue
 
             # Seeing edible dinosaurs
-            # ...
-
+            if (
+                    obj.state != obj.State.BITING
+                    and trex_fov.overlaps(other_obj.rect)
+                    and isinstance(other_obj, cls.EDIBLE_DINOSAURS)
+            ):
+                obj.state = obj.State.BITING
 
         obj.last_update = get_ticks()
 
