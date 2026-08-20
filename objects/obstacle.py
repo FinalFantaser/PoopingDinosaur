@@ -66,3 +66,16 @@ class Obstacle(Object):
             (self.x - viewpoint.x, self.y - viewpoint.y),
             self._DRAW_AREAS[self.ob_type]
         )
+
+    @classmethod
+    def make_skeleton(cls, instead_of: Object) -> Self:
+        """
+        Creates a skeleton instead of an object.
+        :param instead_of: Object to be replaced with a skeleton.
+        :return: A skeleton in position slightly above the object.
+        """
+        skeleton: Self = cls(cls.Type.SKELETON, (0, 0))
+        skeleton.rect.center_x = instead_of.rect.center_x
+        skeleton.rect.center_y = instead_of.rect.center_y - instead_of.rect.height/2
+
+        return skeleton

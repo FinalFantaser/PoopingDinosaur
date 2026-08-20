@@ -53,10 +53,39 @@ class TRexNewHandler(ObjectHandler, DinosaurHandler):
             # Seeing edible dinosaurs
             if (
                     obj.state != obj.State.BITING
+                    and obj.poos < 1
                     and trex_fov.overlaps(other_obj.rect)
                     and isinstance(other_obj, cls.EDIBLE_DINOSAURS)
             ):
                 obj.state = obj.State.BITING
+
+            # Biting edible dinosaurs
+            if (
+                obj.state == obj.State.BITING
+                and obj.curr_frame_head >= obj.TOTAL_FRAMES_HEAD - 1
+                and isinstance(obj, cls.EDIBLE_DINOSAURS)
+                and trex_hitbox_bite.overlaps(other_obj.rect)
+            ):
+                other_obj.health -= 1
+
+                # Other dinosaur dies if hp below zero (yeah no shit)
+                if other_obj.health <= 0:
+                    obj_container.queue_delete(other_obj)
+
+                    # Eat smaller dinosaur (don't leave skeleton) and restore health & poos
+                    if other_obj.weight < game_data.HEAVY_DINOSAUR_WEIGHT:
+                        obj.health = min(obj.health + other_obj.HEALTH_MAX, obj.HEALTH_MAX)
+                        obj.poos = min(obj.poos + other_obj.HEALTH_MAX, obj.MAX_POOS)
+                    else: # Leave skeleton
+                        die_explosion: Explosion = Explosion(
+                            spawn=Obstacle.make_skeleton(other_obj)
+                        ).instead_of(other_obj)
+
+                        obj_container.queue_add(die_explosion)
+                # Other dinosaur bounces forward if not killed
+                else:
+                    obj.vel_x += obj.vel_x * 0.25
+                    obj.vel_y -= obj.JUMP_ACCEL * 0.25
 
         obj.last_update = get_ticks()
 

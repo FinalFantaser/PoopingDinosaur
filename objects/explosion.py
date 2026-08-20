@@ -1,3 +1,4 @@
+from typing import Self
 from pygame.time import get_ticks
 
 import core.video
@@ -53,3 +54,11 @@ class Explosion(Object):
                 int(self.SIZE[1]),
             )
         )
+
+    def instead_of(self, instead_of: Object) -> Self:
+        """
+        Place the explosion in the center of the object it is to replace.
+        :param instead_of: the object in place of which the explosion is to be placed.
+        """
+        self.rect.center = instead_of.rect.center
+        return self
