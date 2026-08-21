@@ -31,6 +31,16 @@ class TRexNewHandler(ObjectHandler, DinosaurHandler):
             accel_x: float = obj.ACCEL_X_PER_MICROSECOND * update_delta
             obj.vel_x = max(obj.vel_x - accel_x, obj.VEL_X_MIN)
 
+        # Blink if invincible
+        if obj.invincibility > 0:
+            obj.invincibility = max(0, obj.invincibility - update_delta)
+            if get_ticks() - obj.last_blink >= obj.BLINK_INTERVAL:
+                obj.last_blink = get_ticks()
+                obj.visible = not obj.visible
+        else:
+            obj.visible = True
+
+
         # Stop biting
         if (
             obj.state == obj.State.BITING

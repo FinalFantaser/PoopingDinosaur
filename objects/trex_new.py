@@ -7,6 +7,7 @@ from .separate_head_dinosaur import SeparateHeadDinosaur
 
 class TRexNew(SeparateHeadDinosaur):
     """
+    INVINCIBILITY_DURATION: default duration of invincibility state (ms).
     vel_x_modifier: acceleration/slowdown for the basic velocity depending on which direction key is pressed.
     """
 
@@ -15,7 +16,6 @@ class TRexNew(SeparateHeadDinosaur):
         'invincibility',
         'last_blink',
         'visible',
-        'health',
         'poos',
         'last_pooped_at',
     )
@@ -37,6 +37,8 @@ class TRexNew(SeparateHeadDinosaur):
     VEL_X_MAX: float = VEL_X_MIN + VEL_X_MODIFIER_MAX
     ACCEL_X_PER_MICROSECOND: float = VEL_X_MAX - VEL_X_MIN / VEL_X_MIN_IN / 1000
     ACCEL_X_MODIFIER_PER_MICROSECOND: float = VEL_X_MODIFIER_MAX / VEL_X_MIN_IN / 1000
+    INVINCIBILITY_DURATION: int = 3000
+    BLINK_INTERVAL: int = 100
     WEIGHT: float = 5000.0
     WEIGHT_FACTOR: float = 0.8
     JUMP_ACCEL: float = -(WEIGHT * 0.05)
