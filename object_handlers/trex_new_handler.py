@@ -97,6 +97,17 @@ class TRexNewHandler(ObjectHandler, DinosaurHandler):
                     obj.vel_x += obj.vel_x * 0.25
                     obj.vel_y -= obj.JUMP_ACCEL * 0.25
 
+            # Skipping obstacles and NPCs if invincible
+            if obj.invincibility > 0:
+                continue
+
+            # Collision with dinosaurs (bouncing)
+            if isinstance(other_obj, Dinosaur) and trex_hitbox.overlaps(other_obj.hitbox):
+                cls.react_to_dinosaur(obj, trex_hitbox, other_obj)
+
+            # Collision with obstacles
+            # ...
+
         obj.last_update = get_ticks()
 
     @classmethod
@@ -147,3 +158,17 @@ class TRexNewHandler(ObjectHandler, DinosaurHandler):
 
             sound_key: str = random.choice(tuple(f"fart_{idx}" for idx in range(1, 3)))
             core.audio.sound_play(sound_key)
+
+    @classmethod
+    def react_to_dinosaur(cls, trex: TRexNew, trex_hitbox: Rect, dinosaur: Dinosaur) -> None:
+        # If a dinosaur is smol, Super Mario Brothers the sucker
+        if (
+                dinosaur.weight < game_data.HEAVY_DINOSAUR_WEIGHT
+                and trex.vel_y > 0
+                and trex.hitbox.bottom >= dinosaur.hitbox.top - dinosaur.hitbox.height/3
+        ):
+            obj_container.queue_delete(dinosaur)
+            obj_container.queue_add(FlattenedObject.instead_of(dinosaur))
+        # Otherwise, bounce
+        else:
+            cls.bounce_back(trex, dinosaur)

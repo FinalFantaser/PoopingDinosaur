@@ -22,7 +22,7 @@ class ObjectHandler:
         return False
 
     @classmethod
-    def physics(cls, obj: Dinosaur) -> None:
+    def physics(cls, obj: Object) -> None:
         for att in 'vel_x', 'vel_y', 'WEIGHT_FACTOR':
             if not hasattr(obj, att):
                 return

@@ -102,7 +102,7 @@ class DinosaurHandler:
                     dinosaur.vel_y = dinosaur.JUMP_ACCEL
 
     @classmethod
-    def bounce_back(cls, dinosaur: Dinosaur, obstacle: Obstacle) -> None:
+    def bounce_back(cls, dinosaur: Dinosaur, obstacle: Obstacle|Dinosaur) -> None:
         dinosaur.vel_x = dinosaur.VEL_X_MIN / 4 * dinosaur.direction.opposite().value[0]
         dinosaur.vel_y = dinosaur.JUMP_ACCEL / 2
 
@@ -172,7 +172,7 @@ class DinosaurHandler:
         :param dinosaur: Reacting dinosaur.
         :param skeleton: Thorns to react to.
         """
-        pass
+        cls.bounce_back(dinosaur, skeleton)
 
     @classmethod
     def cactus_see(cls, dinosaur: Dinosaur, cactus: Obstacle) -> None:

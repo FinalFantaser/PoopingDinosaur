@@ -15,6 +15,7 @@ from .triceratops_handler import TriceratopsHandler
 from .obstacle_handler import ObstacleHandler
 from .poo_handler import PooHandler
 from .explosion_handler import ExplosionHandler
+from .flattened_object_handler import FlattenedObjectHandler
 
 # GUI
 from .gui.health_meter_handler import HealthMeterHandler

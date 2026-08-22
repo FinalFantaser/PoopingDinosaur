@@ -2,6 +2,7 @@
 from .rect import Rect
 from .direction import Direction
 from .object import Object
+from .object_with_physics import ObjectWithPhysics
 from .camera import Camera
 
 # Environment
@@ -12,6 +13,7 @@ from .forest import Forest
 from .obstacle import Obstacle
 from .poo import Poo
 from .explosion import Explosion
+from .flattened_object import FlattenedObject
 
 # Dinosaurs
 from .dinosaur import Dinosaur
