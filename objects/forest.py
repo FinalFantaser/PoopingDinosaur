@@ -10,6 +10,7 @@ from .object import Rect, Object
 class Forest(Object):
     __slots__ = *Object.__slots__, 'total_blocks', 'blocks'
 
+    LAYER = Object.Layer.BACKGROUND_2
     ID: str = 'forest'
     TEXTURE_NAME: str = 'bg_forest.png'
     BLOCK_VAR_RANGE: int = 2

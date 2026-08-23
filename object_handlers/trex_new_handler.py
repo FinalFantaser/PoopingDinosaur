@@ -103,7 +103,7 @@ class TRexNewHandler(ObjectHandler, DinosaurHandler):
 
             # Collision with dinosaurs (bouncing)
             if isinstance(other_obj, Dinosaur) and trex_hitbox.overlaps(other_obj.hitbox):
-                cls.react_to_dinosaur(obj, trex_hitbox, other_obj)
+                cls.react_to_dinosaur(obj, other_obj)
 
             # Collision with obstacles
             # ...
@@ -160,15 +160,19 @@ class TRexNewHandler(ObjectHandler, DinosaurHandler):
             core.audio.sound_play(sound_key)
 
     @classmethod
-    def react_to_dinosaur(cls, trex: TRexNew, trex_hitbox: Rect, dinosaur: Dinosaur) -> None:
+    def react_to_dinosaur(cls, trex: TRexNew, dinosaur: Dinosaur) -> None:
         # If a dinosaur is smol, Super Mario Brothers the sucker
-        if (
-                dinosaur.weight < game_data.HEAVY_DINOSAUR_WEIGHT
-                and trex.vel_y > 0
-                and trex.hitbox.bottom >= dinosaur.hitbox.top - dinosaur.hitbox.height/3
-        ):
-            obj_container.queue_delete(dinosaur)
-            obj_container.queue_add(FlattenedObject.instead_of(dinosaur))
+        if dinosaur.weight < game_data.HEAVY_DINOSAUR_WEIGHT:
+            flatten_hitbox = trex.hitbox_flatten
+            dinosaur_hitbox = dinosaur.hitbox
+
+            if (
+                    trex.vel_y > 0
+                    and flatten_hitbox.overlaps(dinosaur_hitbox)
+                    and flatten_hitbox.bottom >= dinosaur_hitbox.top - dinosaur_hitbox.height / 3
+            ):
+                obj_container.queue_delete(dinosaur)
+                obj_container.queue_add(FlattenedObject.instead_of(dinosaur))
         # Otherwise, bounce
         else:
             cls.bounce_back(trex, dinosaur)

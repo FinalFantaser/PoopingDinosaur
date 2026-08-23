@@ -1,7 +1,9 @@
+import core.video
+
 from pygame import Rect as PygameRect
 from pygame.time import get_ticks
 
-import core.video
+from .rect import Rect
 from .separate_head_dinosaur import SeparateHeadDinosaur
 
 
@@ -48,6 +50,7 @@ class TRexNew(SeparateHeadDinosaur):
     DRAW_AREA_HEAD: PygameRect = PygameRect(0, 16, *SIZE_HEAD)
     FOV_SIZE: tuple[float, float] = SIZE[0] + SIZE_HEAD[0] * 2, SIZE[1]
     HITBOX_BITE_SIZE: tuple[float, float] = SIZE_HEAD
+    HITBOX_FLATTEN: tuple[float, float, float, float] = 20, 0, 16, 16
     MAX_POOS: int = 4
     POO_WEIGHT: float = abs(JUMP_ACCEL) * 0.25 / MAX_POOS
     POOP_INTERVAL: int = 1000
@@ -76,3 +79,14 @@ class TRexNew(SeparateHeadDinosaur):
         speed = self.vel_x + self.vel_x_modifier
         speed_ratio = min(speed / self.VEL_X_MAX, 1.0)
         return max(50, int(init_interval * (1.0 - 0.5 * speed_ratio)))
+
+    @property
+    def hitbox_flatten(self) -> Rect:
+        main_rect = self.rect
+
+        return Rect(
+            main_rect.x + self.HITBOX_FLATTEN[0],
+            main_rect.y + self.HITBOX_FLATTEN[1],
+            self.HITBOX_FLATTEN[2],
+            self.HITBOX_FLATTEN[3],
+        )

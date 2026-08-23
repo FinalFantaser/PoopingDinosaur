@@ -1,7 +1,8 @@
 import core.input, core.audio
 from .scene import Scene
-from objects import Camera, Ground, TRexNew, Poo, PauseMenu
+from objects import Camera, Ground, TRexNew, PauseMenu
 from object_handlers import PauseMenuHandler, TRexNewHandler, object_handlers
+from utilities.generators import ForestGenerator
 from data_containers import objects as obj_container, game_data
 
 class NewTrexTest(Scene):
@@ -20,6 +21,7 @@ class NewTrexTest(Scene):
         obj_container.add(self.camera)
         obj_container.add(self.ground)
         obj_container.add(self.trex_new)
+        self.generator: ForestGenerator = ForestGenerator(self.ground.total_tiles)
 
     def update(self) -> None:
         if game_data.quit:
@@ -39,6 +41,7 @@ class NewTrexTest(Scene):
             return
 
         if obj_container.get(PauseMenu.ID) is None:
+            self.generator.generate()
             self.fps = core.video.get_fps()
 
             for obj in obj_container.with_handlers().values():

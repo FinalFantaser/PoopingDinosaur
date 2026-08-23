@@ -30,7 +30,7 @@ class Poo(Object):
 
         self.vel_y: float = 0.0
         self.weight: float = weight
-        self.weight_factor: float = max(0.01, min(1.0, self.weight / 100))
+        self.weight_factor: float = max(0.8, min(1.0, self.weight / 100))
 
     def animate(self):
         if pygame.time.get_ticks() - self.last_frame_change >= self.ANIM_INTERVAL:
