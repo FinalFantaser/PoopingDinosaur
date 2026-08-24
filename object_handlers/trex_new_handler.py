@@ -40,12 +40,11 @@ class TRexNewHandler(ObjectHandler, DinosaurHandler):
         else:
             obj.visible = True
 
-
         # Stop biting
         if (
             obj.state == obj.State.BITING
             and obj.curr_frame_head == obj.TOTAL_FRAMES_HEAD - 1
-            and get_ticks() - obj.last_frame_change_head >= obj.ANIM_INTERVAL_HEAD
+            and get_ticks() - obj.last_frame_change_head >= obj.calc_anim_interval(obj.ANIM_INTERVAL_HEAD)
         ):
             obj.curr_frame_head = 0
             obj.last_frame_change_head = get_ticks()
@@ -57,8 +56,8 @@ class TRexNewHandler(ObjectHandler, DinosaurHandler):
         trex_hitbox_bite: Rect = obj.hitbox_bite
 
         for other_obj in obj_container.visible().values():
-            # Skipping oneself and ground
-            if other_obj.id == obj.id or isinstance(other_obj, Ground):
+            # Skipping non-MAIN layer, oneself, ground
+            if other_obj.LAYER != obj.LAYER or other_obj.id == obj.id or isinstance(other_obj, Ground):
                 continue
 
             # Seeing edible dinosaurs
@@ -73,11 +72,11 @@ class TRexNewHandler(ObjectHandler, DinosaurHandler):
             # Biting edible dinosaurs
             if (
                 obj.state == obj.State.BITING
+                and obj.poos < obj.MAX_POOS
                 and obj.curr_frame_head >= obj.TOTAL_FRAMES_HEAD - 1
-                and isinstance(obj, cls.EDIBLE_DINOSAURS)
+                and isinstance(other_obj, cls.EDIBLE_DINOSAURS)
                 and trex_hitbox_bite.overlaps(other_obj.rect)
             ):
-                print(f"Biting {other_obj.id}")
                 other_obj.health -= 1
 
                 # Other dinosaur dies if hp below zero (yeah no shit)
@@ -172,6 +171,7 @@ class TRexNewHandler(ObjectHandler, DinosaurHandler):
                     trex.vel_y > 0
                     and flatten_hitbox.overlaps(dinosaur_hitbox)
                     and flatten_hitbox.bottom >= dinosaur_hitbox.top - dinosaur_hitbox.height / 3
+                    and dinosaur.rect.bottom >= obj_container.get_ground().touch_level
             ):
                 obj_container.queue_delete(dinosaur)
                 obj_container.queue_add(FlattenedObject.instead_of(dinosaur))

@@ -90,5 +90,4 @@ class SeparateHeadDinosaur(Dinosaur):
     @property
     def hitbox_bite(self) -> Rect:
         """Bite area hitbox"""
-        hitbox_head = self.hitbox_head
-        return Rect(hitbox_head.right - self.HITBOX_BITE_SIZE[0]/2, hitbox_head.top, *self.HITBOX_BITE_SIZE)
+        return self.hitbox_head
