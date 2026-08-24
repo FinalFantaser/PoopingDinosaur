@@ -29,7 +29,7 @@ class TRexNew(SeparateHeadDinosaur):
     SIZE_HEAD: tuple[float, float] = 15, 14
     TEXTURE_NAME: str = 'trex_new.png'
     ANIM_INTERVAL: int = 250
-    ANIM_INTERVAL_HEAD: int = 100
+    ANIM_INTERVAL_HEAD: int = 250
     TOTAL_FRAMES: int = 2
     TOTAL_FRAMES_HEAD: int = 3
     VEL_X_MIN: float = 175
@@ -90,3 +90,12 @@ class TRexNew(SeparateHeadDinosaur):
             self.HITBOX_FLATTEN[2],
             self.HITBOX_FLATTEN[3],
         )
+
+    def draw(self, viewpoint: Rect) -> None:
+        hitbox_bite = self.hitbox_bite
+        hitbox_bite.x -= viewpoint.x
+        hitbox_bite.y -= viewpoint.y
+
+        core.video.draw_rect(hitbox_bite.to_pygame_rect(), "0xFF0000")
+
+        super().draw(viewpoint)

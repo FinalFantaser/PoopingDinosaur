@@ -48,6 +48,7 @@ class TRexNewHandler(ObjectHandler, DinosaurHandler):
             and get_ticks() - obj.last_frame_change_head >= obj.ANIM_INTERVAL_HEAD
         ):
             obj.curr_frame_head = 0
+            obj.last_frame_change_head = get_ticks()
             obj.state = obj.State.RUNNING
 
         # Reacting to environment
@@ -63,7 +64,7 @@ class TRexNewHandler(ObjectHandler, DinosaurHandler):
             # Seeing edible dinosaurs
             if (
                     obj.state != obj.State.BITING
-                    and obj.poos < 1
+                    and obj.poos < obj.MAX_POOS
                     and trex_fov.overlaps(other_obj.rect)
                     and isinstance(other_obj, cls.EDIBLE_DINOSAURS)
             ):
@@ -76,6 +77,7 @@ class TRexNewHandler(ObjectHandler, DinosaurHandler):
                 and isinstance(obj, cls.EDIBLE_DINOSAURS)
                 and trex_hitbox_bite.overlaps(other_obj.rect)
             ):
+                print(f"Biting {other_obj.id}")
                 other_obj.health -= 1
 
                 # Other dinosaur dies if hp below zero (yeah no shit)
