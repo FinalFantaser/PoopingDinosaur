@@ -35,11 +35,15 @@ class TRexNewHandler(ObjectHandler, DinosaurHandler):
 
         update_delta: int = obj.update_delta
 
+        trex_fov: Rect = obj.fov_ahead
+        trex_hitbox: Rect = obj.hitbox
+        trex_hitbox_bite: Rect = obj.hitbox_bite
+
         # Accelerating / Slowing down with no external impact
-        if obj.vel_x < obj.VEL_X_MIN:
+        if obj.vel_x < obj.VEL_X_MIN and trex_hitbox.bottom >= obj_container.get_ground().touch_level:
             accel_x: float = obj.ACCEL_X_PER_MICROSECOND * update_delta
             obj.vel_x = min(obj.vel_x + accel_x, obj.VEL_X_MIN)
-        elif obj.vel_x > obj.VEL_X_MAX:
+        elif obj.vel_x >= obj.VEL_X_MAX:
             accel_x: float = obj.ACCEL_X_PER_MICROSECOND * update_delta
             obj.vel_x = max(obj.vel_x - accel_x, obj.VEL_X_MIN)
 
@@ -63,10 +67,6 @@ class TRexNewHandler(ObjectHandler, DinosaurHandler):
             obj.state = obj.State.RUNNING
 
         # Reacting to environment
-        trex_fov: Rect = obj.fov_ahead
-        trex_hitbox: Rect = obj.hitbox
-        trex_hitbox_bite: Rect = obj.hitbox_bite
-
         for other_obj in obj_container.visible().values():
             # Skipping non-MAIN layer, oneself, ground
             if other_obj.LAYER != obj.LAYER or other_obj.id == obj.id or isinstance(other_obj, Ground):
@@ -219,15 +219,17 @@ class TRexNewHandler(ObjectHandler, DinosaurHandler):
 
 
     @classmethod
-    def tree_touch(cls, dinosaur: Dinosaur, tree: Obstacle) -> None:
+    def tree_touch(cls, dinosaur: TRexNew, tree: Obstacle) -> None:
         # Bounce back
         if dinosaur.hitbox.bottom >= obj_container.get_ground().touch_level:
             dinosaur.vel_y = dinosaur.JUMP_ACCEL
-        else:
+            dinosaur.vel_x = -0.25 * abs(dinosaur.vel_y)
+        else: # Loose some speed
             dinosaur.vel_y = dinosaur.JUMP_ACCEL * 0.8
+            dinosaur.vel_x = max(dinosaur.vel_x * 0.7, dinosaur.VEL_X_MIN)
 
         dinosaur.vel_x_modifier = dinosaur.VEL_X_MODIFIER_MIN
-        dinosaur.vel_x = -dinosaur.vel_x * 5
+
 
     @classmethod
     def fern_touch(cls, dinosaur: Dinosaur, fern: Obstacle) -> None:
