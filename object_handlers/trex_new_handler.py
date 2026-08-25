@@ -1,7 +1,9 @@
+from typing import Callable
 import random
 from pygame.time import get_ticks
 
 import core.input, core.audio
+from data_containers.objects import dinosaurs
 from objects import *
 from data_containers import objects as obj_container, game_data
 from .object_handler import ObjectHandler
@@ -15,6 +17,16 @@ class TRexNewHandler(ObjectHandler, DinosaurHandler):
         Pterodactyl,
         # ...
     )
+
+    REACTIONS_SEE: dict[Obstacle.Type, str|None] = {
+        Obstacle.Type.CACTUS: None,
+        Obstacle.Type.THORNS: None,
+        Obstacle.Type.STONE: None,
+        Obstacle.Type.TREE: None,
+        Obstacle.Type.FERN: None,
+        Obstacle.Type.SKELETON: None,
+        # ... spicy berries
+    }
 
     @classmethod
     def update(cls, obj: TRexNew) -> None:
@@ -106,8 +118,9 @@ class TRexNewHandler(ObjectHandler, DinosaurHandler):
             if isinstance(other_obj, Dinosaur) and trex_hitbox.overlaps(other_obj.hitbox):
                 cls.react_to_dinosaur(obj, other_obj)
 
-            # Collision with obstacles
-            # ...
+            # Obstacles
+            if isinstance(other_obj, Obstacle):
+                cls.react_to_obstacles(obj, other_obj)
 
         obj.last_update = get_ticks()
 
@@ -178,3 +191,48 @@ class TRexNewHandler(ObjectHandler, DinosaurHandler):
         # Otherwise, bounce
         else:
             cls.bounce_back(trex, dinosaur)
+
+    @classmethod
+    def cactus_touch(cls, dinosaur: Dinosaur, cactus: Obstacle) -> None:
+        pass
+
+    @classmethod
+    def thorns_touch(cls, dinosaur: TRexNew, thorns: Obstacle) -> None:
+        # Slow down
+        dinosaur.vel_x_modifier = dinosaur.VEL_X_MODIFIER_MIN
+
+        # Hurt
+        dinosaur.health -= 1
+        dinosaur.invincibility = dinosaur.INVINCIBILITY_DURATION
+
+        # Jump in pain
+        dinosaur.vel_y = dinosaur.JUMP_ACCEL * 0.1
+
+    @classmethod
+    def stone_touch(cls, dinosaur: TRexNew, stone: Obstacle) -> None:
+        if dinosaur.hitbox.bottom >= obj_container.get_ground().touch_level:
+            dinosaur.vel_y = dinosaur.JUMP_ACCEL * 0.3
+        else:
+            dinosaur.vel_y = dinosaur.JUMP_ACCEL * 0.5
+
+        dinosaur.vel_x_modifier = dinosaur.VEL_X_MODIFIER_MAX * 1.5
+
+
+    @classmethod
+    def tree_touch(cls, dinosaur: Dinosaur, tree: Obstacle) -> None:
+        # Bounce back
+        if dinosaur.hitbox.bottom >= obj_container.get_ground().touch_level:
+            dinosaur.vel_y = dinosaur.JUMP_ACCEL
+        else:
+            dinosaur.vel_y = dinosaur.JUMP_ACCEL * 0.8
+
+        dinosaur.vel_x_modifier = dinosaur.VEL_X_MODIFIER_MIN
+        dinosaur.vel_x = -dinosaur.vel_x * 5
+
+    @classmethod
+    def fern_touch(cls, dinosaur: Dinosaur, fern: Obstacle) -> None:
+        pass
+
+    @classmethod
+    def skeleton_touch(cls, dinosaur: Dinosaur, skeleton: Obstacle) -> None:
+        pass

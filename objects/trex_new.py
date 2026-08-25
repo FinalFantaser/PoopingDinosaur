@@ -89,3 +89,9 @@ class TRexNew(SeparateHeadDinosaur):
             self.HITBOX_FLATTEN[2],
             self.HITBOX_FLATTEN[3],
         )
+    
+    def draw(self, viewpoint: Rect) -> None:
+        if not self.visible:
+            return
+        
+        super().draw(viewpoint)
