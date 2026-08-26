@@ -40,12 +40,13 @@ class TRexNewHandler(ObjectHandler, DinosaurHandler):
         trex_hitbox_bite: Rect = obj.hitbox_bite
 
         # Accelerating / Slowing down with no external impact
-        if obj.vel_x < obj.VEL_X_MIN and trex_hitbox.bottom >= obj_container.get_ground().touch_level:
-            accel_x: float = obj.ACCEL_X_PER_MICROSECOND * update_delta
-            obj.vel_x = min(obj.vel_x + accel_x, obj.VEL_X_MIN)
+        if obj.vel_x < obj.VEL_X_MIN:
+            if trex_hitbox.bottom >= obj_container.get_ground().touch_level:
+                accel_x: float = obj.ACCEL_X_PER_MICROSECOND * update_delta
+                obj.vel_x = min(obj.vel_x + accel_x, obj.VEL_X_MIN)
         elif obj.vel_x >= obj.VEL_X_MAX:
             accel_x: float = obj.ACCEL_X_PER_MICROSECOND * update_delta
-            obj.vel_x = max(obj.vel_x - accel_x, obj.VEL_X_MIN)
+            obj.vel_x = max(obj.vel_x - accel_x, obj.VEL_X_MAX)
 
         # Blink if invincible
         if obj.invincibility > 0:
@@ -130,6 +131,8 @@ class TRexNewHandler(ObjectHandler, DinosaurHandler):
 
         # Horizontal movement
         total_vel_x: float = obj.vel_x + obj.vel_x_modifier
+
+
         obj.x += total_vel_x / 1000 * obj.update_delta * obj.direction.value[0]
 
     @classmethod
@@ -140,14 +143,16 @@ class TRexNewHandler(ObjectHandler, DinosaurHandler):
 
 
         if core.input.held("left"):
-            obj.vel_x_modifier = max(obj.vel_x_modifier - accel_x, obj.VEL_X_MODIFIER_MIN)
+            if obj.hitbox.bottom >= ground.touch_level:
+                obj.vel_x_modifier = max(obj.vel_x_modifier - accel_x, obj.VEL_X_MODIFIER_MIN)
         elif core.input.held("right"):
-            obj.vel_x_modifier = min(obj.vel_x_modifier + accel_x, obj.VEL_X_MODIFIER_MAX)
+            if obj.hitbox.bottom >= ground.touch_level:
+                obj.vel_x_modifier = min(obj.vel_x_modifier + accel_x, obj.VEL_X_MODIFIER_MAX)
         else:
             if obj.vel_x_modifier > 0:
-                obj.vel_x_modifier = max(obj.vel_x_modifier - accel_x, obj.VEL_X_MODIFIER_MIN)
+                obj.vel_x_modifier = max(obj.vel_x_modifier - accel_x, obj.VEL_X_MODIFIER_DEFAULT)
             else:
-                obj.vel_x_modifier = min(obj.vel_x_modifier + accel_x, obj.VEL_X_MODIFIER_MAX)
+                obj.vel_x_modifier = min(obj.vel_x_modifier + accel_x, obj.VEL_X_MODIFIER_DEFAULT)
 
 
         if core.input.pressed("up") and obj.rect.bottom >= ground.touch_level:
@@ -220,15 +225,10 @@ class TRexNewHandler(ObjectHandler, DinosaurHandler):
 
     @classmethod
     def tree_touch(cls, dinosaur: TRexNew, tree: Obstacle) -> None:
-        # Bounce back
-        if dinosaur.hitbox.bottom >= obj_container.get_ground().touch_level:
-            dinosaur.vel_y = dinosaur.JUMP_ACCEL
-            dinosaur.vel_x = -0.25 * abs(dinosaur.vel_y)
-        else: # Loose some speed
-            dinosaur.vel_y = dinosaur.JUMP_ACCEL * 0.8
-            dinosaur.vel_x = max(dinosaur.vel_x * 0.7, dinosaur.VEL_X_MIN)
-
+        direction = -1 if tree.rect.center_x >= dinosaur.hitbox.center_x else 1
+        dinosaur.vel_x = dinosaur.VEL_X_MIN * 0.5 * direction + dinosaur.vel_x * direction * 0.25
         dinosaur.vel_x_modifier = dinosaur.VEL_X_MODIFIER_MIN
+        dinosaur.vel_y = dinosaur.JUMP_ACCEL
 
 
     @classmethod

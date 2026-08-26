@@ -34,7 +34,8 @@ class TRexNew(SeparateHeadDinosaur):
     TOTAL_FRAMES_HEAD: int = 3
     VEL_X_MIN: float = 175
     VEL_X_MIN_IN: float = 1.0 # Seconds to reach minimum velocity
-    VEL_X_MODIFIER_MIN = -VEL_X_MIN * 0.25
+    VEL_X_MODIFIER_MIN = 0
+    VEL_X_MODIFIER_DEFAULT = VEL_X_MIN * 0.25
     VEL_X_MODIFIER_MAX = VEL_X_MIN * 0.5
     VEL_X_MAX: float = VEL_X_MIN + VEL_X_MODIFIER_MAX
     ACCEL_X_PER_MICROSECOND: float = (VEL_X_MAX - VEL_X_MIN) / VEL_X_MIN_IN / 1000
