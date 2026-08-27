@@ -67,11 +67,6 @@ class SeparateHeadDinosaur(Dinosaur):
                 self.curr_frame_head = (self.curr_frame_head + 1) % self.TOTAL_FRAMES_HEAD
 
     @property
-    def hitbox(self) -> Rect:
-        """Whole body hitbox (head included)"""
-        return Rect(*self.pos, *self.SIZE)
-
-    @property
     def hitbox_body(self) -> Rect:
         """Body hitbox (no head)"""
         return Rect(*self.pos, *self.SIZE_BODY)

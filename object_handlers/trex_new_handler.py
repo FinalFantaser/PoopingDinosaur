@@ -98,7 +98,7 @@ class TRexNewHandler(ObjectHandler, DinosaurHandler):
 
                     # Eat smaller dinosaur (don't leave skeleton) and restore health & poos
                     if other_obj.weight < game_data.HEAVY_DINOSAUR_WEIGHT:
-                        obj.health = min(obj.health + other_obj.HEALTH_MAX, obj.HEALTH_MAX)
+                        obj.heal(1)
                         obj.poos = min(obj.poos + other_obj.HEALTH_MAX, obj.MAX_POOS)
                     else: # Leave skeleton
                         die_explosion: Explosion = Explosion(
@@ -204,7 +204,7 @@ class TRexNewHandler(ObjectHandler, DinosaurHandler):
     @classmethod
     def thorns_touch(cls, dinosaur: TRexNew, thorns: Obstacle) -> None:
         # Slow down
-        dinosaur.vel_x_modifier = dinosaur.VEL_X_MODIFIER_MIN
+        cls.fern_touch(dinosaur, thorns)
 
         # Hurt
         dinosaur.health -= 1
@@ -215,6 +215,11 @@ class TRexNewHandler(ObjectHandler, DinosaurHandler):
 
     @classmethod
     def stone_touch(cls, dinosaur: TRexNew, stone: Obstacle) -> None:
+        # TRex can go past stones safely if threading slowly (also, ignore when thrown bock)
+        if dinosaur.vel_x <= dinosaur.VEL_X_MIN:
+            print(f"{dinosaur.vel_x}/{dinosaur.VEL_X_MIN}")
+            return
+
         if dinosaur.hitbox.bottom >= obj_container.get_ground().touch_level:
             dinosaur.vel_y = dinosaur.JUMP_ACCEL * 0.3
         else:
@@ -233,7 +238,7 @@ class TRexNewHandler(ObjectHandler, DinosaurHandler):
 
     @classmethod
     def fern_touch(cls, dinosaur: Dinosaur, fern: Obstacle) -> None:
-        pass
+        dinosaur.vel_x = min(dinosaur.vel_x, dinosaur.VEL_X_MIN/2)
 
     @classmethod
     def skeleton_touch(cls, dinosaur: Dinosaur, skeleton: Obstacle) -> None:
