@@ -33,12 +33,13 @@ class TRexNew(SeparateHeadDinosaur):
     TOTAL_FRAMES: int = 2
     TOTAL_FRAMES_HEAD: int = 3
     VEL_X_MIN: float = 175
-    VEL_X_MIN_IN: float = 1.0 # Seconds to reach minimum velocity
+    VEL_X_MAX: float = VEL_X_MIN * 1.5
+    VEL_X_MIN_IN: float = 0.5 # Seconds to reach minimum velocity
     VEL_X_MODIFIER_MIN = 0
-    VEL_X_MODIFIER_DEFAULT = VEL_X_MIN * 0.25
-    VEL_X_MODIFIER_MAX = VEL_X_MIN * 0.5
-    VEL_X_MAX: float = VEL_X_MIN + VEL_X_MODIFIER_MAX
-    ACCEL_X_PER_MICROSECOND: float = (VEL_X_MAX - VEL_X_MIN) / VEL_X_MIN_IN / 1000
+    VEL_X_MODIFIER_MAX = VEL_X_MAX - VEL_X_MIN
+    VEL_X_MODIFIER_DEFAULT = VEL_X_MODIFIER_MAX * 0.25
+    VEL_X_MODIFIER_MAX_IN = 0.25 # Seconds to reach minimum velocity modifier
+    ACCEL_X_PER_MICROSECOND: float = VEL_X_MODIFIER_MAX / VEL_X_MODIFIER_MAX_IN / 1000
     ACCEL_X_MODIFIER_PER_MICROSECOND: float = VEL_X_MODIFIER_MAX / VEL_X_MIN_IN / 1000
     INVINCIBILITY_DURATION: int = 3000
     BLINK_INTERVAL: int = 100
@@ -54,6 +55,7 @@ class TRexNew(SeparateHeadDinosaur):
     HITBOX_FLATTEN: tuple[float, float, float, float] = 20, 0, 16, 16
     MAX_POOS: int = 4
     POO_WEIGHT: float = abs(JUMP_ACCEL) * 0.25 / MAX_POOS
+    POO_VELOCITY_PENALTY: float = VEL_X_MIN / 4 / MAX_POOS
     POOP_INTERVAL: int = 1000
 
     def __init__(self, pos: tuple[float, float]) -> None:

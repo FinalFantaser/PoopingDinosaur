@@ -130,8 +130,12 @@ class TRexNewHandler(ObjectHandler, DinosaurHandler):
         cls.gravity(obj)
 
         # Horizontal movement
-        total_vel_x: float = obj.vel_x + obj.vel_x_modifier
+        vel_x_modifier = obj.vel_x_modifier
 
+        if vel_x_modifier >= obj.VEL_X_MODIFIER_MIN and obj.vel_x >= obj.VEL_X_MAX:
+            vel_x_modifier = 0
+
+        total_vel_x: float = obj.vel_x + vel_x_modifier - (obj.poos * obj.POO_VELOCITY_PENALTY)
 
         obj.x += total_vel_x / 1000 * obj.update_delta * obj.direction.value[0]
 
@@ -216,8 +220,14 @@ class TRexNewHandler(ObjectHandler, DinosaurHandler):
     @classmethod
     def stone_touch(cls, dinosaur: TRexNew, stone: Obstacle) -> None:
         # TRex can go past stones safely if threading slowly (also, ignore when thrown bock)
-        if dinosaur.vel_x <= dinosaur.VEL_X_MIN:
-            print(f"{dinosaur.vel_x}/{dinosaur.VEL_X_MIN}")
+        vel_x_modifier = dinosaur.vel_x_modifier
+
+        if vel_x_modifier >= dinosaur.VEL_X_MODIFIER_MIN and dinosaur.vel_x >= dinosaur.VEL_X_MAX:
+            vel_x_modifier = 0
+
+        total_vel_x: float = dinosaur.vel_x + vel_x_modifier - (dinosaur.poos * dinosaur.POO_VELOCITY_PENALTY)
+
+        if total_vel_x <= dinosaur.VEL_X_MIN:
             return
 
         if dinosaur.hitbox.bottom >= obj_container.get_ground().touch_level:
@@ -225,7 +235,7 @@ class TRexNewHandler(ObjectHandler, DinosaurHandler):
         else:
             dinosaur.vel_y = dinosaur.JUMP_ACCEL * 0.5
 
-        dinosaur.vel_x_modifier = dinosaur.VEL_X_MODIFIER_MAX * 1.5
+        dinosaur.vel_x *= 1.2
 
 
     @classmethod
