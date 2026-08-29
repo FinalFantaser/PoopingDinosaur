@@ -102,9 +102,32 @@ class DinosaurHandler:
                     dinosaur.vel_y = dinosaur.JUMP_ACCEL
 
     @classmethod
-    def bounce_back(cls, dinosaur: Dinosaur, obstacle: Obstacle|Dinosaur) -> None:
-        dinosaur.vel_x = dinosaur.VEL_X_MIN / 4 * dinosaur.direction.opposite().value[0]
-        dinosaur.vel_y = dinosaur.JUMP_ACCEL / 2
+    def bounce(
+            cls,
+            dinosaur: Dinosaur,
+            obstacle: Obstacle|Dinosaur,
+            opposite_dir: bool,
+            override_vel_x: float|None = None,
+            override_jump: float|None = None,
+    ):
+        """Bounce in a specifed direction of current movement with quarter of current horizontal velocity."""
+        vel_x = override_vel_x if override_vel_x is not None else dinosaur.vel_x * 0.25
+        vel_y = override_jump if override_jump is not None else dinosaur.JUMP_ACCEL / 2
+
+        cur_vel_modifier = 1 if vel_x >= 0 else -1
+        limited_vel = min(dinosaur.VEL_X_MAX * 1.65, abs(vel_x)) * cur_vel_modifier
+
+        dinosaur.vel_x = limited_vel * (-1 if opposite_dir else 1)
+        dinosaur.vel_y = vel_y
+
+    @classmethod
+    def bounce_back(
+            cls, dinosaur: Dinosaur,
+            obstacle: Obstacle|Dinosaur,
+            override_vel_x: float | None = None,
+            override_jump: float | None = None,
+    ) -> None:
+        cls.bounce(dinosaur, obstacle, True, override_vel_x, override_jump)
 
     @classmethod
     def cactus_touch(cls, dinosaur: Dinosaur, cactus: Obstacle) -> None:

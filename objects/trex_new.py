@@ -98,6 +98,33 @@ class TRexNew(SeparateHeadDinosaur):
             self.HITBOX_FLATTEN[2],
             self.HITBOX_FLATTEN[3],
         )
+
+    @property
+    def jump_impulse(self) -> float:
+        """
+        Calculate jump impulse.
+        :return: total jump impulse with consideration for current speed, weight and poos.
+        """
+        jump_impulse = self.JUMP_ACCEL * self.weight_factor - self.vel_x_modifier
+        poo_penalty = self.poos * self.POO_WEIGHT
+
+        return jump_impulse + poo_penalty
+
+    @property
+    def poo_vel_penalty(self) -> float:
+        """
+        Calculate penalty of poo weight on speed.
+        :return: total velocity penalty by current poo stock.
+        """
+        return self.poos * self.POO_VELOCITY_PENALTY
+
+    @property
+    def total_vel_x(self) -> float:
+        """
+        Calculate total velocity with consideration for poo weight penalty.
+        :return:
+        """
+        return self.vel_x + self.poo_vel_penalty * (-1 if self.vel_x > 0 else 1)
     
     def draw(self, viewpoint: Rect) -> None:
         if not self.visible:

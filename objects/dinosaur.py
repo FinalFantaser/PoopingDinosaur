@@ -4,9 +4,9 @@ from pygame import Surface, Rect as PygameRect
 from enum import IntEnum, auto
 from .direction import Direction
 from .rect import Rect
-from .object import Object
+from .object_with_physics import ObjectWithPhysics
 
-class Dinosaur(Object):
+class Dinosaur(ObjectWithPhysics):
     """
     Basic dinosaur class with common features. The properties are limited since dinosaurs mostly run all the time.
 
@@ -19,7 +19,13 @@ class Dinosaur(Object):
         flippable: indicates if the dinosaur can be flipped horizontally.
     """
 
-    __slots__ = *Object.__slots__, "flippable", "direction", "state", "vel_x", "vel_y", "health", "_fov"
+    __slots__ = ObjectWithPhysics.__slots__ + (
+        "flippable",
+        "direction",
+        "state",
+        "health",
+        "_fov"
+    )
 
     class State(IntEnum):
         """

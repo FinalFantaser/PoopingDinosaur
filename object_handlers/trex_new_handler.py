@@ -135,7 +135,7 @@ class TRexNewHandler(ObjectHandler, DinosaurHandler):
         if vel_x_modifier >= obj.VEL_X_MODIFIER_MIN and obj.vel_x >= obj.VEL_X_MAX:
             vel_x_modifier = 0
 
-        total_vel_x: float = obj.vel_x + vel_x_modifier - (obj.poos * obj.POO_VELOCITY_PENALTY)
+        total_vel_x: float = obj.total_vel_x + vel_x_modifier
 
         obj.x += total_vel_x / 1000 * obj.update_delta * obj.direction.value[0]
 
@@ -160,7 +160,7 @@ class TRexNewHandler(ObjectHandler, DinosaurHandler):
 
 
         if core.input.pressed("up") and obj.rect.bottom >= ground.touch_level:
-            obj.vel_y = obj.JUMP_ACCEL * obj.weight_factor - obj.vel_x_modifier + (obj.poos * obj.POO_WEIGHT)
+            obj.vel_y = obj.jump_impulse
 
         if (
             core.input.pressed("poop")
@@ -203,7 +203,13 @@ class TRexNewHandler(ObjectHandler, DinosaurHandler):
 
     @classmethod
     def cactus_touch(cls, dinosaur: Dinosaur, cactus: Obstacle) -> None:
-        pass
+        # Hurt
+        dinosaur.health -= 1
+        dinosaur.invincibility = dinosaur.INVINCIBILITY_DURATION
+
+        # If jumping on the cactus, boost
+
+
 
     @classmethod
     def thorns_touch(cls, dinosaur: TRexNew, thorns: Obstacle) -> None:
@@ -215,7 +221,8 @@ class TRexNewHandler(ObjectHandler, DinosaurHandler):
         dinosaur.invincibility = dinosaur.INVINCIBILITY_DURATION
 
         # Jump in pain
-        dinosaur.vel_y = dinosaur.JUMP_ACCEL * 0.1
+        if dinosaur.vel_y >= 0:
+            dinosaur.vel_y = dinosaur.jump_impulse * 0.5
 
     @classmethod
     def stone_touch(cls, dinosaur: TRexNew, stone: Obstacle) -> None:
@@ -225,31 +232,96 @@ class TRexNewHandler(ObjectHandler, DinosaurHandler):
         if vel_x_modifier >= dinosaur.VEL_X_MODIFIER_MIN and dinosaur.vel_x >= dinosaur.VEL_X_MAX:
             vel_x_modifier = 0
 
-        total_vel_x: float = dinosaur.vel_x + vel_x_modifier - (dinosaur.poos * dinosaur.POO_VELOCITY_PENALTY)
+        total_vel_x = dinosaur.total_vel_x + vel_x_modifier
 
         if total_vel_x <= dinosaur.VEL_X_MIN:
             return
 
-        if dinosaur.hitbox.bottom >= obj_container.get_ground().touch_level:
-            dinosaur.vel_y = dinosaur.JUMP_ACCEL * 0.3
-        else:
-            dinosaur.vel_y = dinosaur.JUMP_ACCEL * 0.5
+        vel_x = dinosaur.vel_x
+        vel_y = None
 
-        dinosaur.vel_x *= 1.2
+        if dinosaur.hitbox.bottom >= obj_container.get_ground().touch_level:
+            vel_y = dinosaur.JUMP_ACCEL * 0.3
+        else:
+            vel_y = dinosaur.JUMP_ACCEL * 0.5
+
+        vel_x *= 1.2
+
+        cls.bounce(dinosaur, stone, False, vel_x, vel_y)
 
 
     @classmethod
     def tree_touch(cls, dinosaur: TRexNew, tree: Obstacle) -> None:
-        direction = -1 if tree.rect.center_x >= dinosaur.hitbox.center_x else 1
-        dinosaur.vel_x = dinosaur.VEL_X_MIN * 0.5 * direction + dinosaur.vel_x * direction * 0.25
+        cls.bounce(
+            dinosaur,
+            tree,
+            tree.rect.center_x >= dinosaur.hitbox.center_x,
+            dinosaur.vel_x * 1.2,
+            dinosaur.jump_impulse if dinosaur.vel_y >= 0 else dinosaur.vel_y,
+        )
+
         dinosaur.vel_x_modifier = dinosaur.VEL_X_MODIFIER_MIN
-        dinosaur.vel_y = dinosaur.JUMP_ACCEL
 
 
     @classmethod
-    def fern_touch(cls, dinosaur: Dinosaur, fern: Obstacle) -> None:
+    def fern_touch(cls, dinosaur: TRexNew, fern: Obstacle) -> None:
         dinosaur.vel_x = min(dinosaur.vel_x, dinosaur.VEL_X_MIN/2)
 
     @classmethod
-    def skeleton_touch(cls, dinosaur: Dinosaur, skeleton: Obstacle) -> None:
-        pass
+    def skeleton_touch(cls, dinosaur: TRexNew, skeleton: Obstacle) -> None:
+        trex_hitbox = dinosaur.hitbox
+        skeleton_hitbox = skeleton.rect
+
+        # If falling from above, boost (always go forward)
+        if (
+                dinosaur.vel_y >= 0
+                and trex_hitbox.bottom < obj_container.get_ground().touch_level
+                and trex_hitbox.bottom <= skeleton_hitbox.top
+        ):
+            vel_x = dinosaur.vel_x * 1.25
+            vel_y = dinosaur.jump_impulse / 4
+
+            cls.bounce(dinosaur, skeleton, False, vel_x, vel_y)
+        else: # Bounce back
+            cls.bounce_back(dinosaur, skeleton)
+
+
+        # Destroy the skeleton
+        explosion = Explosion().instead_of(skeleton)
+        obj_container.queue_delete(skeleton)
+        obj_container.queue_add(explosion)
+
+    @classmethod
+    def bounce(
+            cls,
+            dinosaur: TRexNew,
+            obstacle: Obstacle|Dinosaur,
+            opposite_dir: bool,
+            override_vel_x: float | None = None,
+            override_jump: float | None = None,
+    ) -> None:
+        vel_x = override_vel_x if override_vel_x is not None else dinosaur.total_vel_x / 5
+        vel_y = override_jump
+
+        if vel_y is None:
+            jump_impulse = dinosaur.JUMP_ACCEL * dinosaur.weight_factor - dinosaur.vel_x_modifier
+            poo_penalty = dinosaur.poos * dinosaur.POO_WEIGHT
+            vel_y = (jump_impulse + poo_penalty) / 4
+
+        cur_vel_modifier = 1 if vel_x >= 0 else -1
+        limited_vel = min(dinosaur.VEL_X_MAX * 1.65, abs(vel_x)) * cur_vel_modifier
+
+
+        dinosaur.vel_x = limited_vel * (-1 if opposite_dir else 1)
+        dinosaur.vel_y = vel_y
+
+
+    @classmethod
+    def bounce_back(
+            cls,
+            dinosaur: TRexNew,
+            obstacle: Obstacle|Dinosaur,
+            override_vel_x: float | None = None,
+            override_jump: float | None = None,
+    ) -> None:
+        cls.bounce(dinosaur, obstacle, True, override_vel_x, override_jump)
