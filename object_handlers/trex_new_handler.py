@@ -202,13 +202,19 @@ class TRexNewHandler(ObjectHandler, DinosaurHandler):
             cls.bounce_back(trex, dinosaur)
 
     @classmethod
-    def cactus_touch(cls, dinosaur: Dinosaur, cactus: Obstacle) -> None:
+    def cactus_touch(cls, dinosaur: TRexNew, cactus: Obstacle) -> None:
         # Hurt
         dinosaur.health -= 1
         dinosaur.invincibility = dinosaur.INVINCIBILITY_DURATION
 
         # If jumping on the cactus, boost
-
+        cls.bounce(
+            dinosaur,
+            cactus,
+            cactus.rect.center_x > dinosaur.hitbox.center_x,
+            dinosaur.vel_x * 1.25,
+            dinosaur.jump_impulse if dinosaur.vel_y > 0 else None
+        )
 
 
     @classmethod
@@ -255,7 +261,7 @@ class TRexNewHandler(ObjectHandler, DinosaurHandler):
         cls.bounce(
             dinosaur,
             tree,
-            tree.rect.center_x >= dinosaur.hitbox.center_x,
+            tree.rect.center_x > dinosaur.hitbox.center_x,
             dinosaur.vel_x * 1.2,
             dinosaur.jump_impulse if dinosaur.vel_y >= 0 else dinosaur.vel_y,
         )

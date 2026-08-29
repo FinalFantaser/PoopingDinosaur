@@ -1,12 +1,12 @@
 import pygame.time
-from objects import Rect, Direction, Object, Dinosaur, Austroraptor, TRex, Ground, Obstacle, Poo
+from objects import Rect, Direction, Object, Dinosaur, Austroraptor, TRex, TRexNew, Ground, Obstacle, Poo
 from data_containers import objects as obj_container
 
 from .object_handler import ObjectHandler
 from .dinosaur_handler import DinosaurHandler
 
 class AustroraptorHandler(ObjectHandler, DinosaurHandler):
-    _HUNTERS: tuple[type[Object], ...] = TRex
+    _HUNTERS: tuple[type[Object], ...] = TRex, TRexNew
 
     @classmethod
     def update(cls, obj: Austroraptor) -> None:
