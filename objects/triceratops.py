@@ -41,7 +41,7 @@ class Triceratops(SeparateHeadDinosaur):
     SIZE_HEAD: tuple[float, float] = 13, 13
     HEAD_POS: tuple[float, float] = 26, 0
     TEXTURE_NAME: str = "triceratops.png"
-    ANIM_INTERVAL_HEAD: int = 100
+    ANIM_INTERVAL_HEAD: int = 200
     TOTAL_FRAMES_HEAD: int = 3
     DRAW_AREA: PygameRect = PygameRect(0, 0, *SIZE_BODY)
     DRAW_AREA_HEAD: PygameRect = PygameRect(0, 16, *SIZE_HEAD)
@@ -51,6 +51,7 @@ class Triceratops(SeparateHeadDinosaur):
     VEL_X_MAX_IN: float = 1
     WEIGHT: float = 5000
     WEIGHT_FACTOR: float = 0.9
+    HEALTH_MAX: int = 3
     HITBOX_BITE_SIZE: tuple[float, float] = SIZE_HEAD
 
     def __init__(self, pos: tuple[float, float]) -> None:

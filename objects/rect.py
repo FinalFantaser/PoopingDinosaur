@@ -1,11 +1,14 @@
 import pygame
-import pygame
-
+from typing import Self
 
 class Rect:
     __slots__ = ("x", "y", "width", "height")
 
     def __init__(self, x: int|float, y: int|float, width: int|float, height: int|float) -> None:
+        if width <= 0 or height <= 0:
+            raise ValueError(f"width and height must be >0, {width}x{height} given")
+
+
         self.x: float = float(x)
         self.y: float = float(y)
         self.width: float = float(width)
@@ -13,10 +16,10 @@ class Rect:
 
     def overlaps(self, other_rect: 'Rect') -> bool:
         return (
-                self.left < other_rect.right
-                and self.right > other_rect.left
-                and self.top < other_rect.bottom
-                and self.bottom > other_rect.top
+                self.left <= other_rect.right
+                and self.right >= other_rect.left
+                and self.top <= other_rect.bottom
+                and self.bottom >= other_rect.top
         )
 
     @property
@@ -127,7 +130,12 @@ class Rect:
         return self.x, self.y, self.width, self.height
 
     def to_pygame_rect(self) -> pygame.Rect:
-        return pygame.Rect(self.to_tuple())
+        return pygame.Rect(
+            int(self.x),
+            int(self.y),
+            int(self.width),
+            int(self.height)
+        )
 
     @classmethod
     def from_pygame_rect(cls, pygame_rect: pygame.Rect) -> 'Rect':

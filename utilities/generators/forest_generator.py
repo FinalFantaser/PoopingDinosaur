@@ -76,13 +76,13 @@ class ForestGenerator(BiomeGenerator):
         """Creates NPCs within vicinity"""
         super().npc()
 
-        # if len(obj_container.dinosaurs(Triceratops)) < 1:
-        #     camera: Camera = obj_container.get_camera()
-        #     ground: Ground = obj_container.get_ground()
-        #
-        #     new_triceratops = Triceratops((
-        #         camera.x - Triceratops.SIZE[0],
-        #         ground.touch_level - Triceratops.SIZE[1]
-        #     ))
-        #
-        #     obj_container.queue_add(new_triceratops)
+        if len(obj_container.dinosaurs(Triceratops)) < 1:
+            camera: Camera = obj_container.get_camera()
+            ground: Ground = obj_container.get_ground()
+
+            new_triceratops = Triceratops((
+                camera.x - Triceratops.SIZE[0],
+                ground.touch_level - Triceratops.SIZE[1]
+            ))
+
+            obj_container.queue_add(new_triceratops)

@@ -1,11 +1,11 @@
 from pygame.time import get_ticks
 
-from objects import Camera, Obstacle, Dinosaur, TRex, Triceratops, Velociraptor, Explosion
+from objects import Camera, Obstacle, Dinosaur, TRex, TRexNew, Triceratops, Velociraptor, Explosion
 from objects.dinosaur import Direction
 
 from .object_handler import ObjectHandler
 from .dinosaur_handler import DinosaurHandler
-from data_containers import objects as obj_container
+from data_containers import objects as obj_container, game_data
 
 
 class TriceratopsHandler(ObjectHandler, DinosaurHandler):
@@ -36,27 +36,28 @@ class TriceratopsHandler(ObjectHandler, DinosaurHandler):
         # ...
 
         cls.physics(obj)
+        update_delta: int = obj.update_delta
 
         # Stop biting
         if (
-            obj.state == Triceratops.State.BITING
+            obj.state == obj.State.BITING
             and obj.curr_frame_head >= obj.TOTAL_FRAMES_HEAD - 1
-            and get_ticks() - obj.last_frame_change_head >= obj.ANIM_INTERVAL_HEAD
+            and get_ticks() - obj.last_frame_change_head >= obj.calc_anim_interval(obj.ANIM_INTERVAL_HEAD)
         ):
             obj.curr_frame_head = 0
-            obj.state = obj.State.CHASING
-
+            obj.last_frame_change_head = get_ticks()
+            obj.state = obj.State.RUNNING
 
         # Accelerate
-        if obj.vel_x < obj.VEL_X_MAX:
-            accel = float(obj.update_delta) * obj.VEL_X_MAX / obj.VEL_X_MAX_IN
-            obj.vel_x = min(obj.VEL_X_MAX, obj.vel_x + accel)
-
+        accel_x = obj.VEL_X_MAX / obj.VEL_X_MAX_IN / 1000 * obj.update_delta
+        obj.vel_x = min(
+            obj.vel_x + (accel_x if obj.hitbox.bottom >= obj_container.get_ground().touch_level else 0),
+            obj.VEL_X_MAX
+        )
 
         # React to environment
-        camera = obj_container.get_camera()
         for other_obj in obj_container.visible().values():
-            # Skip oneself, different layer, not touched ones
+            # Skip oneself, different layer, beyond reach
             if other_obj.id == obj.id or obj.LAYER != obj.LAYER.MAIN or not obj.fov_around.overlaps(other_obj.rect):
                 continue
 
@@ -76,36 +77,50 @@ class TriceratopsHandler(ObjectHandler, DinosaurHandler):
 
     @classmethod
     def react_to_npc(cls, triceratops: Triceratops, other_dino: Dinosaur) -> None:
-        # TODO Damage all dinosaurs just by HP, let their handlers do deletion and explosions
+        # Cache
+        triceratops_hitbox_head = triceratops.hitbox_head
+        triceratops_hitbox_body = triceratops.hitbox_body
+        other_dino_hitbox = other_dino.hitbox
 
         # Head/horns collision (attack)
-        if other_dino.hitbox.overlaps(triceratops.hitbox_head):
-            if isinstance(other_dino, TRex) and other_dino.invincibility < 1:
-                other_dino.health = max(0, other_dino.health - 1)
-                other_dino.invincibility = 3000
+        if triceratops_hitbox_head.overlaps(other_dino_hitbox):
+            if getattr(other_dino, 'invincibility', 0) > 0:
+                return
 
-                other_dino.vel_x_modifier = other_dino.VEL_X_MODIFIER * 2.5
+            other_dino.health -= 1
+            cls.bounce(
+                other_dino,
+                triceratops,
+                triceratops_hitbox_head.center_x >= other_dino_hitbox.center_x
+            )
 
-            elif isinstance(other_dino, Dinosaur):
-                # TODO Check humans as well
-                explosion = Explosion(other_dino.pos)
+            if isinstance(other_dino, TRexNew):
+                other_dino.invincibility = other_dino.INVINCIBILITY_DURATION
+                return
 
-                # TODO Heavier dinosaurs leave skeletons
-                # TODO Skeleton are to be implemented as a standalone object class
-                # skeleton = Obstacle(Obstacle.Type.SKELETON, (0, 0))
-                # skeleton.rect.center_x = other_dino.rect.center_x
-                # skeleton.rect.center_y = other_dino.rect.center_y - skeleton.height / 2
-                # explosion.spawn = skeleton
+            if other_dino.health <= 0:
+                explosion = Explosion(
+                    spawn=Obstacle.make_skeleton(other_dino) if other_dino.weight >= game_data.HEAVY_DINOSAUR_WEIGHT else None,
+                ).instead_of(other_dino)
 
                 obj_container.queue_delete(other_dino)
-                obj_container.queue_add(explosion)
+                obj_container.add(explosion)
+
+            # TODO Check humans
+            # ...
 
             return
 
         # Body collision - bounce
-        direction: Direction = triceratops.direction.opposite() if triceratops.rect.center_x - other_dino.rect.center_x < 0 else triceratops.direction
-        other_dino.vel_x = other_dino.vel_x * 1.5 * direction.value[0]
-        other_dino.vel_y = min(Velociraptor.JUMP_ACCEL, -other_dino.WEIGHT * 0.7)
+        elif triceratops_hitbox_body.overlaps(other_dino.hitbox):
+            if getattr(other_dino, 'invincibility', 0) > 0:
+                return
+
+            cls.bounce(
+                other_dino,
+                triceratops,
+                triceratops_hitbox_body.center_x >= other_dino_hitbox.center_x
+            )
 
     @classmethod
     def start_biting(cls, dinosaur: Triceratops, obstacle: Obstacle) -> None:
@@ -119,8 +134,7 @@ class TriceratopsHandler(ObjectHandler, DinosaurHandler):
             and dinosaur.curr_frame_head >= dinosaur.TOTAL_FRAMES_HEAD - 1
             and dinosaur.hitbox_bite.overlaps(obstacle.rect)
         ):
-            # TODO Restore dinosaur's health
-            # ...
+            dinosaur.heal(1)
 
             obj_container.queue_delete(obstacle)
 
@@ -133,7 +147,10 @@ class TriceratopsHandler(ObjectHandler, DinosaurHandler):
         obj_container.queue_delete(obstacle)
         obj_container.queue_add(explosion)
 
-        triceratops.vel_x = max(triceratops.VEL_X_MIN, triceratops.vel_x / 1.5)
+        triceratops.vel_x /= 2
+
+        if triceratops.hitbox.bottom >= obj_container.get_ground().touch_level:
+            triceratops.vel_y = triceratops.JUMP_ACCEL
 
 
     @classmethod

@@ -11,7 +11,7 @@ from .dinosaur_handler import DinosaurHandler
 
 
 class TRexNewHandler(ObjectHandler, DinosaurHandler):
-    EDIBLE_DINOSAURS: tuple[type[Object], ...] = (
+    EDIBLE_DINOSAURS: tuple[type[Dinosaur], ...] = (
         Velociraptor,
         Austroraptor,
         Pterodactyl,
@@ -85,10 +85,10 @@ class TRexNewHandler(ObjectHandler, DinosaurHandler):
             # Biting edible dinosaurs
             if (
                 obj.state == obj.State.BITING
+                and obj.curr_frame_head == obj.TOTAL_FRAMES_HEAD - 1
                 and obj.poos < obj.MAX_POOS
-                and obj.curr_frame_head >= obj.TOTAL_FRAMES_HEAD - 1
                 and isinstance(other_obj, cls.EDIBLE_DINOSAURS)
-                and trex_hitbox_bite.overlaps(other_obj.rect)
+                and trex_hitbox_bite.overlaps(other_obj.hitbox)
             ):
                 other_obj.health -= 1
 
@@ -108,14 +108,14 @@ class TRexNewHandler(ObjectHandler, DinosaurHandler):
                         obj_container.queue_add(die_explosion)
                 # Other dinosaur bounces forward if not killed
                 else:
-                    obj.vel_x += obj.vel_x * 0.25
-                    obj.vel_y -= obj.JUMP_ACCEL * 0.25
+                    other_obj.vel_x *= obj.vel_x * 1.5
+                    other_obj.vel_y = min(obj.vel_y, obj.JUMP_ACCEL * 0.25)
 
             # Skipping obstacles and NPCs if invincible
             if obj.invincibility > 0:
                 continue
 
-            # Collision with dinosaurs (bouncing)
+            # Collision with dinosaurs
             if isinstance(other_obj, Dinosaur) and trex_hitbox.overlaps(other_obj.hitbox):
                 cls.react_to_dinosaur(obj, other_obj)
 
