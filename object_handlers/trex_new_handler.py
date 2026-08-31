@@ -285,7 +285,7 @@ class TRexNewHandler(ObjectHandler, DinosaurHandler):
                 and trex_hitbox.bottom <= skeleton_hitbox.top
         ):
             vel_x = dinosaur.vel_x * 1.25
-            vel_y = dinosaur.jump_impulse / 4
+            vel_y = dinosaur.jump_impulse / 2
 
             cls.bounce(dinosaur, skeleton, False, vel_x, vel_y)
         else: # Bounce back
