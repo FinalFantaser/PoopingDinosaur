@@ -31,29 +31,33 @@ class PooHandler(ObjectHandler):
             # Per each boss individually ...
             # ...
 
-            # Flatten small NPCs if hitting from above
-            if (
-                    isinstance(npc, Dinosaur) # ... and on-foot human NPCs
-                    and npc.weight < game_data.HEAVY_DINOSAUR_WEIGHT
-                    and obj.vel_y > 0
-                    and poo_hitbox.bottom >= npc_hitbox.top - npc_hitbox.height / 3
-                    and npc_hitbox.bottom >= obj_container.get_ground().touch_level
-            ):
-                obj_container.queue_delete(npc)
-                obj_container.queue_add(FlattenedObject.instead_of(npc))
-                continue
+
+            # Hitting NPCs
+            if isinstance(npc, Dinosaur): # ... and human NPCs on foot
+                if npc.weight < game_data.HEAVY_DINOSAUR_WEIGHT:
+                    # Flatten a smaller NPC when hitting from above
+                    if (
+                            obj.vel_y > 0
+                            and poo_hitbox.bottom >= npc_hitbox.top - npc_hitbox.height / 3
+                            and npc_hitbox.bottom >= obj_container.get_ground().touch_level
+                    ):
+                        obj_container.queue_delete(npc)
+                        obj_container.queue_add(FlattenedObject.instead_of(npc))
+                        continue
+                    else: # Kill the poor bastard
+                        npc.die()
+
+                else: # Kill heavy dinosaurs and spawn skeletons:
+                    explosion = Explosion(
+                        spawn=Obstacle.make_skeleton(npc)
+                    ).instead_of(npc)
+
+                    obj_container.queue_delete(obj)
+                    obj_container.queue_delete(npc)
+                    obj_container.queue_add(explosion)
 
             # Explode vehicles ...
             # ...
-
-            # Kill heavy dinosaurs and spawn skeletons:
-            if isinstance(npc, Dinosaur) and npc.weight >= game_data.HEAVY_DINOSAUR_WEIGHT:
-                explosion = Explosion(
-                    spawn=Obstacle.make_skeleton(npc)
-                ).instead_of(npc)
-
-                obj_container.queue_delete(npc)
-                obj_container.queue_add(explosion)
 
         obj.last_update = pygame.time.get_ticks()
 

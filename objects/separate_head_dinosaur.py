@@ -86,3 +86,8 @@ class SeparateHeadDinosaur(Dinosaur):
     def hitbox_bite(self) -> Rect:
         """Bite area hitbox"""
         return self.hitbox_head
+
+    def die(self) -> None:
+        super().die()
+        self.curr_frame_head = 0
+        self.last_frame_change_head = get_ticks()

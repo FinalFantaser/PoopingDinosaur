@@ -15,7 +15,6 @@ class TRexNew(SeparateHeadDinosaur):
 
     __slots__ = SeparateHeadDinosaur.__slots__ + (
         'vel_x_modifier',
-        'invincibility',
         'last_blink',
         'visible',
         'poos',

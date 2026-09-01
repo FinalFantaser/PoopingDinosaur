@@ -32,11 +32,12 @@ class TriceratopsHandler(ObjectHandler, DinosaurHandler):
         if cls.delete_if_passed_camera(obj):
             return
 
-        # TODO Health check
-        # ...
-
         cls.physics(obj)
+
         update_delta: int = obj.update_delta
+
+        # Process invincibility (resist to bites only)
+        obj.invincibility = max(0, obj.invincibility - obj.update_delta)
 
         # Stop biting
         if (
@@ -49,7 +50,7 @@ class TriceratopsHandler(ObjectHandler, DinosaurHandler):
             obj.state = obj.State.RUNNING
 
         # Accelerate
-        accel_x = obj.VEL_X_MAX / obj.VEL_X_MAX_IN / 1000 * obj.update_delta
+        accel_x = obj.VEL_X_MAX / obj.VEL_X_MAX_IN / 1000 * update_delta
         obj.vel_x = min(
             obj.vel_x + (accel_x if obj.hitbox.bottom >= obj_container.get_ground().touch_level else 0),
             obj.VEL_X_MAX

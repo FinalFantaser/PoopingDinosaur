@@ -15,6 +15,7 @@ class TRexNewHandler(ObjectHandler, DinosaurHandler):
         Velociraptor,
         Austroraptor,
         Pterodactyl,
+        Triceratops,
         # ...
     )
 
@@ -88,8 +89,10 @@ class TRexNewHandler(ObjectHandler, DinosaurHandler):
                 and obj.curr_frame_head == obj.TOTAL_FRAMES_HEAD - 1
                 and obj.poos < obj.MAX_POOS
                 and isinstance(other_obj, cls.EDIBLE_DINOSAURS)
+                and other_obj.invincibility < 1
                 and trex_hitbox_bite.overlaps(other_obj.hitbox)
             ):
+                other_obj.invincibility = other_obj.INVINCIBILITY_DURATION
                 other_obj.health -= 1
 
                 # Other dinosaur dies if hp below zero (yeah no shit)
@@ -108,8 +111,9 @@ class TRexNewHandler(ObjectHandler, DinosaurHandler):
                         obj_container.queue_add(die_explosion)
                 # Other dinosaur bounces forward if not killed
                 else:
-                    other_obj.vel_x *= obj.vel_x * 1.5
-                    other_obj.vel_y = min(obj.vel_y, obj.JUMP_ACCEL * 0.25)
+                    print(f"bounce {other_obj.id}")
+                    other_obj.vel_x = min(other_obj.VEL_X_MAX, obj.vel_x * 0.25)
+                    other_obj.vel_y = max(obj.vel_y, obj.JUMP_ACCEL * 0.25)
 
             # Skipping obstacles and NPCs if invincible
             if obj.invincibility > 0:

@@ -1,3 +1,4 @@
+from pygame.time import get_ticks
 from typing import Callable
 from objects import Object, Direction, Dinosaur, Ground, Obstacle
 from data_containers import objects as obj_container
@@ -27,7 +28,6 @@ class DinosaurHandler:
     }
 
     EDIBLES: tuple[type[Object], ...] = ()
-
 
     @classmethod
     def react_to_hunter(cls, prey: Dinosaur, hunter: Dinosaur) -> None:

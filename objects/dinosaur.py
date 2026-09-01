@@ -24,6 +24,7 @@ class Dinosaur(ObjectWithPhysics):
         "direction",
         "state",
         "health",
+        "invincibility",
         "_fov"
     )
 
@@ -58,6 +59,7 @@ class Dinosaur(ObjectWithPhysics):
     VEL_X_MIN: float = 175
     VEL_X_MAX: float = VEL_X_MIN * 2.5
     VEL_X_MAX_IN: float = 1.75  # Seconds to reach maximum speed
+    INVINCIBILITY_DURATION = 3000
     WEIGHT: float = 15.0
     WEIGHT_FACTOR: float = 0.3
     JUMP_ACCEL: float = -(WEIGHT * 8)
@@ -93,7 +95,8 @@ class Dinosaur(ObjectWithPhysics):
         self.state = self.State.IDLE
         self.vel_x: float = 0.0
         self.vel_y: float = 0.0
-        self.health = self.HEALTH_MAX
+        self.health: int = self.HEALTH_MAX
+        self.invincibility: int = 0
         self._fov: Rect = Rect(*self.rect.center, *self.FOV_SIZE)
 
     @property
@@ -147,11 +150,14 @@ class Dinosaur(ObjectWithPhysics):
     def weight(self) -> float:
         return self.WEIGHT
 
-    def is_dead(self) -> bool:
-        return self.health <= 0
-
     def heal(self, plus_hp: int) -> None:
         self.health = min(self.HEALTH_MAX, self.health + plus_hp)
+
+    def die(self) -> None:
+        self.health = 0
+        self.state = self.State.DEAD
+        self.curr_frame = 0
+        self.last_frame_change = 0
 
     def calc_anim_interval(self, init_interval: int) -> int:
         speed_ratio = min(abs(self.vel_x) / self.VEL_X_MAX, 1.0)
