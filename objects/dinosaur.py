@@ -59,7 +59,7 @@ class Dinosaur(ObjectWithPhysics):
     VEL_X_MIN: float = 175
     VEL_X_MAX: float = VEL_X_MIN * 2.5
     VEL_X_MAX_IN: float = 1.75  # Seconds to reach maximum speed
-    INVINCIBILITY_DURATION = 3000
+    INVINCIBILITY_DURATION = 1000
     WEIGHT: float = 15.0
     WEIGHT_FACTOR: float = 0.3
     JUMP_ACCEL: float = -(WEIGHT * 8)

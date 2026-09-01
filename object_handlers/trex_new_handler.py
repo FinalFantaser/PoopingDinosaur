@@ -15,7 +15,6 @@ class TRexNewHandler(ObjectHandler, DinosaurHandler):
         Velociraptor,
         Austroraptor,
         Pterodactyl,
-        Triceratops,
         # ...
     )
 
@@ -111,9 +110,10 @@ class TRexNewHandler(ObjectHandler, DinosaurHandler):
                         obj_container.queue_add(die_explosion)
                 # Other dinosaur bounces forward if not killed
                 else:
-                    print(f"bounce {other_obj.id}")
-                    other_obj.vel_x = min(other_obj.VEL_X_MAX, obj.vel_x * 0.25)
-                    other_obj.vel_y = max(obj.vel_y, obj.JUMP_ACCEL * 0.25)
+                    other_obj.vel_x = min(other_obj.VEL_X_MAX * 2, other_obj.vel_x * 2)
+
+                    if other_obj.hitbox.bottom >= obj_container.get_ground().touch_level:
+                        other_obj.vel_y = obj.JUMP_ACCEL
 
             # Skipping obstacles and NPCs if invincible
             if obj.invincibility > 0:
@@ -121,7 +121,7 @@ class TRexNewHandler(ObjectHandler, DinosaurHandler):
 
             # Collision with dinosaurs
             if isinstance(other_obj, Dinosaur) and trex_hitbox.overlaps(other_obj.hitbox):
-                cls.react_to_dinosaur(obj, other_obj)
+                cls.touch_dinosaur(obj, other_obj)
 
             # Obstacles
             if isinstance(other_obj, Obstacle):
@@ -187,7 +187,7 @@ class TRexNewHandler(ObjectHandler, DinosaurHandler):
             core.audio.sound_play(sound_key)
 
     @classmethod
-    def react_to_dinosaur(cls, trex: TRexNew, dinosaur: Dinosaur) -> None:
+    def touch_dinosaur(cls, trex: TRexNew, dinosaur: Dinosaur) -> None:
         # If a dinosaur is smol, Super Mario Brothers the sucker
         if dinosaur.weight < game_data.HEAVY_DINOSAUR_WEIGHT:
             flatten_hitbox = trex.hitbox_flatten
