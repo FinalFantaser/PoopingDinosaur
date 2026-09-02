@@ -16,6 +16,7 @@ from .obstacle_handler import ObstacleHandler
 from .poo_handler import PooHandler
 from .explosion_handler import ExplosionHandler
 from .flattened_object_handler import FlattenedObjectHandler
+from .skeleton_handler import SkeletonHandler
 
 # GUI
 from .gui.health_meter_handler import HealthMeterHandler

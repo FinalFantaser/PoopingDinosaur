@@ -14,5 +14,3 @@ class FlattenedObjectHandler(ObjectHandler):
         if get_ticks() - obj.created_at >= obj.LIFETIME:
             obj_container.queue_delete(obj)
             return
-
-        cls.physics(obj)

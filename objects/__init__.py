@@ -14,6 +14,7 @@ from .obstacle import Obstacle
 from .poo import Poo
 from .explosion import Explosion
 from .flattened_object import FlattenedObject
+from .skeleton import Skeleton
 
 # Dinosaurs
 from .dinosaur import Dinosaur

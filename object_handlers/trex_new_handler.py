@@ -1,9 +1,7 @@
-from typing import Callable
 import random
 from pygame.time import get_ticks
 
 import core.input, core.audio
-from data_containers.objects import dinosaurs
 from objects import *
 from data_containers import objects as obj_container, game_data
 from .object_handler import ObjectHandler
@@ -104,7 +102,7 @@ class TRexNewHandler(ObjectHandler, DinosaurHandler):
                         obj.poos = min(obj.poos + other_obj.HEALTH_MAX, obj.MAX_POOS)
                     else: # Leave skeleton
                         die_explosion: Explosion = Explosion(
-                            spawn=Obstacle.make_skeleton(other_obj)
+                            spawn=Skeleton.instead_of(other_obj)
                         ).instead_of(other_obj)
 
                         obj_container.queue_add(die_explosion)
@@ -126,6 +124,10 @@ class TRexNewHandler(ObjectHandler, DinosaurHandler):
             # Obstacles
             if isinstance(other_obj, Obstacle):
                 cls.react_to_obstacles(obj, other_obj)
+
+            # Objects
+            if isinstance(other_obj, Skeleton) and trex_hitbox.overlaps(other_obj.rect):
+                cls.skeleton_touch(obj, other_obj)
 
         obj.last_update = get_ticks()
 
@@ -220,7 +222,6 @@ class TRexNewHandler(ObjectHandler, DinosaurHandler):
             dinosaur.jump_impulse if dinosaur.vel_y > 0 else None
         )
 
-
     @classmethod
     def thorns_touch(cls, dinosaur: TRexNew, thorns: Obstacle) -> None:
         # Slow down
@@ -248,7 +249,6 @@ class TRexNewHandler(ObjectHandler, DinosaurHandler):
             return
 
         vel_x = dinosaur.vel_x
-        vel_y = None
 
         if dinosaur.hitbox.bottom >= obj_container.get_ground().touch_level:
             vel_y = dinosaur.JUMP_ACCEL * 0.3
@@ -278,7 +278,10 @@ class TRexNewHandler(ObjectHandler, DinosaurHandler):
         dinosaur.vel_x = min(dinosaur.vel_x, dinosaur.VEL_X_MIN/2)
 
     @classmethod
-    def skeleton_touch(cls, dinosaur: TRexNew, skeleton: Obstacle) -> None:
+    def skeleton_touch(cls, dinosaur: TRexNew, skeleton: Skeleton) -> None:
+        if skeleton.is_invincible():
+            return
+
         trex_hitbox = dinosaur.hitbox
         skeleton_hitbox = skeleton.rect
 
@@ -305,7 +308,7 @@ class TRexNewHandler(ObjectHandler, DinosaurHandler):
     def bounce(
             cls,
             dinosaur: TRexNew,
-            obstacle: Obstacle|Dinosaur,
+            obstacle: Object,
             opposite_dir: bool,
             override_vel_x: float | None = None,
             override_jump: float | None = None,
@@ -330,7 +333,7 @@ class TRexNewHandler(ObjectHandler, DinosaurHandler):
     def bounce_back(
             cls,
             dinosaur: TRexNew,
-            obstacle: Obstacle|Dinosaur,
+            obstacle: Object,
             override_vel_x: float | None = None,
             override_jump: float | None = None,
     ) -> None:

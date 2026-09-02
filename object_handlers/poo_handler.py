@@ -1,5 +1,5 @@
 import pygame.time
-from objects import Poo, Ground, Dinosaur, TRexNew, FlattenedObject, Explosion, Obstacle
+from objects import Poo, Ground, Dinosaur, TRexNew, FlattenedObject, Explosion, Obstacle, Skeleton
 from object_handlers.object_handler import ObjectHandler
 from data_containers import objects as obj_container, game_data
 
@@ -49,7 +49,7 @@ class PooHandler(ObjectHandler):
 
                 else: # Kill heavy dinosaurs and spawn skeletons:
                     explosion = Explosion(
-                        spawn=Obstacle.make_skeleton(npc)
+                        spawn=Skeleton.instead_of(npc)
                     ).instead_of(npc)
 
                     obj_container.queue_delete(obj)

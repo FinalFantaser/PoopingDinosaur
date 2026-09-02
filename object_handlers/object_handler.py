@@ -30,7 +30,8 @@ class ObjectHandler:
         cls.gravity(obj)
 
         # Horizontal movement
-        obj.x += (obj.vel_x / 1000 * obj.update_delta) * obj.direction.value[0]
+        direction = obj.direction.value[0] if hasattr(obj, 'direction') else 1
+        obj.x += (obj.vel_x / 1000 * obj.update_delta) * direction
 
     @classmethod
     def gravity(cls, obj: Object) -> None:

@@ -1,7 +1,6 @@
 from pygame.time import get_ticks
 
-from objects import Camera, Obstacle, Dinosaur, TRex, TRexNew, Triceratops, Velociraptor, Explosion
-from objects.dinosaur import Direction
+from objects import Object, Obstacle, Dinosaur, Skeleton, TRexNew, Triceratops, Explosion
 
 from .object_handler import ObjectHandler
 from .dinosaur_handler import DinosaurHandler
@@ -19,12 +18,11 @@ class TriceratopsHandler(ObjectHandler, DinosaurHandler):
     }
 
     REACTIONS_TOUCH: dict[Obstacle.Type, str] = {
-        Obstacle.Type.CACTUS: 'destroy_obstacle',
+        Obstacle.Type.CACTUS: 'destroy_object',
         Obstacle.Type.THORNS: 'eat_obstacle',
-        Obstacle.Type.STONE: 'destroy_obstacle',
-        Obstacle.Type.TREE: 'destroy_obstacle',
+        Obstacle.Type.STONE: 'destroy_object',
+        Obstacle.Type.TREE: 'destroy_object',
         Obstacle.Type.FERN: 'eat_obstacle',
-        Obstacle.Type.SKELETON: 'destroy_obstacle',
     }
 
     @classmethod
@@ -69,7 +67,9 @@ class TriceratopsHandler(ObjectHandler, DinosaurHandler):
             # Obstacles
             elif isinstance(other_obj, Obstacle):
                 cls.react_to_obstacles(obj, other_obj)
-            # TODO Reaction to touching the poop
+
+            elif isinstance(other_obj, Skeleton) and not other_obj.is_invincible():
+                cls.destroy_object(obj, other_obj)
 
         # TODO Poop if belly's full
         # ...
@@ -140,10 +140,8 @@ class TriceratopsHandler(ObjectHandler, DinosaurHandler):
             obj_container.queue_delete(obstacle)
 
     @classmethod
-    def destroy_obstacle(cls, triceratops: Triceratops, obstacle: Obstacle) -> None:
-        explosion = Explosion()
-        explosion.rect.center_x = obstacle.rect.center_x
-        explosion.rect.center_y = obstacle.rect.center_y
+    def destroy_object(cls, triceratops: Triceratops, obstacle: Obstacle | Object) -> None:
+        explosion = Explosion().instead_of(obstacle)
 
         obj_container.queue_delete(obstacle)
         obj_container.queue_add(explosion)
