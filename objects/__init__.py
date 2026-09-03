@@ -25,6 +25,7 @@ from .austroraptor import Austroraptor
 from .velociraptor import Velociraptor
 from .pterodactyl import Pterodactyl
 from .triceratops import Triceratops
+from .allosaurus import Allosaurus
 
 # GUI
 from objects.gui.health_meter import HealthMeter

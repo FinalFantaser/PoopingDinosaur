@@ -32,6 +32,9 @@ class SeparateHeadDinosaur(Dinosaur):
         self.last_frame_change_head = get_ticks()
 
     def draw(self, viewpoint: Rect) -> None:
+        if not viewpoint.overlaps(self.rect):
+            return
+
         # Body
         self.DRAW_AREA.x = int(self.curr_frame * self.SIZE_BODY[0])
 
