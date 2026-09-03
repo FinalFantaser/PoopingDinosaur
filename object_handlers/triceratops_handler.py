@@ -8,16 +8,15 @@ from data_containers import objects as obj_container, game_data
 
 
 class TriceratopsHandler(ObjectHandler, DinosaurHandler):
-    REACTIONS_SEE: dict[Obstacle.Type, str] = {
+    REACTIONS_OBSTACLE_SEE: dict[Obstacle.Type, str] = {
         Obstacle.Type.CACTUS: None,
         Obstacle.Type.THORNS: 'start_biting',
         Obstacle.Type.STONE: None,
         Obstacle.Type.TREE: None,
         Obstacle.Type.FERN: 'start_biting',
-        Obstacle.Type.SKELETON: None,
     }
 
-    REACTIONS_TOUCH: dict[Obstacle.Type, str] = {
+    REACTIONS_OBSTACLE_TOUCH: dict[Obstacle.Type, str] = {
         Obstacle.Type.CACTUS: 'destroy_object',
         Obstacle.Type.THORNS: 'eat_obstacle',
         Obstacle.Type.STONE: 'destroy_object',
@@ -66,7 +65,7 @@ class TriceratopsHandler(ObjectHandler, DinosaurHandler):
 
             # Obstacles
             elif isinstance(other_obj, Obstacle):
-                cls.react_to_obstacles(obj, other_obj)
+                cls.react_to_objects(obj, other_obj)
 
             elif isinstance(other_obj, Skeleton) and not other_obj.is_invincible():
                 cls.destroy_object(obj, other_obj)

@@ -1,6 +1,5 @@
-from pygame.time import get_ticks
 from typing import Callable
-from objects import Object, Direction, Dinosaur, Ground, Obstacle
+from objects import Object, Direction, Dinosaur, Ground, Obstacle, Skeleton
 from data_containers import objects as obj_container
 
 class DinosaurHandler:
@@ -9,25 +8,29 @@ class DinosaurHandler:
     and define individual reactions to dinosaurs and obstacles.
     """
 
-    REACTIONS_TOUCH: dict[Obstacle.Type, str] = {
+    REACTIONS_OBSTACLE_TOUCH: dict[Obstacle.Type, str] = {
         Obstacle.Type.CACTUS: 'cactus_touch',
         Obstacle.Type.THORNS: 'thorns_touch',
         Obstacle.Type.STONE: 'stone_touch',
         Obstacle.Type.TREE: 'tree_touch',
         Obstacle.Type.FERN: 'fern_touch',
-        Obstacle.Type.SKELETON: 'skeleton_touch',
     }
 
-    REACTIONS_SEE: dict[Obstacle.Type, str] = {
+    REACTIONS_OBSTACLE_SEE: dict[Obstacle.Type, str] = {
         Obstacle.Type.CACTUS: 'cactus_see',
         Obstacle.Type.THORNS: 'thorns_see',
         Obstacle.Type.STONE: 'stone_see',
         Obstacle.Type.TREE: 'tree_see',
         Obstacle.Type.FERN: 'fern_see',
-        Obstacle.Type.SKELETON: 'skeleton_see',
     }
 
-    EDIBLES: tuple[type[Object], ...] = ()
+    REACTION_OBJECTS_SEE: dict[type[Object], str] = {
+        Skeleton: "skeleton_see",
+    }
+
+    REACTION_OBJECTS_TOUCH: dict[type[Object], str] = {
+        Skeleton: "skeleton_touch",
+    }
 
     @classmethod
     def react_to_hunter(cls, prey: Dinosaur, hunter: Dinosaur) -> None:
@@ -62,18 +65,25 @@ class DinosaurHandler:
                 prey.vel_x = abs(prey.vel_x / 2) * prey.direction.value[0]
 
     @classmethod
-    def react_to_obstacles(cls, dinosaur: Dinosaur, obstacle: Obstacle) -> None:
+    def react_to_objects(cls, dinosaur: Dinosaur, obstacle: Object|Obstacle) -> None:
         """
         Wrapper assembling all methods handling touching and reacting to obstacles in dinosaur's FOV.
         :param dinosaur: Reacting dinosaur.
         :param obstacle: Obstacle to react to.
         """
+        if isinstance(obstacle, Obstacle):
+            reactions_touch, reactions_see = cls.REACTIONS_OBSTACLE_TOUCH, cls.REACTIONS_OBSTACLE_SEE
+        else:
+            reactions_touch, reactions_see = cls.REACTION_OBJECTS_TOUCH, cls.REACTION_OBJECTS_SEE
+
+        method_key: Obstacle.Type|str = obstacle.ob_type if isinstance(obstacle, Obstacle) else obstacle.__class__.__name__
+
         for hitbox, method_list in (
-            (dinosaur.hitbox, cls.REACTIONS_TOUCH), # If touched
-            (dinosaur.fov_ahead, cls.REACTIONS_SEE), # If seen
+                (dinosaur.hitbox, reactions_touch),  # If touched
+                (dinosaur.fov_ahead, reactions_see), # If seen
         ):
             if hitbox.overlaps(obstacle.rect):
-                method_name: str = method_list[obstacle.ob_type]
+                method_name: str = method_list.get(method_key)
                 if method_name is None:
                     break
 
@@ -87,25 +97,28 @@ class DinosaurHandler:
                 break
 
     @classmethod
-    def jump_over_obstacle(cls, dinosaur: Dinosaur, obstacle: Obstacle) -> None:
+    def jump_over_object(cls, dinosaur: Dinosaur, obstacle: Object) -> None:
         """
-        Attempt to jump over an obstacle when running. Considered as a general behaviour.
+        Attempt to jump over an object when running. Considered as a general behaviour.
         :param dinosaur: Jumping dinosaur.
         :param obstacle: Obstacle to jump over.
         """
         if dinosaur.state == Dinosaur.State.RUNNING:
-            if dinosaur.fov_ahead.overlaps(obstacle.rect) and dinosaur.rect.bottom >= obj_container.get_ground().touch_level:
-                obstacle_edge: float = obstacle.rect.right if dinosaur.direction.value[0] < 0 else obstacle.rect.left
-                dinosaur_edge: float = dinosaur.rect.left if dinosaur.direction.value[0] < 0 else dinosaur.rect.right
+            dinosaur_rect = dinosaur.hitbox
+            obstacle_rect = getattr(obstacle, "hitbox", obstacle.rect)
 
-                if abs(obstacle_edge - dinosaur_edge) <= dinosaur.width * 1.5:
+            if dinosaur.fov_ahead.overlaps(obstacle.rect) and dinosaur_rect.bottom >= obj_container.get_ground().touch_level:
+                obstacle_edge: float = obstacle_rect.right if dinosaur.direction.value[0] < 0 else obstacle_rect.left
+                dinosaur_edge: float = dinosaur_rect.left if dinosaur.direction.value[0] < 0 else dinosaur_rect.right
+
+                if abs(obstacle_edge - dinosaur_edge) <= dinosaur_rect.width * 1.5:
                     dinosaur.vel_y = dinosaur.JUMP_ACCEL
 
     @classmethod
     def bounce(
             cls,
             dinosaur: Dinosaur,
-            obstacle: Obstacle|Dinosaur,
+            obstacle: Object,
             opposite_dir: bool,
             override_vel_x: float|None = None,
             override_jump: float|None = None,
@@ -123,7 +136,7 @@ class DinosaurHandler:
     @classmethod
     def bounce_back(
             cls, dinosaur: Dinosaur,
-            obstacle: Obstacle|Dinosaur,
+            obstacle: Object,
             override_vel_x: float | None = None,
             override_jump: float | None = None,
     ) -> None:
@@ -189,7 +202,7 @@ class DinosaurHandler:
         dinosaur.vel_x = min(dinosaur.vel_x / 2, dinosaur.VEL_X_MIN / 2) * dinosaur.direction.value[0]
 
     @classmethod
-    def skeleton_touch(cls, dinosaur: Dinosaur, skeleton: Obstacle) -> None:
+    def skeleton_touch(cls, dinosaur: Dinosaur, skeleton: Skeleton) -> None:
         """
         React to touching a skeleton.
         :param dinosaur: Reacting dinosaur.
@@ -199,24 +212,24 @@ class DinosaurHandler:
 
     @classmethod
     def cactus_see(cls, dinosaur: Dinosaur, cactus: Obstacle) -> None:
-        cls.jump_over_obstacle(dinosaur, cactus)
+        cls.jump_over_object(dinosaur, cactus)
 
     @classmethod
     def thorns_see(cls, dinosaur: Dinosaur, thorns: Obstacle) -> None:
-        cls.jump_over_obstacle(dinosaur, thorns)
+        cls.jump_over_object(dinosaur, thorns)
 
     @classmethod
     def stone_see(cls, dinosaur: Dinosaur, stone: Obstacle) -> None:
-        cls.jump_over_obstacle(dinosaur, stone)
+        cls.jump_over_object(dinosaur, stone)
 
     @classmethod
     def tree_see(cls, dinosaur: Dinosaur, tree: Obstacle) -> None:
-        cls.jump_over_obstacle(dinosaur, tree)
+        cls.jump_over_object(dinosaur, tree)
 
     @classmethod
     def fern_see(cls, dinosaur: Dinosaur, fern: Obstacle) -> None:
-        cls.jump_over_obstacle(dinosaur, fern)
+        cls.jump_over_object(dinosaur, fern)
 
     @classmethod
-    def skeleton_see(cls, dinosaur: Dinosaur, skeleton: Obstacle) -> None:
+    def skeleton_see(cls, dinosaur: Dinosaur, skeleton: Skeleton) -> None:
         pass

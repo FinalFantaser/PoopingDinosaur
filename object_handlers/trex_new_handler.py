@@ -16,13 +16,12 @@ class TRexNewHandler(ObjectHandler, DinosaurHandler):
         # ...
     )
 
-    REACTIONS_SEE: dict[Obstacle.Type, str|None] = {
+    REACTIONS_OBSTACLE_SEE: dict[Obstacle.Type, str | None] = {
         Obstacle.Type.CACTUS: None,
         Obstacle.Type.THORNS: None,
         Obstacle.Type.STONE: None,
         Obstacle.Type.TREE: None,
         Obstacle.Type.FERN: None,
-        Obstacle.Type.SKELETON: None,
         # ... spicy berries
     }
 
@@ -123,7 +122,7 @@ class TRexNewHandler(ObjectHandler, DinosaurHandler):
 
             # Obstacles
             if isinstance(other_obj, Obstacle):
-                cls.react_to_obstacles(obj, other_obj)
+                cls.react_to_objects(obj, other_obj)
 
             # Objects
             if isinstance(other_obj, Skeleton) and trex_hitbox.overlaps(other_obj.rect):

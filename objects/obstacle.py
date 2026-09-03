@@ -14,7 +14,6 @@ class Obstacle(Object):
         STONE = auto(),
         TREE = auto(),
         FERN = auto(),
-        SKELETON = auto(),
 
 
     LAYER: Object.Layer = Object.Layer.MAIN
@@ -27,7 +26,6 @@ class Obstacle(Object):
         Type.STONE: (8, 8),
         Type.TREE: (16, 16),
         Type.FERN: (32, 16),
-        Type.SKELETON: (32, 9),
     }
 
     _ID_STUB: str = "obstacle_%d"
@@ -38,7 +36,6 @@ class Obstacle(Object):
         Type.STONE: PygameRect(24, 8, *SIZES[Type.STONE]),
         Type.TREE: PygameRect(32, 0, *SIZES[Type.TREE]),
         Type.FERN: PygameRect(48, 0, *SIZES[Type.FERN]),
-        Type.SKELETON: PygameRect(80, 7, *SIZES[Type.SKELETON]),
     }
 
     _total: int = 0
@@ -52,7 +49,7 @@ class Obstacle(Object):
             size=self.SIZES[ob_type],
         )
 
-        self.ob_type: Type = ob_type
+        self.ob_type: Obstacle.Type = ob_type
 
         if not core.video.texture_has(self.TEXTURE_NAME):
             core.video.texture_load(core.paths.TEXTURES / self.TEXTURE_NAME, self.TEXTURE_NAME)
@@ -66,16 +63,3 @@ class Obstacle(Object):
             (self.x - viewpoint.x, self.y - viewpoint.y),
             self._DRAW_AREAS[self.ob_type]
         )
-
-    @classmethod
-    def make_skeleton(cls, instead_of: Object) -> Self:
-        """
-        Creates a skeleton instead of an object.
-        :param instead_of: Object to be replaced with a skeleton.
-        :return: A skeleton in position slightly above the object.
-        """
-        skeleton: Self = cls(cls.Type.SKELETON, (0, 0))
-        skeleton.rect.center_x = instead_of.rect.center_x
-        skeleton.rect.center_y = instead_of.rect.center_y - instead_of.rect.height/2
-
-        return skeleton

@@ -6,7 +6,7 @@ from .object_handler import ObjectHandler
 from .dinosaur_handler import DinosaurHandler
 
 class AustroraptorHandler(ObjectHandler, DinosaurHandler):
-    _HUNTERS: tuple[type[Object], ...] = TRex, TRexNew
+    _HUNTERS: tuple[type[Dinosaur], ...] = TRex, TRexNew
 
     @classmethod
     def update(cls, obj: Austroraptor) -> None:
@@ -28,7 +28,7 @@ class AustroraptorHandler(ObjectHandler, DinosaurHandler):
             if isinstance(other_obj, cls._HUNTERS):
                 cls.react_to_hunter(obj, other_obj)
             elif isinstance(other_obj, Obstacle):
-                cls.react_to_obstacles(obj, other_obj)
+                cls.react_to_objects(obj, other_obj)
 
         # Accelerate to maximum speed when running
         if obj.state == Austroraptor.State.RUNNING:
