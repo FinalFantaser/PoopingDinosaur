@@ -10,6 +10,7 @@ from .austroraptor_handler import AustroraptorHandler
 from .velociraptor_handler import VelociraptorHandler
 from .pterodactyl_handler import PterodactylHandler
 from .triceratops_handler import TriceratopsHandler
+from .allosaurus_handler import AllosaurusHandler
 
 # Environment
 from .obstacle_handler import ObstacleHandler
