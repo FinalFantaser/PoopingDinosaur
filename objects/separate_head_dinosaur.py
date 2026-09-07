@@ -31,11 +31,7 @@ class SeparateHeadDinosaur(Dinosaur):
         self.curr_frame_head = 0
         self.last_frame_change_head = get_ticks()
 
-    def draw(self, viewpoint: Rect) -> None:
-        if not viewpoint.overlaps(self.rect):
-            return
-
-        # Body
+    def draw_body(self, viewpoint: Rect) -> None:
         self.DRAW_AREA.x = int(self.curr_frame * self.SIZE_BODY[0])
 
         core.video.texture_blit(
@@ -44,7 +40,7 @@ class SeparateHeadDinosaur(Dinosaur):
             self.DRAW_AREA
         )
 
-        # Head
+    def draw_head(self, viewpoint: Rect) -> None:
         self.DRAW_AREA_HEAD.x = int(self.curr_frame_head * self.SIZE_HEAD[0])
 
         core.video.texture_blit(
@@ -55,6 +51,13 @@ class SeparateHeadDinosaur(Dinosaur):
             ),
             self.DRAW_AREA_HEAD
         )
+
+    def draw(self, viewpoint: Rect) -> None:
+        if not viewpoint.overlaps(self.rect):
+            return
+
+        self.draw_body(viewpoint)
+        self.draw_head(viewpoint)
 
     def animate(self) -> None:
         if self.state == self.State.DEAD:
