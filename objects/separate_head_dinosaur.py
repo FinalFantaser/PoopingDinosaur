@@ -32,12 +32,15 @@ class SeparateHeadDinosaur(Dinosaur):
         self.last_frame_change_head = get_ticks()
 
     def draw_body(self, viewpoint: Rect) -> None:
-        self.DRAW_AREA.x = int(self.curr_frame * self.SIZE_BODY[0])
+        texture_offset_y = max(0, self.direction.value[0]) * self.DRAW_AREA[1]
+
+        draw_area_x = int(self.curr_frame * self.SIZE_BODY[0])
+        draw_area_y = int(self.DRAW_AREA[1] + self.DRAW_AREA[1] * texture_offset_y)
 
         core.video.texture_blit(
             self.TEXTURE_NAME,
             (self.x - viewpoint.x, self.y - viewpoint.y),
-            self.DRAW_AREA
+            (draw_area_x, draw_area_y, self.DRAW_AREA.width, self.DRAW_AREA.height),
         )
 
     def draw_head(self, viewpoint: Rect) -> None:
