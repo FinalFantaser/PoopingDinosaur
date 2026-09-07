@@ -33,8 +33,8 @@ class Allosaurus(SeparateHeadDinosaur):
             return
 
         # Body
-        offset = self.direction.value[0] * self.TOTAL_FRAMES * self.SIZE_BODY[0]
-        self.DRAW_AREA.x = int(self.curr_frame * self.SIZE_BODY[0]) + offset
+        offset = max(0, self.direction.value[0]) * self.TOTAL_FRAMES * self.SIZE_BODY[0]
+        self.DRAW_AREA.x = int(self.curr_frame * self.SIZE_BODY[0] + offset)
 
         core.video.texture_blit(
             self.TEXTURE_NAME,
@@ -54,3 +54,18 @@ class Allosaurus(SeparateHeadDinosaur):
             ),
             self.DRAW_AREA_HEAD
         )
+
+    @property
+    def hitbox_body(self) -> Rect:
+        # TODO Must take direction into consideration
+        return super().hitbox_body
+
+    @property
+    def hitbox_head(self) -> Rect:
+        # TODO Must take direction into consideration
+        return super().hitbox_head
+
+    @property
+    def hitbox_bite(self) -> Rect:
+        # TODO Must take direction into consideration
+        return super().hitbox_head

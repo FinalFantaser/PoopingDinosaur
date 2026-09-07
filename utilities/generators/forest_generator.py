@@ -1,3 +1,6 @@
+from random import randint
+from pygame.time import get_ticks
+
 from objects import (
     Camera,
 
@@ -12,7 +15,6 @@ from objects import (
 )
 
 from data_containers import objects as obj_container
-
 from .biome_generator import BiomeGenerator
 
 
@@ -65,24 +67,41 @@ class ForestGenerator(BiomeGenerator):
         Obstacle.Type.FERN,
     )
 
+    TRICERATOPS_INTERVAL: tuple[float, float] = 3500, 5000
+
 
     def __init__(self, total_tiles: int) -> None:
         super().__init__(total_tiles)
 
         self.forest: Forest = Forest(total_tiles)
+        self.next_triceratops_spawn: int = get_ticks()
         obj_container.add(self.forest)
 
     def npc(self):
         """Creates NPCs within vicinity"""
         super().npc()
+        self.triceratops()
 
-        if len(obj_container.dinosaurs(Triceratops)) < 1:
-            camera: Camera = obj_container.get_camera()
-            ground: Ground = obj_container.get_ground()
 
-            new_triceratops = Triceratops((
-                camera.x - Triceratops.SIZE[0],
-                ground.touch_level - Triceratops.SIZE[1]
-            ))
+    def triceratops(self) -> None:
+        existing_triceratops: None | Triceratops = None
+        query = obj_container.dinosaurs(Triceratops).values()
 
-            obj_container.queue_add(new_triceratops)
+        for triceratops in query:
+            existing_triceratops = triceratops
+
+        curr_time = get_ticks()
+
+        if existing_triceratops is None:
+            if curr_time >= self.next_triceratops_spawn:
+                camera = obj_container.get_camera()
+                ground = obj_container.get_ground()
+
+                new_triceratops = Triceratops((
+                    camera.x - Triceratops.SIZE[0],
+                    ground.touch_level - Triceratops.SIZE[1]
+                ))
+
+                obj_container.queue_add(new_triceratops)
+        else:
+            self.next_triceratops_spawn = curr_time + randint(*self.TRICERATOPS_INTERVAL)
