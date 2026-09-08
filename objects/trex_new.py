@@ -46,9 +46,9 @@ class TRexNew(SeparateHeadDinosaur):
     WEIGHT_FACTOR: float = 0.8
     JUMP_ACCEL: float = -(WEIGHT * 0.05)
     HEALTH_MAX: int = 3
-    HEAD_POS: tuple[float, float] = 38, 0
+    HEAD_POS: tuple[float, float] = 16, 0
     DRAW_AREA: PygameRect = PygameRect(0, 0, *SIZE_BODY)
-    DRAW_AREA_HEAD: PygameRect = PygameRect(0, 16, *SIZE_HEAD)
+    DRAW_AREA_HEAD: PygameRect = PygameRect(0, 32, *SIZE_HEAD)
     FOV_SIZE: tuple[float, float] = SIZE[0] + SIZE_HEAD[0] * 2, SIZE[1]
     HITBOX: Rect = Rect(20, 0, 26, 16)
     HITBOX_FLATTEN: tuple[float, float, float, float] = 20, 0, 16, 16
@@ -126,7 +126,7 @@ class TRexNew(SeparateHeadDinosaur):
         return self.vel_x + self.poo_vel_penalty * (-1 if self.vel_x > 0 else 1)
     
     def draw(self, viewpoint: Rect) -> None:
-        if not self.visible:
+        if not self.visible: # Blink
             return
         
         super().draw(viewpoint)

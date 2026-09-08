@@ -39,7 +39,7 @@ class Triceratops(SeparateHeadDinosaur):
     SIZE: tuple[float, float] = 38, 16
     SIZE_BODY: tuple[float, float] = 27, 16
     SIZE_HEAD: tuple[float, float] = 13, 13
-    HEAD_POS: tuple[float, float] = 26, 0
+    HEAD_POS: tuple[float, float] = 32, 0
     TEXTURE_NAME: str = "triceratops.png"
     ANIM_INTERVAL_HEAD: int = 200
     TOTAL_FRAMES_HEAD: int = 3
