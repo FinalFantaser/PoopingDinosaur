@@ -4,7 +4,7 @@ from pygame import Rect as PygameRect
 from pygame.time import get_ticks
 
 from .rect import Rect
-from .separate_head_dinosaur import SeparateHeadDinosaur
+from .separate_head_dinosaur import SeparateHeadDinosaur, Direction
 
 
 class TRexNew(SeparateHeadDinosaur):
@@ -61,6 +61,7 @@ class TRexNew(SeparateHeadDinosaur):
         super().__init__(pos)
 
         self.id = self.ID
+        self.direction = Direction.RIGHT
         self.state = self.State.RUNNING
         self.invincibility: int = 0
         self.last_blink: int = get_ticks()

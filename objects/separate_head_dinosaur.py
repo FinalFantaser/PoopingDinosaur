@@ -32,10 +32,10 @@ class SeparateHeadDinosaur(Dinosaur):
         self.last_frame_change_head = get_ticks()
 
     def draw_body(self, viewpoint: Rect) -> None:
-        texture_offset_y = max(0, self.direction.value[0]) * self.DRAW_AREA[1]
+        texture_offset_y = max(0, self.direction.value[0]) * self.SIZE_BODY[1]
 
         draw_area_x = int(self.curr_frame * self.SIZE_BODY[0])
-        draw_area_y = int(self.DRAW_AREA[1] + self.DRAW_AREA[1] * texture_offset_y)
+        draw_area_y = int(self.DRAW_AREA[1] + texture_offset_y)
 
         core.video.texture_blit(
             self.TEXTURE_NAME,
@@ -44,14 +44,14 @@ class SeparateHeadDinosaur(Dinosaur):
         )
 
     def draw_head(self, viewpoint: Rect) -> None:
-        texture_offset_y = max(0, self.direction.value[0]) * self.DRAW_AREA[1]
+        texture_offset_y = max(0, self.direction.value[0]) * self.SIZE_HEAD[1]
         head_dest_offset_x = self.HEAD_POS[0] * self.direction.value[0]
 
-        dest_x = self.x + head_dest_offset_x - viewpoint.x
+        dest_x = self.x + self.SIZE_BODY[0]/2 + head_dest_offset_x - viewpoint.x
         dest_y = self.y + self.HEAD_POS[1] - viewpoint.y
 
         draw_area_x = int(self.curr_frame_head * self.SIZE_HEAD[0])
-        draw_area_y = int(self.DRAW_AREA_HEAD[1] + self.DRAW_AREA_HEAD[1] * texture_offset_y)
+        draw_area_y = int(self.DRAW_AREA_HEAD[1] + texture_offset_y)
 
         core.video.texture_blit(
             self.TEXTURE_NAME,
@@ -80,20 +80,31 @@ class SeparateHeadDinosaur(Dinosaur):
                 self.curr_frame_head = (self.curr_frame_head + 1) % self.TOTAL_FRAMES_HEAD
 
     @property
+    def rect_body(self) -> Rect:
+        overall_rect = self.rect
+        body_rect = Rect(0, 0, *self.SIZE_BODY)
+        body_rect.center = overall_rect.center
+        return body_rect
+
+    @property
+    def rect_head(self) -> Rect:
+        overall_rect = self.rect
+
+        head_rect = Rect(0, 0, *self.SIZE_HEAD)
+        head_rect.y = overall_rect.y + self.HEAD_POS[1]
+        head_rect.x = overall_rect.center_x + self.HEAD_POS[0] * self.direction.value[0]
+
+        return head_rect
+
+    @property
     def hitbox_body(self) -> Rect:
         """Body hitbox (no head)"""
-        return Rect(*self.pos, *self.SIZE_BODY)
+        return self.rect_body
 
     @property
     def hitbox_head(self) -> Rect:
         """Head hitbox (no body)"""
-        rect = self.rect
-
-        return Rect(
-            rect.x + self.HEAD_POS[0],
-            rect.y + self.HEAD_POS[1],
-            *self.SIZE_HEAD
-        )
+        return self.rect_head
 
     @property
     def hitbox_bite(self) -> Rect:
