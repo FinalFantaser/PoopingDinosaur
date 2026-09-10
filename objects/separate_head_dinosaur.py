@@ -81,9 +81,11 @@ class SeparateHeadDinosaur(Dinosaur):
 
     @property
     def rect_body(self) -> Rect:
-        overall_rect = self.rect
-        body_rect = Rect(0, 0, *self.SIZE_BODY)
-        body_rect.center = overall_rect.center
+        body_rect = Rect(*self.pos, *self.SIZE_BODY)
+
+        if self.direction.value[0] < 0:
+            body_rect.right = self.rect.right
+
         return body_rect
 
     @property
