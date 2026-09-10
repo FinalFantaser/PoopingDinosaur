@@ -37,18 +37,21 @@ class SeparateHeadDinosaur(Dinosaur):
         draw_area_x = int(self.curr_frame * self.SIZE_BODY[0])
         draw_area_y = int(self.DRAW_AREA[1] + texture_offset_y)
 
+        body_rect = self.rect_body
+
         core.video.texture_blit(
             self.TEXTURE_NAME,
-            (self.x - viewpoint.x, self.y - viewpoint.y),
+            (body_rect.x - viewpoint.x, body_rect.y - viewpoint.y),
             (draw_area_x, draw_area_y, self.DRAW_AREA.width, self.DRAW_AREA.height),
         )
 
     def draw_head(self, viewpoint: Rect) -> None:
         texture_offset_y = max(0, self.direction.value[0]) * self.SIZE_HEAD[1]
-        head_dest_offset_x = self.HEAD_POS[0] * self.direction.value[0] * (2 if self.direction.value[0] == -1 else 1)
 
-        dest_x = self.x + self.SIZE_BODY[0]/2 + head_dest_offset_x - viewpoint.x
-        dest_y = self.y + self.HEAD_POS[1] - viewpoint.y
+        head_rect = self.rect_head
+
+        dest_x = head_rect.x - viewpoint.x
+        dest_y = head_rect.y - viewpoint.y
 
         draw_area_x = int(self.curr_frame_head * self.SIZE_HEAD[0])
         draw_area_y = int(self.DRAW_AREA_HEAD[1] + texture_offset_y)
@@ -81,22 +84,26 @@ class SeparateHeadDinosaur(Dinosaur):
 
     @property
     def rect_body(self) -> Rect:
-        body_rect = Rect(*self.pos, *self.SIZE_BODY)
+        rect = self.rect
 
-        if self.direction.value[0] < 0:
-            body_rect.right = self.rect.right
+        body = Rect(rect.x, rect.y, self.SIZE_BODY[0], self.SIZE_BODY[1])
 
-        return body_rect
+        return body
 
     @property
     def rect_head(self) -> Rect:
-        overall_rect = self.rect
+        body_rect = self.rect_body
 
-        head_rect = Rect(0, 0, *self.SIZE_HEAD)
-        head_rect.y = overall_rect.y + self.HEAD_POS[1]
-        head_rect.x = overall_rect.center_x + self.HEAD_POS[0] * self.direction.value[0] * (2 if self.direction.value[0] == -1 else 1)
+        head = Rect(
+            (body_rect.right + self.HEAD_POS[0]) if self.direction == Direction.RIGHT else (body_rect.left - self.SIZE_HEAD[0] - self.HEAD_POS[0]),
+            self.y + self.HEAD_POS[1],
+            *self.SIZE_HEAD
+        )
 
-        return head_rect
+        print(f"{self.id}.body_rect.right = {body_rect.right}")
+        print(f"{self.id}.head.left = {head.left}")
+
+        return head
 
     @property
     def hitbox_body(self) -> Rect:
