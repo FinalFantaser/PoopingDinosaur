@@ -61,7 +61,7 @@ class TRexNew(SeparateHeadDinosaur):
         super().__init__(pos)
 
         self.id = self.ID
-        self.direction = Direction.LEFT
+        self.direction = Direction.RIGHT
         self.state = self.State.RUNNING
         self.invincibility: int = 0
         self.last_blink: int = get_ticks()

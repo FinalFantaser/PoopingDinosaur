@@ -44,7 +44,7 @@ class SeparateHeadDinosaur(Dinosaur):
         )
 
     def draw_head(self, viewpoint: Rect) -> None:
-        texture_offset_y = max(0, self.direction.value[1]) * self.SIZE_HEAD[1]
+        texture_offset_y = max(0, self.direction.value[0]) * self.SIZE_HEAD[1]
         head_dest_offset_x = self.HEAD_POS[0] * self.direction.value[0] * (2 if self.direction.value[0] == -1 else 1)
 
         dest_x = self.x + self.SIZE_BODY[0]/2 + head_dest_offset_x - viewpoint.x
