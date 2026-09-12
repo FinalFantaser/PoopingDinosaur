@@ -100,7 +100,7 @@ class TriceratopsHandler(ObjectHandler, DinosaurHandler):
 
             if other_dino.health <= 0:
                 explosion = Explosion(
-                    spawn=Obstacle.make_skeleton(other_dino) if other_dino.weight >= game_data.HEAVY_DINOSAUR_WEIGHT else None,
+                    spawn=Skeleton.instead_of(other_dino) if other_dino.weight >= game_data.HEAVY_DINOSAUR_WEIGHT else None,
                 ).instead_of(other_dino)
 
                 obj_container.queue_delete(other_dino)

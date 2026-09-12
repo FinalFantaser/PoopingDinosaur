@@ -100,9 +100,6 @@ class SeparateHeadDinosaur(Dinosaur):
             *self.SIZE_HEAD
         )
 
-        print(f"{self.id}.body_rect.right = {body_rect.right}")
-        print(f"{self.id}.head.left = {head.left}")
-
         return head
 
     @property

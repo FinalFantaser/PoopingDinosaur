@@ -123,8 +123,8 @@ class DinosaurHandler:
             override_vel_x: float|None = None,
             override_jump: float|None = None,
     ):
-        """Bounce in a specifed direction of current movement with quarter of current horizontal velocity."""
-        vel_x = override_vel_x if override_vel_x is not None else dinosaur.vel_x * 0.25
+        """Bounce in a specified direction of current movement."""
+        vel_x = override_vel_x if override_vel_x is not None else dinosaur.vel_x * 1.1
         vel_y = override_jump if override_jump is not None else dinosaur.JUMP_ACCEL / 2
 
         cur_vel_modifier = 1 if vel_x >= 0 else -1
@@ -151,8 +151,7 @@ class DinosaurHandler:
         """
         # Switch to DEAD and throw the dinosaur back
         dinosaur.state = Dinosaur.State.DEAD
-        dinosaur.vel_x = dinosaur.VEL_X_MIN / 4 * dinosaur.direction.opposite().value[0]
-        dinosaur.vel_y = dinosaur.JUMP_ACCEL / 4
+        cls.bounce(dinosaur, cactus, cactus.rect.center_x > dinosaur.hitbox.center_x)
 
     @classmethod
     def thorns_touch(cls, dinosaur: Dinosaur, thorns: Obstacle) -> None:
@@ -189,7 +188,7 @@ class DinosaurHandler:
         :param dinosaur: Reacting dinosaur.
         :param tree: Tree to react to.
         """
-        cls.bounce_back(dinosaur, tree)
+        cls.bounce(dinosaur, tree, tree.rect.center_x > dinosaur.hitbox.center_x)
 
     @classmethod
     def fern_touch(cls, dinosaur: Dinosaur, fern: Obstacle) -> None:

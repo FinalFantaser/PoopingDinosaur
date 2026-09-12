@@ -204,7 +204,13 @@ class TRexNewHandler(ObjectHandler, DinosaurHandler):
                 obj_container.queue_add(FlattenedObject.instead_of(dinosaur))
         # Otherwise, bounce
         else:
-            cls.bounce_back(trex, dinosaur)
+            cls.bounce(
+                trex,
+                dinosaur,
+                dinosaur.rect.center_x > trex.hitbox.center_x,
+                trex.vel_x * 1.25,
+                trex.jump_impulse if trex.vel_y > 0 else None
+            )
 
     @classmethod
     def cactus_touch(cls, dinosaur: TRexNew, cactus: Obstacle) -> None:
@@ -295,7 +301,7 @@ class TRexNewHandler(ObjectHandler, DinosaurHandler):
 
             cls.bounce(dinosaur, skeleton, False, vel_x, vel_y)
         else: # Bounce back
-            cls.bounce_back(dinosaur, skeleton)
+            cls.bounce_back(dinosaur, skeleton, dinosaur.vel_x * 1.25, dinosaur.jump_impulse)
 
 
         # Destroy the skeleton

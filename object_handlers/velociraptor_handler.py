@@ -7,7 +7,6 @@ from .dinosaur_handler import DinosaurHandler
 
 class VelociraptorHandler(ObjectHandler, DinosaurHandler):
     _HUNTERS: tuple[type[TRex|Dinosaur], ...] = TRex, TRexNew
-    #Austroraptor
 
     @classmethod
     def update(cls, obj: Velociraptor) -> None:
@@ -71,3 +70,7 @@ class VelociraptorHandler(ObjectHandler, DinosaurHandler):
     @classmethod
     def stone_see(cls, dinosaur: Dinosaur, stone: Obstacle) -> None:
         cls.get_cornered(dinosaur, stone)
+
+    @classmethod
+    def tree_see(cls, dinosaur: Dinosaur, tree: Obstacle) -> None:
+        cls.get_cornered(dinosaur, tree)

@@ -11,7 +11,9 @@ from objects import (
     Dinosaur,
     Velociraptor,
     Austroraptor,
-    Pterodactyl, Triceratops,
+    Pterodactyl,
+    Triceratops,
+    Allosaurus,
 )
 
 from data_containers import objects as obj_container
@@ -42,6 +44,7 @@ class ForestGenerator(BiomeGenerator):
         Velociraptor: 35,
         Austroraptor: 15,
         Pterodactyl: 25,
+        Allosaurus: 10,
     }
 
     NPC_INTERVAL: tuple[int, int] = 15, 20
@@ -50,6 +53,7 @@ class ForestGenerator(BiomeGenerator):
         Velociraptor,
         Austroraptor,
         Pterodactyl,
+        Allosaurus,
         # ... More will be added as implemented
     )
 
