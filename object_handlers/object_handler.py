@@ -3,6 +3,8 @@ from objects import *
 
 
 class ObjectHandler:
+    update_delta: int = 0
+
     @classmethod
     def update(cls, obj: Object) -> None:
         pass
@@ -30,8 +32,7 @@ class ObjectHandler:
         cls.gravity(obj)
 
         # Horizontal movement
-        direction = obj.direction.value[0] if hasattr(obj, 'direction') else 1
-        obj.x += (obj.vel_x / 1000 * obj.update_delta) * direction
+        obj.x += obj.vel_x / 1000 * obj.update_delta
 
     @classmethod
     def gravity(cls, obj: Object) -> None:

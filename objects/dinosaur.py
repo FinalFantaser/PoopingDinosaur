@@ -91,7 +91,7 @@ class Dinosaur(ObjectWithPhysics):
         else:
             core.video.texture_load(core.paths.TEXTURES / self.TEXTURE_NAME, self.TEXTURE_NAME)
 
-        self.direction: Direction = Direction.LEFT
+        self.direction: Direction = Direction.RIGHT
         self.state = self.State.IDLE
         self.vel_x: float = 0.0
         self.vel_y: float = 0.0

@@ -32,6 +32,23 @@ class DinosaurHandler:
         Skeleton: "skeleton_touch",
     }
 
+    update_delta: int = 0
+
+    @classmethod
+    def accelerate(cls, dinosaur: Dinosaur) -> None:
+        """
+        Accelerate to maximum speed with consideration for direction
+        :param dinosaur: Dinosaur.
+        """
+        accel_x: float = dinosaur.VEL_X_MAX / dinosaur.VEL_X_MAX_IN / 1000 * dinosaur.update_delta
+
+        if dinosaur.direction == Direction.RIGHT:
+            print(f"{dinosaur.id} runs to the right")
+            dinosaur.vel_x = min(dinosaur.vel_x + accel_x, dinosaur.VEL_X_MAX)
+        elif dinosaur.direction == Direction.LEFT:
+            print(f"{dinosaur.id} runs to the left")
+            dinosaur.vel_x = max(dinosaur.vel_x - accel_x, -dinosaur.VEL_X_MAX)
+
     @classmethod
     def react_to_hunter(cls, prey: Dinosaur, hunter: Dinosaur) -> None:
         """
@@ -40,7 +57,7 @@ class DinosaurHandler:
         :param hunter: Hunter dinosaur to react to.
         """
         # Do nothing if the hunter is dead
-        if isinstance(prey, Dinosaur) and prey.state == prey.State.DEAD:
+        if hunter.state == prey.State.DEAD:
             return
 
         ground: Ground = obj_container.get_ground()
@@ -53,14 +70,14 @@ class DinosaurHandler:
                 prey.vel_y = prey.JUMP_ACCEL / 4
 
         # If startled and landed after the jump, run away from the hunter
-        elif prey.state == prey.State.STARTLED and prey.rect.bottom >= ground.touch_level:
+        elif prey.state == prey.State.STARTLED and prey.hitbox.bottom >= ground.touch_level:
             prey.state = prey.State.RUNNING
-            prey.direction = Direction.RIGHT if prey.rect.center_x >= hunter.rect.center_x else Direction.LEFT
+            prey.direction = Direction.RIGHT if prey.hitbox.center_x >= hunter.hitbox.center_x else Direction.LEFT
 
         #  If running and got behind the hunter, run to opposite direction
         elif prey.state == prey.State.RUNNING:
             old_dir: Direction = prey.direction
-            prey.direction = Direction.RIGHT if prey.rect.center_x >= hunter.rect.center_x else Direction.LEFT
+            prey.direction = Direction.RIGHT if prey.hitbox.center_x >= hunter.hitbox.center_x else Direction.LEFT
             if prey.direction != old_dir:
                 prey.vel_x = abs(prey.vel_x / 2) * prey.direction.value[0]
 

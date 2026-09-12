@@ -19,7 +19,7 @@ class AustroraptorHandler(ObjectHandler, DinosaurHandler):
 
         # Reacting to other dinosaurs
         for other_obj in obj_container.visible().values():
-            if obj.id == other_obj.id or isinstance(other_obj, Ground):
+            if obj.id == other_obj.id or isinstance(other_obj, Ground) or obj.LAYER != obj.Layer.MAIN:
                 continue
 
             if not obj.fov_around.overlaps(other_obj.rect):
@@ -31,11 +31,11 @@ class AustroraptorHandler(ObjectHandler, DinosaurHandler):
                 cls.react_to_objects(obj, other_obj)
 
         # Accelerate to maximum speed when running
-        if obj.state == Austroraptor.State.RUNNING:
-            accel_x: float = Austroraptor.VEL_X_MAX / Austroraptor.VEL_X_MAX_IN / 1000 * update_delta
-            obj.vel_x = min(obj.vel_x + accel_x, Austroraptor.VEL_X_MAX)
+        if obj.state == obj.State.RUNNING:
+            cls.accelerate(obj)
+
         # Slow down if dead
-        if obj.state == Austroraptor.State.DEAD:
+        if obj.state == obj.State.DEAD:
             obj.vel_x = 0.0
 
         obj.last_update = pygame.time.get_ticks()

@@ -27,4 +27,5 @@ class Allosaurus(SeparateHeadDinosaur):
 
     def __init__(self, pos: tuple[float, float] = (0, 0), direction: Direction = Direction.LEFT) -> None:
         super().__init__(pos, flippable=False)
+        self.state = self.State.RUNNING
         self.direction = direction

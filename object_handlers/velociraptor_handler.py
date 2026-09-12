@@ -35,8 +35,8 @@ class VelociraptorHandler(ObjectHandler, DinosaurHandler):
 
         # Accelerate to maximum speed when running
         if obj.state == obj.State.RUNNING:
-            accel_x: float = obj.VEL_X_MAX / obj.VEL_X_MAX_IN / 1000 * update_delta
-            obj.vel_x = min(obj.vel_x + accel_x, Austroraptor.VEL_X_MAX)
+            cls.accelerate(obj)
+
         # Slow down if dead
         if obj.state == Austroraptor.State.DEAD:
             obj.vel_x = 0.0
