@@ -82,6 +82,27 @@ class SeparateHeadDinosaur(Dinosaur):
                 self.last_frame_change_head = get_ticks()
                 self.curr_frame_head = (self.curr_frame_head + 1) % self.TOTAL_FRAMES_HEAD
 
+    def start_biting(self) -> None:
+        self.state = self.State.BITING
+
+    def is_biting(self) -> None:
+        """
+        Check if the dinosaur is biting now.
+        :return: True **only** if dinosaur is biting and at its **last biting animation frame**.
+        """
+        return self.state == self.State.BITING and self.curr_frame_head == self.TOTAL_FRAMES_HEAD - 1
+
+    def stop_biting(self) -> None:
+        """Revert to `RUNNING` state and idle head animation once the biting animation is finished."""
+        if (
+            self.state == self.State.BITING
+            and self.curr_frame_head == self.TOTAL_FRAMES_HEAD - 1
+            and get_ticks() - self.last_frame_change_head >= self.calc_anim_interval(self.ANIM_INTERVAL_HEAD)
+        ):
+            self.curr_frame_head = 0
+            self.last_frame_change_head = get_ticks()
+            self.state = self.State.RUNNING
+
     @property
     def rect_body(self) -> Rect:
         rect = self.rect

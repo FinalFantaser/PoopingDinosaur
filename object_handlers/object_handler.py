@@ -3,8 +3,6 @@ from objects import *
 
 
 class ObjectHandler:
-    update_delta: int = 0
-
     @classmethod
     def update(cls, obj: Object) -> None:
         pass

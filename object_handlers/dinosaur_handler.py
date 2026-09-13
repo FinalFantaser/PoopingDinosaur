@@ -1,4 +1,4 @@
-from typing import Callable
+from typing import Callable, Iterable
 from objects import Object, Direction, Dinosaur, Ground, Obstacle, Skeleton
 from data_containers import objects as obj_container
 
@@ -32,7 +32,37 @@ class DinosaurHandler:
         Skeleton: "skeleton_touch",
     }
 
-    update_delta: int = 0
+    @classmethod
+    def skip_irrelevant_object(
+            cls,
+            dinosaur: Dinosaur,
+            other_obj: Object,
+            more_conditions: Iterable[bool]
+    ) -> bool:
+        """
+        Routine checks for irrelevant objects that shall be skipped during update.
+
+        **Checks are stopped after the first True, the rest is skipped.**
+
+        :param dinosaur: the main object
+        :param other_obj: the other object
+        :param more_conditions: additional conditions to be checked
+        :return: True if object is irrelevant, False otherwise.
+        """
+        if other_obj.LAYER != Object.LAYER.MAIN:
+            return True
+
+        if other_obj is dinosaur:
+            return True
+
+        if isinstance(other_obj, Ground):
+            return True
+
+        for condition in more_conditions:
+            if condition:
+                return True
+
+        return False
 
     @classmethod
     def accelerate(cls, dinosaur: Dinosaur) -> None:
@@ -43,10 +73,8 @@ class DinosaurHandler:
         accel_x: float = dinosaur.VEL_X_MAX / dinosaur.VEL_X_MAX_IN / 1000 * dinosaur.update_delta
 
         if dinosaur.direction == Direction.RIGHT:
-            print(f"{dinosaur.id} runs to the right")
             dinosaur.vel_x = min(dinosaur.vel_x + accel_x, dinosaur.VEL_X_MAX)
         elif dinosaur.direction == Direction.LEFT:
-            print(f"{dinosaur.id} runs to the left")
             dinosaur.vel_x = max(dinosaur.vel_x - accel_x, -dinosaur.VEL_X_MAX)
 
     @classmethod
@@ -82,7 +110,7 @@ class DinosaurHandler:
                 prey.vel_x = abs(prey.vel_x / 2) * prey.direction.value[0]
 
     @classmethod
-    def react_to_objects(cls, dinosaur: Dinosaur, obstacle: Object|Obstacle) -> None:
+    def react_to_objects(cls, dinosaur: Dinosaur, obstacle: Object) -> None:
         """
         Wrapper assembling all methods handling touching and reacting to obstacles in dinosaur's FOV.
         :param dinosaur: Reacting dinosaur.
@@ -93,7 +121,7 @@ class DinosaurHandler:
         else:
             reactions_touch, reactions_see = cls.REACTION_OBJECTS_TOUCH, cls.REACTION_OBJECTS_SEE
 
-        method_key: Obstacle.Type|str = obstacle.ob_type if isinstance(obstacle, Obstacle) else obstacle.__class__.__name__
+        method_key: Obstacle.Type|str = obstacle.ob_type if isinstance(obstacle, Obstacle) else obstacle.__class__
 
         for hitbox, method_list in (
                 (dinosaur.hitbox, reactions_touch),  # If touched
@@ -178,7 +206,7 @@ class DinosaurHandler:
         :param thorns: Thorns to react to.
         """
         # Slow down
-        dinosaur.vel_x = min(dinosaur.vel_x/2, dinosaur.VEL_X_MIN/2) * dinosaur.direction.value[0]
+        dinosaur.vel_x = min(abs(dinosaur.vel_x/2), dinosaur.VEL_X_MIN/2) * dinosaur.direction.value[0]
 
     @classmethod
     def stone_touch(cls, dinosaur: Dinosaur, stone: Obstacle) -> None:
@@ -215,7 +243,7 @@ class DinosaurHandler:
         :param fern: Thorns to react to.
         """
         # Slow down
-        dinosaur.vel_x = min(dinosaur.vel_x / 2, dinosaur.VEL_X_MIN / 2) * dinosaur.direction.value[0]
+        dinosaur.vel_x = min(abs(dinosaur.vel_x) / 2, dinosaur.VEL_X_MIN / 2) * dinosaur.direction.value[0]
 
     @classmethod
     def skeleton_touch(cls, dinosaur: Dinosaur, skeleton: Skeleton) -> None:

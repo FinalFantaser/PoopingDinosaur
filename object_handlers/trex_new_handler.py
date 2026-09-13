@@ -55,14 +55,7 @@ class TRexNewHandler(ObjectHandler, DinosaurHandler):
             obj.visible = True
 
         # Stop biting
-        if (
-            obj.state == obj.State.BITING
-            and obj.curr_frame_head == obj.TOTAL_FRAMES_HEAD - 1
-            and get_ticks() - obj.last_frame_change_head >= obj.calc_anim_interval(obj.ANIM_INTERVAL_HEAD)
-        ):
-            obj.curr_frame_head = 0
-            obj.last_frame_change_head = get_ticks()
-            obj.state = obj.State.RUNNING
+        obj.stop_biting()
 
         # Reacting to environment
         for other_obj in obj_container.visible().values():
@@ -77,12 +70,11 @@ class TRexNewHandler(ObjectHandler, DinosaurHandler):
                     and trex_fov.overlaps(other_obj.rect)
                     and isinstance(other_obj, cls.EDIBLE_DINOSAURS)
             ):
-                obj.state = obj.State.BITING
+                obj.start_biting()
 
             # Biting edible dinosaurs
             if (
-                obj.state == obj.State.BITING
-                and obj.curr_frame_head == obj.TOTAL_FRAMES_HEAD - 1
+                obj.is_biting()
                 and obj.poos < obj.MAX_POOS
                 and isinstance(other_obj, cls.EDIBLE_DINOSAURS)
                 and other_obj.invincibility < 1

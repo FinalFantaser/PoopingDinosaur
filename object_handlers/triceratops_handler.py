@@ -37,14 +37,7 @@ class TriceratopsHandler(ObjectHandler, DinosaurHandler):
         obj.invincibility = max(0, obj.invincibility - obj.update_delta)
 
         # Stop biting
-        if (
-            obj.state == obj.State.BITING
-            and obj.curr_frame_head >= obj.TOTAL_FRAMES_HEAD - 1
-            and get_ticks() - obj.last_frame_change_head >= obj.calc_anim_interval(obj.ANIM_INTERVAL_HEAD)
-        ):
-            obj.curr_frame_head = 0
-            obj.last_frame_change_head = get_ticks()
-            obj.state = obj.State.RUNNING
+        obj.stop_biting()
 
         # Accelerate
         accel_x = obj.VEL_X_MAX / obj.VEL_X_MAX_IN / 1000 * update_delta
@@ -70,14 +63,11 @@ class TriceratopsHandler(ObjectHandler, DinosaurHandler):
             elif isinstance(other_obj, Skeleton) and not other_obj.is_invincible():
                 cls.destroy_object(obj, other_obj)
 
-        # TODO Poop if belly's full
-        # ...
-
         obj.last_update = get_ticks()
 
     @classmethod
     def react_to_npc(cls, triceratops: Triceratops, other_dino: Dinosaur) -> None:
-        # Cache
+        # Caching hitboxes
         triceratops_hitbox_head = triceratops.hitbox_head
         triceratops_hitbox_body = triceratops.hitbox_body
         other_dino_hitbox = other_dino.hitbox
@@ -125,15 +115,11 @@ class TriceratopsHandler(ObjectHandler, DinosaurHandler):
     @classmethod
     def start_biting(cls, dinosaur: Triceratops, obstacle: Obstacle) -> None:
         if dinosaur.state != dinosaur.State.BITING:
-            dinosaur.state = Triceratops.State.BITING
+            dinosaur.start_biting()
 
     @classmethod
     def eat_obstacle(cls, dinosaur: Triceratops, obstacle: Obstacle) -> None:
-        if (
-            dinosaur.state == dinosaur.State.BITING
-            and dinosaur.curr_frame_head >= dinosaur.TOTAL_FRAMES_HEAD - 1
-            and dinosaur.hitbox_bite.overlaps(obstacle.rect)
-        ):
+        if dinosaur.is_biting() and dinosaur.hitbox_bite.overlaps(obstacle.rect):
             dinosaur.heal(1)
 
             obj_container.queue_delete(obstacle)

@@ -13,10 +13,10 @@ class Allosaurus(SeparateHeadDinosaur):
     HEAD_POS: tuple[float, float] = 0, 0
     DRAW_AREA: PygameRect = PygameRect(0, 0, *SIZE_BODY)
     DRAW_AREA_HEAD: PygameRect = PygameRect(0, 26, *SIZE_HEAD)
-    FOV_SIZE: tuple[float, float] = SIZE[0] * 4, SIZE[1]
+    FOV_SIZE: tuple[float, float] = SIZE[0] * 6, SIZE[1] * 2
     VEL_X_MIN: float = 150
-    VEL_X_MAX: float = VEL_X_MIN * 1.5
-    VEL_X_MAX_IN: float = 1
+    VEL_X_MAX: float = VEL_X_MIN * 1.2
+    VEL_X_MAX_IN: float = 1.5
     WEIGHT: float = 1750
     WEIGHT_FACTOR: float = 0.7
     JUMP_ACCEL = -WEIGHT * 0.1
