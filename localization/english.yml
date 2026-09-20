@@ -10,8 +10,10 @@ gui_score: Score
 
 game_mode_test_title: Test Mode
 game_mode_test_description: No game design; just testing the features
-game_mode_new_trex_test_title: New T-Rex Class Test
-game_mode_new_trex_test_description: Testing a new separate head based class for T-Rex
+game_mode_forest_title: Forest
+game_mode_forest_description: A showcase for the forest biome
+game_mode_caves_title: Caves
+game_mode_caves_description: A showcase for the caves biome
 
 win: You won. Yay. Or something. Good (blow)job.
 game_over: Game Over

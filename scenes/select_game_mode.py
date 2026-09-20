@@ -71,7 +71,8 @@ class SelectGameMode(Scene):
 
         self.cards: dict[str, _Card] = {
             "Test": _Card("game_mode_test_title", "game_mode_test_description"),
-            "NewTrexTest": _Card("game_mode_new_trex_test_title", "game_mode_new_trex_test_description"),
+            "Forest": _Card("game_mode_forest_title", "game_mode_forest_description", "game_mode_forest.png"),
+            "Caves": _Card("game_mode_caves_title", "game_mode_caves_description", "game_mode_caves.png"),
             # ...
         }
 

@@ -1,11 +1,11 @@
 import core.input, core.audio
 from .scene import Scene
-from objects import Camera, Ground, TRexNew, PauseMenu
+from objects import Camera, Ground, TRexNew, PauseMenu, PooMeter, HealthMeter
 from object_handlers import PauseMenuHandler, TRexNewHandler, object_handlers
 from utilities.generators import ForestGenerator
 from data_containers import objects as obj_container, game_data
 
-class NewTrexTest(Scene):
+class Forest(Scene):
     def __init__(self):
         super().__init__()
         obj_container.clear()
@@ -18,9 +18,16 @@ class NewTrexTest(Scene):
         )
         self.trex_new.poos = TRexNew.MAX_POOS
 
-        obj_container.add(self.camera)
-        obj_container.add(self.ground)
-        obj_container.add(self.trex_new)
+        for obj in (
+            self.camera,
+            self.ground,
+            self.trex_new,
+            HealthMeter(self.trex_new.health),
+            PooMeter(self.trex_new.poos),
+        ):
+            obj_container.add(obj)
+
+
         self.generator: ForestGenerator = ForestGenerator(self.ground.total_tiles)
 
     def update(self) -> None:
