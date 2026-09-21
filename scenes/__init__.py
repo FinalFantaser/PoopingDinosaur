@@ -1,5 +1,6 @@
 from .scene import Scene
 from .test import Test
+from .level_contract import LevelContract
 from .forest import Forest
 from .caves import Caves
 

@@ -70,7 +70,7 @@ class SelectGameMode(Scene):
         self.fps = 30
 
         self.cards: dict[str, _Card] = {
-            "Test": _Card("game_mode_test_title", "game_mode_test_description"),
+            #"Test": _Card("game_mode_test_title", "game_mode_test_description"),
             "Forest": _Card("game_mode_forest_title", "game_mode_forest_description", "game_mode_forest.png"),
             "Caves": _Card("game_mode_caves_title", "game_mode_caves_description", "game_mode_caves.png"),
             # ...
