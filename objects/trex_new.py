@@ -57,7 +57,7 @@ class TRexNew(SeparateHeadDinosaur):
     POO_VELOCITY_PENALTY: float = VEL_X_MIN / 4 / MAX_POOS
     POOP_INTERVAL: int = 1000
 
-    def __init__(self, pos: tuple[float, float]) -> None:
+    def __init__(self, pos: tuple[float, float], poos: int = MAX_POOS) -> None:
         super().__init__(pos)
 
         self.id = self.ID
@@ -66,7 +66,7 @@ class TRexNew(SeparateHeadDinosaur):
         self.invincibility: int = 0
         self.last_blink: int = get_ticks()
         self.visible: bool = True
-        self.poos: int = 0
+        self.poos: int = poos
         self.last_pooped_at: int = get_ticks()
         self.vel_x_modifier: float = 0
 

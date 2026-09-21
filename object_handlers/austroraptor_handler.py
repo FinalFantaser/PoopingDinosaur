@@ -1,5 +1,5 @@
 import pygame.time
-from objects import Rect, Direction, Object, Dinosaur, Austroraptor, TRex, TRexNew, Ground, Obstacle, Poo
+from objects import Dinosaur, Layer, Austroraptor, TRex, TRexNew, Ground, Obstacle
 from data_containers import objects as obj_container
 
 from .object_handler import ObjectHandler
@@ -19,7 +19,7 @@ class AustroraptorHandler(ObjectHandler, DinosaurHandler):
 
         # Reacting to other dinosaurs
         for other_obj in obj_container.visible().values():
-            if obj.id == other_obj.id or isinstance(other_obj, Ground) or obj.LAYER != obj.Layer.MAIN:
+            if obj.id == other_obj.id or isinstance(other_obj, Ground) or obj.LAYER != Layer.MAIN:
                 continue
 
             if not obj.fov_around.overlaps(other_obj.rect):

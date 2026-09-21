@@ -24,7 +24,7 @@ class AllosaurusHandler(ObjectHandler, DinosaurHandler):
 
         cls.physics(obj)
         cls.accelerate(obj)
-        obj.start_biting()
+        obj.stop_biting()
 
         # React to environment
         for other_obj in obj_container.visible().values():

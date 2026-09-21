@@ -1,5 +1,5 @@
 from typing import Callable, Iterable
-from objects import Object, Direction, Dinosaur, Ground, Obstacle, Skeleton
+from objects import Object, Layer, Direction, Dinosaur, Ground, Obstacle, Skeleton
 from data_containers import objects as obj_container
 
 class DinosaurHandler:
@@ -49,7 +49,7 @@ class DinosaurHandler:
         :param more_conditions: additional conditions to be checked
         :return: True if object is irrelevant, False otherwise.
         """
-        if other_obj.LAYER != Object.LAYER.MAIN:
+        if other_obj.LAYER != Layer.MAIN:
             return True
 
         if other_obj is dinosaur:

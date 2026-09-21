@@ -1,5 +1,5 @@
 import pygame.time
-from objects import Poo, Ground, Dinosaur, TRexNew, FlattenedObject, Explosion, Obstacle, Skeleton
+from objects import Poo, Ground, Dinosaur, Layer, TRexNew, FlattenedObject, Explosion, Skeleton
 from object_handlers.object_handler import ObjectHandler
 from data_containers import objects as obj_container, game_data
 
@@ -18,7 +18,7 @@ class PooHandler(ObjectHandler):
         # Collision with NPCs
         for npc in obj_container.visible().values():
             # Skip oneself, not in MAIN layer, TRex, not NPC
-            if npc.id == obj.id or npc.LAYER != npc.Layer.MAIN or not isinstance(npc, Dinosaur) or isinstance(npc, TRexNew):
+            if npc.id == obj.id or npc.LAYER != Layer.MAIN or not isinstance(npc, Dinosaur) or isinstance(npc, TRexNew):
                 continue
 
             npc_hitbox = npc.hitbox

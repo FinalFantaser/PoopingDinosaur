@@ -29,7 +29,6 @@ class TRex(Object):
     ID: str = 'player'
     SIZE: tuple[float, float] = (53, 16)
     TEXTURE_NAME: str = 'trex.png'
-    LAYER: Object.Layer = Object.Layer.MAIN
     HANDLER_NAME: str = 'TRexHandler'
 
     ANIM_INTERVAL: int = 250

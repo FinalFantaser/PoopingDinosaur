@@ -1,11 +1,13 @@
 # System objects
 from .rect import Rect
 from .direction import Direction
+from .layer import Layer
 from .object import Object
 from .object_with_physics import ObjectWithPhysics
 from .camera import Camera
 
 # Environment
+from .tiled_background import TiledBackground
 from .ground import Ground
 from .cloud import Cloud
 from .mountains import Mountains
@@ -15,6 +17,8 @@ from .poo import Poo
 from .explosion import Explosion
 from .flattened_object import FlattenedObject
 from .skeleton import Skeleton
+from .cave_walls import CaveWalls
+from .cave_background_stalactites import CaveBackgroundStalactites
 
 # Dinosaurs
 from .dinosaur import Dinosaur

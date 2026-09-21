@@ -1,12 +1,12 @@
 from pygame import Rect as PygameRect
 import core.video
-from objects.object import Rect, Object
+from objects.object import Rect, Object, Layer
 
 
 class PooMeter(Object):
     __slots__ = *Object.__slots__, "value"
 
-    LAYER: Object.Layer = Object.Layer.GUI
+    LAYER: Layer = Layer.GUI
     HANDLER_NAME: str | None = "PooMeterHandler"
     ID: str = "gui_poo_meter"
     SIZE_POO: tuple[float, float] = 16, 16

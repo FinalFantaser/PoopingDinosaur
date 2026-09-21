@@ -9,28 +9,25 @@ from data_containers import objects as obj_container, game_data
 class LevelContract(Scene):
     """A parent class for all running levels containing repeating code."""
 
-    def __init__(self, length_blocks: int, generator: BiomeGenerator | None) -> None:
+    def __init__(self, generator: BiomeGenerator) -> None:
         super().__init__()
-        obj_container.clear()
 
-        self.camera: Camera = Camera((0, 0))
-        self.ground: Ground = Ground(length_blocks)
+        self.camera: Camera = obj_container.get_camera()
+        self.generator: BiomeGenerator = generator
+        self.ground: Ground = obj_container.get_ground()
+
         self.trex_new: TRexNew = TRexNew((
             TRexNew.SIZE[0] * 0.5,
-            self.ground.y - TRexNew.SIZE[1] * 1.5)
-        )
-        self.trex_new.poos = TRexNew.MAX_POOS
+            self.ground.touch_level - TRexNew.SIZE[1] * 1.5
+        ))
 
         for obj in (
                 self.camera,
-                self.ground,
                 self.trex_new,
                 HealthMeter(self.trex_new.health),
                 PooMeter(self.trex_new.poos),
         ):
             obj_container.add(obj)
-
-        self.generator: BiomeGenerator|None = generator
 
 
     def update(self) -> None:
@@ -79,3 +76,4 @@ class LevelContract(Scene):
 
     def on_finish(self) -> None:
         core.audio.clear()
+        obj_container.clear()

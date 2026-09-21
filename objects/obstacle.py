@@ -15,8 +15,6 @@ class Obstacle(Object):
         TREE = auto(),
         FERN = auto(),
 
-
-    LAYER: Object.Layer = Object.Layer.MAIN
     TEXTURE_NAME: str = "obstacles.png"
     HANDLER_NAME = "ObstacleHandler"
 

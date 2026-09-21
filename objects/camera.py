@@ -7,7 +7,7 @@ class Camera(Object):
     VISIBLE: bool = False
     HANDLER_NAME: str|None = 'CameraHandler'
 
-    def __init__(self, pos: tuple[int|float, int|float]):
+    def __init__(self, pos: tuple[int|float, int|float] = (0,0)):
         super().__init__(
             id=self.ID,
             pos=pos,

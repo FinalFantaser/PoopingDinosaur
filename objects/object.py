@@ -1,10 +1,9 @@
-from typing import Literal, Self
-from enum import IntEnum, Enum
 from pygame import Surface
 import pygame.time
 import core.paths
 import core.video
 from .rect import Rect
+from .layer import Layer
 
 class Object:
     __slots__ = (
@@ -17,15 +16,6 @@ class Object:
         'last_frame_change',
         'last_update'
     )
-
-    class Layer(IntEnum):
-        BACKGROUND_3 = -3
-        BACKGROUND_2 = -2
-        BACKGROUND_1 = -1
-        MAIN = 0
-        FOREGROUND_1 = 1
-        FOREGROUND_2 = 2
-        GUI = 3
 
     VISIBLE: bool = True
     LAYER: Layer = Layer.MAIN
