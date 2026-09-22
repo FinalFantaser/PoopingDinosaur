@@ -23,6 +23,7 @@ class AllosaurusHandler(ObjectHandler, DinosaurHandler):
             return
 
         cls.physics(obj)
+        cls.clear_unexistent_touches(obj)
         cls.accelerate(obj)
         obj.stop_biting()
 
@@ -62,11 +63,18 @@ class AllosaurusHandler(ObjectHandler, DinosaurHandler):
 
         if allosaurus.is_biting():
             if allosaurus.hitbox_bite.overlaps(trex.hitbox):
+                if cls.are_touching(allosaurus, trex):
+                    return
+                else:
+                    cls.mark_as_touching(allosaurus, trex)
+
                 trex.health -= 1
                 trex.invincibility = TRexNew.INVINCIBILITY_DURATION
 
                 trex.vel_x = trex.VEL_X_MIN * 0.5 * allosaurus.direction.value[0]
                 trex.vel_y = trex.jump_impulse * 0.8
+            else:
+                cls.mark_as_not_touching(allosaurus, trex)
 
     @classmethod
     def fern_touch(cls, dinosaur: Allosaurus, fern: Obstacle) -> None:

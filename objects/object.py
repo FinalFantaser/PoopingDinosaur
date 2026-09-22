@@ -14,7 +14,8 @@ class Object:
         'total_frames',
         'anim_interval',
         'last_frame_change',
-        'last_update'
+        'last_update',
+        'touching_objects',
     )
 
     VISIBLE: bool = True
@@ -38,6 +39,7 @@ class Object:
         self.anim_interval: int = anim_interval
         self.last_frame_change: int = pygame.time.get_ticks()
         self.last_update: int = pygame.time.get_ticks()
+        self.touching_objects: set[str] = set()
 
         if self.texture_name is not None:
             core.video.texture_load(core.paths.TEXTURES / self.texture_name, self.texture_name)

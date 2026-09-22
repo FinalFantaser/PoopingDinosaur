@@ -45,3 +45,24 @@ class ObjectHandler:
         if obj.rect.bottom >= ground.touch_level:
             obj.vel_y = 0.0
             obj.rect.bottom = ground.touch_level
+
+    @classmethod
+    def are_touching(cls, first: Object, second: Object) -> bool:
+        return first.id in second.touching_objects or second.id in first.touching_objects
+
+    @classmethod
+    def mark_as_touching(cls, first: Object, second: Object) -> None:
+        first.touching_objects.add(second.id)
+        second.touching_objects.add(first.id)
+
+    @classmethod
+    def mark_as_not_touching(cls, first: Object, second: Object) -> None:
+        for f, s in (first, second), (second, first):
+            f.touching_objects.discard(s.id)
+
+    @classmethod
+    def clear_unexistent_touches(cls, obj: Object) -> None:
+        if len(obj.touching_objects) < 1:
+            return
+
+        obj.touching_objects = set(id for id in obj.touching_objects if id in obj_container.visible().keys())

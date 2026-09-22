@@ -13,6 +13,8 @@ class CaveBackgroundStalactites(TiledBackground):
     BLOCK_SIZE: tuple[float, float] = BLOCK_W, BLOCK_H
     TOTAL_FRAMES: int = 1
     ANIM_INTERVAL: int = 0
-    POS: tuple[float, float] = 0, core.video.get_screen_rect().height / 2 - BLOCK_H * 1.5
+    POS: tuple[float, float] = 0, 0
     DRAW_AREA: PygameRect = PygameRect(0, 0, BLOCK_W, BLOCK_H)
-    PARALLAX_FACTOR: float = 0.1
+    PARALLAX_FACTOR: float = 0.8
+    PARALLAX_PIXEL_STEP: int = 2
+

@@ -21,6 +21,7 @@ class TiledBackground(Object):
     POS: tuple[float, float] = 0, core.video.get_screen_rect().height / 2 - BLOCK_H
     DRAW_AREA: PygameRect = PygameRect(0, 0, BLOCK_W, BLOCK_H)
     PARALLAX_FACTOR: float = 0.2
+    PARALLAX_PIXEL_STEP: int = 1
 
     def __init__(self, total_blocks: int) -> None:
         super().__init__(
@@ -41,13 +42,19 @@ class TiledBackground(Object):
             height=viewpoint.height
         )
 
-        if not viewpoint.overlaps(self.rect):
+        if not viewpoint_parallax.overlaps(self.rect):
             return
 
-        start_block: int = math.floor(viewpoint_parallax.left / self.BLOCK_W)
-        end_block: int = math.ceil(viewpoint_parallax.right / self.BLOCK_W)
-
-        draw_x: float = 0 - viewpoint_parallax.left % self.BLOCK_W
+        parallax_x = (
+                math.floor(
+                    viewpoint.x * self.PARALLAX_FACTOR
+                    / self.PARALLAX_PIXEL_STEP
+                )
+                * self.PARALLAX_PIXEL_STEP
+        )
+        start_block = parallax_x // self.BLOCK_W
+        end_block = math.ceil((parallax_x + viewpoint.width) / self.BLOCK_W)
+        draw_x = -(parallax_x % self.BLOCK_W)
 
         for _ in range(start_block, end_block):
             index: int = self.blocks[_]

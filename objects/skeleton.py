@@ -16,7 +16,7 @@ class Skeleton(ObjectWithPhysics):
     TOTAL_FRAMES: int = 1
     ANIM_INTERVAL: int = 0
     WEIGHT_FACTOR: float = 0.17
-    INVINCIBILITY_DURATION: int = 1000
+    INVINCIBILITY_DURATION: int = 750
 
     def __init__(self, id: str, pos: tuple[int | float, int | float] = (0, 0)) -> None:
         super().__init__(id, pos, self.SIZE, self.TEXTURE_NAME, self.TOTAL_FRAMES, self.ANIM_INTERVAL)

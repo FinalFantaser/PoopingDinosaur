@@ -108,8 +108,17 @@ class TRexNewHandler(ObjectHandler, DinosaurHandler):
             if obj.invincibility > 0:
                 continue
 
+            if trex_hitbox.overlaps(getattr(other_obj, 'hitbox', other_obj.rect)):
+                if cls.are_touching(obj, other_obj):
+                    continue
+                else:
+                    cls.mark_as_touching(obj, other_obj)
+            else:
+                cls.mark_as_not_touching(obj,other_obj)
+                continue
+
             # Collision with dinosaurs
-            if isinstance(other_obj, Dinosaur) and trex_hitbox.overlaps(other_obj.hitbox):
+            if isinstance(other_obj, Dinosaur):
                 cls.touch_dinosaur(obj, other_obj)
 
             # Obstacles
@@ -117,7 +126,7 @@ class TRexNewHandler(ObjectHandler, DinosaurHandler):
                 cls.react_to_objects(obj, other_obj)
 
             # Objects
-            if isinstance(other_obj, Skeleton) and trex_hitbox.overlaps(other_obj.rect):
+            if isinstance(other_obj, Skeleton):
                 cls.skeleton_touch(obj, other_obj)
 
         obj.last_update = get_ticks()
