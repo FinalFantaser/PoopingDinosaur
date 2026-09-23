@@ -11,7 +11,7 @@ class CaveWalls(TiledBackground):
     TEXTURE_NAME: str = 'caves_bg3.png'
     BLOCK_VAR_RANGE: int = 4
     BLOCK_W: int = 64
-    BLOCK_H: int = 112
+    BLOCK_H: int = 132
     BLOCK_SIZE: tuple[float, float] = BLOCK_W, BLOCK_H
     TOTAL_FRAMES: int = 1
     ANIM_INTERVAL: int = 0
