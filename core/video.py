@@ -15,7 +15,7 @@ from pygame import Surface, Rect, Color
 COLOR_KEY: str = "0xFF00FF"
 """Background color te be cut from sprite textures."""
 
-NATIVE_RESOLUTION: tuple[int, int] = 426, 240
+NATIVE_RESOLUTION: tuple[int, int] = 480, 270
 """Native game resolution (scaled to actual resolution)."""
 
 _fps: int = 30
@@ -73,7 +73,7 @@ def set_video_mode(res: tuple[int, int]) -> None:
         pygame.display.get_desktop_sizes()[0]
     )
 
-    pygame.display.set_mode(matching_mode)
+    pygame.display.set_mode(matching_mode, flags=pygame.HWSURFACE|pygame.SCALED)
 
     if get_fullscreen():
         pygame.display.toggle_fullscreen()

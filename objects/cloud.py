@@ -1,3 +1,4 @@
+from math import floor
 import core.paths
 import core.video
 from objects.object import Object, Rect, Layer
@@ -38,8 +39,8 @@ class Cloud(Object):
             return
 
         draw_pos: tuple[float, float] = (
-            self.x - viewpoint_parallax.x,
-            self.y - viewpoint_parallax.y
+            floor(self.x - viewpoint_parallax.x),
+            floor(self.y - viewpoint_parallax.y),
         )
             
         core.video.texture_blit(self.TEXTURE_NAME, draw_pos)

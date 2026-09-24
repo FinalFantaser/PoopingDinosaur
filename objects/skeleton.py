@@ -1,3 +1,4 @@
+from math import floor
 from pygame.time import get_ticks
 from typing import Self
 import core.video
@@ -25,7 +26,10 @@ class Skeleton(ObjectWithPhysics):
     def draw(self, viewpoint: Rect) -> None:
         core.video.texture_blit(
             self.texture_name,
-            (self.x - viewpoint.x, self.y - viewpoint.y),
+            (
+                floor(self.x - viewpoint.x),
+                floor(self.y - viewpoint.y),
+            ),
         )
 
     @classmethod

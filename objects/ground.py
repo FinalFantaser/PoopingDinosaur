@@ -47,7 +47,10 @@ class Ground(Object):
         for _ in range(start_tile, end_tile):
             core.video.texture_blit(
                 self.texture_name,
-                (draw_x, self.POS_Y),
+                (
+                    math.floor(draw_x),
+                    math.floor(self.POS_Y),
+                ),
                 (self.tiles[_] * self.BLOCK_W, 0, self.BLOCK_W, self.BLOCK_H),
             )
 

@@ -1,7 +1,8 @@
-import core
+from math import floor
 import pygame.transform, pygame.time
 from pygame import Surface, Rect as PygameRect
 from enum import IntEnum, auto
+import core
 from .direction import Direction
 from .rect import Rect
 from .object_with_physics import ObjectWithPhysics
@@ -134,7 +135,10 @@ class Dinosaur(ObjectWithPhysics):
 
         core.video.texture_blit(
             texture_name,
-            (self.x - viewpoint.x, self.y - viewpoint.y),
+            (
+                floor(self.x - viewpoint.x),
+                floor(self.y - viewpoint.y),
+            ),
             self.DRAW_AREA,
         )
 

@@ -1,3 +1,4 @@
+from math import floor
 from typing import Self
 from pygame.time import get_ticks
 
@@ -46,7 +47,10 @@ class Explosion(Object):
     def draw(self, viewpoint: Rect) -> None:
         core.video.texture_blit(
             self.TEXTURE_NAME,
-            (self.x - viewpoint.x, self.y - viewpoint.y),
+            (
+                floor(self.x - viewpoint.x),
+                floor(self.y - viewpoint.y),
+            ),
             (
                 int(self.curr_frame * self.SIZE[0]),
                 0,

@@ -1,3 +1,4 @@
+from math import floor
 import pygame.time
 from pygame import Rect as PygameRect
 import core.video
@@ -38,7 +39,7 @@ class Poo(Object):
             self.curr_frame = (self.curr_frame + 1) % self.TOTAL_FRAMES
 
     def draw(self, viewpoint: Rect) -> None:
-        draw_pos: tuple[float, float] = self.x - viewpoint.x, self.y - viewpoint.y
+        draw_pos: tuple[float, float] = floor(self.x - viewpoint.x), floor(self.y - viewpoint.y)
         self.draw_rect.x = int(self.curr_frame * self.SIZE[0])
 
         core.video.texture_blit(self.TEXTURE_NAME, draw_pos, self.draw_rect)

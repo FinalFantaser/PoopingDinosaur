@@ -16,5 +16,4 @@ class CaveBackgroundStalactites(TiledBackground):
     POS: tuple[float, float] = 0, 0
     DRAW_AREA: PygameRect = PygameRect(0, 0, BLOCK_W, BLOCK_H)
     PARALLAX_FACTOR: float = 0.4
-    PARALLAX_PIXEL_STEP: int = 2
 

@@ -1,3 +1,4 @@
+from math import floor
 import core.video
 from typing import Self
 from pygame import Color
@@ -33,8 +34,8 @@ class FlattenedObject(ObjectWithPhysics):
     def draw(self, viewpoint: Rect):
         rect: Rect = self.rect
 
-        start = int(rect.left - viewpoint.x), int(rect.bottom - viewpoint.y)
-        end = int(rect.right - viewpoint.x), int(rect.bottom - viewpoint.y)
+        start = floor(rect.left - viewpoint.x), floor(rect.bottom - viewpoint.y)
+        end = floor(rect.right - viewpoint.x), floor(rect.bottom - viewpoint.y)
 
         core.video.draw_line(start, end, self.COLOR, self.THICKNESS)
 

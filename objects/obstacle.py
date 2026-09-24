@@ -1,4 +1,4 @@
-from typing import Self
+from math import floor
 from enum import IntEnum, auto
 from pygame import Rect as PygameRect
 import core.video
@@ -58,6 +58,9 @@ class Obstacle(Object):
 
         core.video.texture_blit(
             self.TEXTURE_NAME,
-            (self.x - viewpoint.x, self.y - viewpoint.y),
+            (
+                floor(self.x - viewpoint.x),
+                floor(self.y - viewpoint.y),
+            ),
             self._DRAW_AREAS[self.ob_type]
         )

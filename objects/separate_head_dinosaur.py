@@ -1,3 +1,4 @@
+from math import floor
 from pygame import Rect as PygameRect
 from pygame.time import get_ticks
 
@@ -41,7 +42,10 @@ class SeparateHeadDinosaur(Dinosaur):
 
         core.video.texture_blit(
             self.TEXTURE_NAME,
-            (body_rect.x - viewpoint.x, body_rect.y - viewpoint.y),
+            (
+                floor(body_rect.x - viewpoint.x),
+                floor(body_rect.y - viewpoint.y),
+            ),
             (draw_area_x, draw_area_y, self.DRAW_AREA.width, self.DRAW_AREA.height),
         )
 
@@ -50,8 +54,8 @@ class SeparateHeadDinosaur(Dinosaur):
 
         head_rect = self.rect_head
 
-        dest_x = head_rect.x - viewpoint.x
-        dest_y = head_rect.y - viewpoint.y
+        dest_x = floor(head_rect.x - viewpoint.x)
+        dest_y = floor(head_rect.y - viewpoint.y)
 
         draw_area_x = int(self.curr_frame_head * self.SIZE_HEAD[0])
         draw_area_y = int(self.DRAW_AREA_HEAD[1] + texture_offset_y)
