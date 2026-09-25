@@ -24,6 +24,15 @@ _fps: int = 30
 _fullscreen: bool = False
 """Fullscreen mode flag."""
 
+_display_index: int = 0
+"""Index of a display to create window on"""
+
+_vsync: bool = False
+"""Vertical synchronisation"""
+
+_hardware_rendering: bool = False
+"""Don't have to explain this one, right?"""
+
 _buffer: Surface|None = None
 """Video buffer used for actual rendering before scaling to actual resolution."""
 
@@ -42,11 +51,14 @@ def init(config_data: dict[str, Any]) -> None:
     """
     pygame.display.init()
 
-    global _fps, _fullscreen, _buffer
+    global _fps, _fullscreen, _display_index, _vsync, _hardware_rendering, _buffer
 
     _buffer = Surface(_screen_rect.size)
     _fps = config_data["fps"]
     _fullscreen = config_data["fullscreen"]
+    _display_index = config_data["display"]
+    _vsync = config_data["vsync"]
+    _hardware_rendering = config_data["hardware_rendering"]
 
     target_res: tuple[int, int] = tuple(int(i) for i in config_data["resolution"].split("x")[:2])
     set_video_mode(target_res)
@@ -67,16 +79,23 @@ def set_video_mode(res: tuple[int, int]) -> None:
 
     :param res: Screen width and height.
     """
-    modes: list[tuple[int, int]] = pygame.display.list_modes(display=0)
+    flags: int = pygame.SCALED
+    if _hardware_rendering:
+        flags |= pygame.HWSURFACE
+    if _fullscreen:
+        flags |= pygame.FULLSCREEN
+
+    modes: list[tuple[int, int]] = pygame.display.list_modes(flags=flags, display=_display_index)
+
     matching_mode = next(
         (mode for mode in modes if mode == res),
         pygame.display.get_desktop_sizes()[0]
     )
 
-    pygame.display.set_mode(matching_mode, flags=pygame.HWSURFACE|pygame.SCALED)
+    pygame.display.set_mode(size=matching_mode, flags=flags, display=_display_index, vsync=int(_vsync))
 
-    if get_fullscreen():
-        pygame.display.toggle_fullscreen()
+    # if get_fullscreen():
+    #     pygame.display.toggle_fullscreen()
 
 
 def clear(color: str|Color) -> None:

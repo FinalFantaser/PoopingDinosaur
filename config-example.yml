@@ -2,6 +2,9 @@ video:
   resolution: 1600x900
   fps: 60
   fullscreen: false
+  display: 0
+  vsync: false
+  hardware_rendering: true
 
 audio:
   music: 1.0
