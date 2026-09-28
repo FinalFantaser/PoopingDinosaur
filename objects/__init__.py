@@ -9,6 +9,7 @@ from .camera import Camera
 # Environment
 from .tiled_background import TiledBackground
 from .ground import Ground
+from .ground_caves import GroundCaves
 from .cloud import Cloud
 from .mountains import Mountains
 from .forest import Forest

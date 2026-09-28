@@ -6,6 +6,8 @@ from core import video
 import core.input
 
 class Scene:
+    BG_COLOR: str = core.gui.COLOR_BG
+
     def __init__(self):
         self.fps: int = core.video.get_fps()
         self.clock: Clock = Clock()
@@ -19,7 +21,7 @@ class Scene:
             self.read_input()
             self.update()
 
-            video.clear(COLOR_BG)
+            video.clear(self.BG_COLOR)
             self.draw()
             self.draw_gui()
             video.refresh()

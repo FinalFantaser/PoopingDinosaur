@@ -44,10 +44,9 @@ class TiledBackground(Object):
         if not viewpoint_parallax.overlaps(self.rect):
             return
 
-        parallax_x = math.floor(viewpoint.x * self.PARALLAX_FACTOR)
-        start_block = parallax_x // self.BLOCK_W
-        end_block = math.ceil((parallax_x + viewpoint.width) / self.BLOCK_W)
-        draw_x = -(parallax_x % self.BLOCK_W)
+        start_block = int(viewpoint_parallax.x // self.BLOCK_W)
+        end_block = math.ceil((viewpoint_parallax.x + viewpoint.width) / self.BLOCK_W)
+        draw_x = -(math.ceil(viewpoint_parallax.x % self.BLOCK_W))
 
         for _ in range(start_block, end_block):
             index: int = self.blocks[_]

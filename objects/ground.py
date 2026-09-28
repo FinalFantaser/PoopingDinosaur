@@ -33,6 +33,7 @@ class Ground(Object):
         self.total_tiles: int = total_tiles
 
     def draw(self, viewpoint: Rect) -> None:
+
         if not viewpoint.overlaps(self.rect):
             return
 
