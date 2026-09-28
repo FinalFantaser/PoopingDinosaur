@@ -18,6 +18,7 @@ class CaveBones(Object):
     HANDLER_NAME: str = 'CaveBonesHandler'
     WIDTH: float = 32
     HEIGHT: float = 20
+    POS_Y: float = floor(core.video.get_screen_rect().height * 0.75)
     SIZE: tuple[float, float] = WIDTH, HEIGHT
     TEXTURE_NAME: str = 'caves_fg2.png'
     PARALLAX_FACTOR: float = 1.8
@@ -36,3 +37,25 @@ class CaveBones(Object):
         )
 
         self.var_type: VarType = var if var is not None else choice(tuple(VarType))
+
+    def draw(self, viewpoint: Rect) -> None:
+        viewpoint_parallax: Rect = Rect(
+            x=viewpoint.x * self.PARALLAX_FACTOR,
+            y=viewpoint.y * self.PARALLAX_FACTOR,
+            width=viewpoint.width,
+            height=viewpoint.height
+        )
+
+        if not viewpoint_parallax.overlaps(self.rect):
+            return
+
+        self._draw_rect.x = self.var_type.value * self.WIDTH
+
+        core.video.texture_blit(
+            self.TEXTURE_NAME,
+            (
+                floor(self.x - viewpoint_parallax.x),
+                floor(self.y - viewpoint_parallax.y),
+            ),
+            self._draw_rect.to_pygame_rect()
+        )

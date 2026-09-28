@@ -18,6 +18,7 @@ from .poo_handler import PooHandler
 from .explosion_handler import ExplosionHandler
 from .flattened_object_handler import FlattenedObjectHandler
 from .skeleton_handler import SkeletonHandler
+from .cave_bones_handler import CaveBonesHandler
 
 # GUI
 from .gui.health_meter_handler import HealthMeterHandler

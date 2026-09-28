@@ -64,6 +64,8 @@ class BiomeGenerator:
     def generate(self) -> None:
         """Wrapper calling generating methods for all layers, obstacles and NPCs."""
         self.background_3()
+        self.foreground_1()
+        self.foreground_2()
         self.obstacles()
         self.npc()
 
@@ -89,6 +91,14 @@ class BiomeGenerator:
     def background_3(self):
         """Creates objects at the BACKGROUND_3 layer"""
         self.clouds()
+
+    def foreground_1(self):
+        """Creates objects at the FOREGROUND_1 layer"""
+        pass
+
+    def foreground_2(self):
+        """Creates objects at the FOREGROUND_2 layer"""
+        pass
 
     def obstacles(self):
         """Creates obstacles within vicinity"""
