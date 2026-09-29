@@ -21,6 +21,7 @@ from .skeleton import Skeleton
 from .cave_walls import CaveWalls
 from .cave_background_stalactites import CaveBackgroundStalactites
 from .cave_bones import  CaveBones
+from .geyser import Geyser
 
 # Dinosaurs
 from .dinosaur import Dinosaur
