@@ -14,6 +14,27 @@ class Rect:
         self.width: float = float(width)
         self.height: float = float(height)
 
+    def get_copy(
+            self,
+            x: float|None = None,
+            y: float|None = None,
+            width: float|None = None,
+            height: float|None = None,
+    ) -> Self:
+        """Get a copy and modify it instantly if required. If a field is None, original value is used."""
+        return Rect(
+            self.x if x is None else x,
+            self.y if y is None else y,
+            self.width if width is None else width,
+            self.height if height is None else height,
+        )
+
+    def with_parallax(self, parallax_factor: float) -> Self:
+        return self.get_copy(
+            self.x * parallax_factor,
+            self.y * parallax_factor,
+        )
+
     def overlaps(self, other_rect: 'Rect') -> bool:
         return (
                 self.left <= other_rect.right

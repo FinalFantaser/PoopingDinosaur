@@ -1,5 +1,5 @@
 import core.video
-from objects import CaveBones
+from objects import Rect, CaveBones
 from data_containers import objects as obj_container
 from .object_handler import ObjectHandler
 
@@ -12,5 +12,7 @@ class CaveBonesHandler(ObjectHandler):
 
     @classmethod
     def delete_if_passed_camera(cls, obj: CaveBones):
-        if obj_container.get_camera().x - obj.rect.right >= core.video.get_screen_rect().width/2:
+        parallax_camera = obj_container.get_camera().rect.with_parallax(CaveBones.PARALLAX_FACTOR)
+
+        if obj.rect.right < parallax_camera.x:
             obj_container.queue_delete(obj)

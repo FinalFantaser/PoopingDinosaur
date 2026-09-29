@@ -18,7 +18,7 @@ class CaveBones(Object):
     HANDLER_NAME: str = 'CaveBonesHandler'
     WIDTH: float = 32
     HEIGHT: float = 20
-    POS_Y: float = floor(core.video.get_screen_rect().height * 0.75)
+    POS_Y: float = floor(core.video.get_screen_rect().height * 0.60)
     SIZE: tuple[float, float] = WIDTH, HEIGHT
     TEXTURE_NAME: str = 'caves_fg2.png'
     PARALLAX_FACTOR: float = 1.8

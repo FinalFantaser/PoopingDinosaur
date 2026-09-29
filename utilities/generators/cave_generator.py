@@ -5,7 +5,7 @@ from data_containers import objects as obj_container
 from .biome_generator import BiomeGenerator
 
 class CaveGenerator(BiomeGenerator):
-    FG_2_INTERVAL: tuple[int, int] = 10, 20
+    FG_2_INTERVAL: tuple[int, int] = 30, 45
 
     def __init__(self, total_tiles: int) -> None:
         super().__init__(total_tiles)
@@ -37,18 +37,22 @@ class CaveGenerator(BiomeGenerator):
         pass
 
     def foreground_2(self) -> None:
-        if self.camera.x - self.last_fg2_x >= self.FG_2_INTERVAL[0] * GroundCaves.BLOCK_W:
-            if next(
-                (obj for obj in obj_container.visible().values() if isinstance(obj, CaveBones)),
-                None
-            ) is not None:
-                return
+        parallax_camera = obj_container.get_camera().rect.with_parallax(CaveBones.PARALLAX_FACTOR)
 
-            new_pos = ceil(self.camera.rect.right) + CaveBones.WIDTH, CaveBones.POS_Y
-            self.last_fg2_x = new_pos[0] + randint(*self.FG_2_INTERVAL) * GroundCaves.BLOCK_W
+        if self.last_fg2_x + CaveBones.WIDTH >= parallax_camera.x:
+            return
 
-            new_bones: CaveBones = CaveBones(new_pos)
-            obj_container.queue_add(new_bones)
+        if next(
+            (obj for obj in obj_container.visible().values() if isinstance(obj, CaveBones)),
+            None
+        ) is not None:
+            return
+
+        new_pos = ceil(parallax_camera.right + CaveBones.WIDTH * 1.5), CaveBones.POS_Y
+        self.last_fg2_x = new_pos[0] + randint(*self.FG_2_INTERVAL) * GroundCaves.BLOCK_W
+
+        new_bones: CaveBones = CaveBones(new_pos)
+        obj_container.queue_add(new_bones)
 
     def obstacles(self) -> None:
         pass
