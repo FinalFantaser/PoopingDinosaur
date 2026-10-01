@@ -48,6 +48,7 @@ class BiomeGenerator:
     NPC_RATE: dict[type[Dinosaur], int] = {}
     NPC_INTERVAL: tuple[int, int] = 8, 10
     NPC: tuple[type[Dinosaur], ... ] = ()
+
     OBSTACLE_RATE: dict[Obstacle.Type, int] = {}
     OBSTACLE_INTERVAL: tuple[int, int] = 10, 15
     OBSTACLES: tuple[Obstacle.Type, ...] = ()
@@ -67,6 +68,7 @@ class BiomeGenerator:
         self.foreground_1()
         self.foreground_2()
         self.obstacles()
+        self.objects()
         self.npc()
 
     def clouds(self) -> None:
@@ -102,6 +104,9 @@ class BiomeGenerator:
 
     def obstacles(self):
         """Creates obstacles within vicinity"""
+        if len(self.OBSTACLES) < 1:
+            return
+
         end: float = self.camera.right
         draw_x: float = max(self.last_obstacle_pos[0], self.camera.left)
 
@@ -126,9 +131,15 @@ class BiomeGenerator:
             draw_x += multiplier * Ground.BLOCK_W
             self.last_obstacle_pos = draw_x, self.last_obstacle_pos[1]
 
+    def objects(self):
+        """Creates obstacles with more complex logic within vicinity"""
+        pass
 
     def npc(self):
         """Creates NPCs within vicinity"""
+        if len(self.NPC) < 1:
+            return
+
         end: float = self.camera.right
         draw_x: float = max(self.last_npc_pos[0], self.camera.left)
 
