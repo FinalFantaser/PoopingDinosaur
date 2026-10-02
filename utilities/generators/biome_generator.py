@@ -1,7 +1,8 @@
-import random
+from random import randint, choice
 import core.video
 from objects import (
     Rect,
+    Object,
     Camera,
     Ground,
     Cloud,
@@ -53,6 +54,9 @@ class BiomeGenerator:
     OBSTACLE_INTERVAL: tuple[int, int] = 10, 15
     OBSTACLES: tuple[Obstacle.Type, ...] = ()
 
+    OBJECT_RATE: dict[type[Object], int] = {}
+    OBJECT_INTERVAL: dict[type[Object], tuple[int, int]] = {}
+
     def __init__(self, total_tiles: int) -> None:
         self.camera: Camera = obj_container.get_camera()
         self.ground: Ground = Ground(total_tiles)
@@ -60,6 +64,7 @@ class BiomeGenerator:
 
         self.last_cloud_pos: tuple[float, float] = self.camera.x - Cloud.SIZE[0], self.SKY_CENTER_LINE
         self.last_obstacle_pos: tuple[float, float] = 0, 0
+        self.last_object_pos: tuple[float, float] = 0, 0
         self.last_npc_pos: tuple[float, float] = 0, 0
 
     def generate(self) -> None:
@@ -77,11 +82,11 @@ class BiomeGenerator:
         draw_x: float = max(self.last_cloud_pos[0], self.camera.left - Cloud.SIZE[0])
 
         while draw_x < edge:
-            if draw_x - self.last_cloud_pos[0] >= random.randint(*self.CLOUD_INTERVAL) * Cloud.SIZE[0]:
-                if random.randint(0, 100) >= self.CLOUD_RATE:
+            if draw_x - self.last_cloud_pos[0] >= randint(*self.CLOUD_INTERVAL) * Cloud.SIZE[0]:
+                if randint(0, 100) >= self.CLOUD_RATE:
                     new_cloud: Cloud = Cloud((
                         draw_x,
-                        self.SKY_CENTER_LINE + Cloud.SIZE[1] * random.choice([-1, 1])
+                        self.SKY_CENTER_LINE + Cloud.SIZE[1] * choice([-1, 1])
                     ))
 
                     obj_container.queue_add(new_cloud)
@@ -113,9 +118,9 @@ class BiomeGenerator:
         while draw_x < end:
             multiplier: int = 1
 
-            ob_type: Obstacle.Type = random.choice(self.OBSTACLES)
+            ob_type: Obstacle.Type = choice(self.OBSTACLES)
 
-            if random.randint(0, 100) >= self.OBSTACLE_RATE[ob_type]:
+            if randint(0, 100) >= self.OBSTACLE_RATE[ob_type]:
                 new_obstacle: Obstacle = Obstacle(
                     ob_type,
                     (draw_x, 0)
@@ -126,7 +131,7 @@ class BiomeGenerator:
 
                 self.last_obstacle_pos = new_obstacle.pos
 
-                multiplier = random.randint(*self.OBSTACLE_INTERVAL)
+                multiplier = randint(*self.OBSTACLE_INTERVAL)
 
             draw_x += multiplier * Ground.BLOCK_W
             self.last_obstacle_pos = draw_x, self.last_obstacle_pos[1]
@@ -146,14 +151,14 @@ class BiomeGenerator:
         while draw_x < end:
             multiplier: int = 1
 
-            npc_class: type[Dinosaur] = random.choice(self.NPC)
+            npc_class: type[Dinosaur] = choice(self.NPC)
 
-            if random.randint(0, 100) >= self.NPC_RATE[npc_class]:
+            if randint(0, 100) >= self.NPC_RATE[npc_class]:
                 new_npc: Dinosaur = npc_class((draw_x, 0))
 
                 if isinstance(new_npc, Pterodactyl):
-                    new_npc.rect.center_y = self.SKY_CENTER_LINE + random.randint(int(-new_npc.height), int(new_npc.height))
-                    new_npc.direction = random.choice((Direction.LEFT, Direction.RIGHT))
+                    new_npc.rect.center_y = self.SKY_CENTER_LINE + randint(int(-new_npc.height), int(new_npc.height))
+                    new_npc.direction = choice((Direction.LEFT, Direction.RIGHT))
                 else:
                     new_npc.rect.bottom = self.ground.touch_level
 
@@ -161,7 +166,7 @@ class BiomeGenerator:
 
                 self.last_npc_pos = new_npc.pos
 
-                multiplier = random.randint(*self.NPC_INTERVAL)
+                multiplier = randint(*self.NPC_INTERVAL)
 
             draw_x += multiplier * Ground.BLOCK_W
             self.last_npc_pos = draw_x, self.last_npc_pos[1]

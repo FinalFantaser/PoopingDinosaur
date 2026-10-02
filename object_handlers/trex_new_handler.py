@@ -1,3 +1,4 @@
+from typing import Callable
 import random
 from pygame.time import get_ticks
 
@@ -60,7 +61,7 @@ class TRexNewHandler(ObjectHandler, DinosaurHandler):
         # Reacting to environment
         for other_obj in obj_container.visible().values():
             # Skipping non-MAIN layer, oneself, ground
-            if other_obj.LAYER != obj.LAYER or other_obj.id == obj.id or isinstance(other_obj, Ground):
+            if other_obj.LAYER != Layer.MAIN or other_obj is obj or isinstance(other_obj, Ground):
                 continue
 
             # Seeing edible dinosaurs
@@ -122,12 +123,12 @@ class TRexNewHandler(ObjectHandler, DinosaurHandler):
                 cls.touch_dinosaur(obj, other_obj)
 
             # Obstacles
-            if isinstance(other_obj, Obstacle):
+            elif isinstance(other_obj, Obstacle):
                 cls.react_to_objects(obj, other_obj)
 
             # Objects
-            if isinstance(other_obj, Skeleton):
-                cls.skeleton_touch(obj, other_obj)
+            elif other_obj.__class__.__name__ in cls.REACTION_OBJECTS_TOUCH:
+                cls.react_to_objects(obj, other_obj)
 
         obj.last_update = get_ticks()
 
@@ -144,6 +145,29 @@ class TRexNewHandler(ObjectHandler, DinosaurHandler):
         total_vel_x: float = obj.total_vel_x + vel_x_modifier
 
         obj.x += total_vel_x / 1000 * obj.update_delta * obj.direction.value[0]
+
+    @classmethod
+    def react_to_objects(cls, dinosaur: TRexNew, obstacle: Object) -> None:
+        if isinstance(obstacle, Obstacle):
+            method_list = cls.REACTIONS_OBSTACLE_TOUCH
+        else:
+            method_list = cls.REACTION_OBJECTS_TOUCH
+
+        method_key: Obstacle.Type | str = obstacle.ob_type if isinstance(obstacle,
+                                                                         Obstacle) else obstacle.__class__.__name__
+        hitbox = dinosaur.hitbox
+
+        if hitbox.overlaps(obstacle.rect):
+            method_name: str = method_list.get(method_key)
+            if method_name is None:
+                return
+
+            method: Callable | None = getattr(cls, method_name)
+
+            if method is None:
+                raise NotImplementedError(f"{cls.__name__}.{method_name}")
+
+            method(dinosaur, obstacle)
 
     @classmethod
     def read_input(cls, obj: TRexNew) -> None:
@@ -309,6 +333,22 @@ class TRexNewHandler(ObjectHandler, DinosaurHandler):
         explosion = Explosion().instead_of(skeleton)
         obj_container.queue_delete(skeleton)
         obj_container.queue_add(explosion)
+
+    @classmethod
+    def geyser_touch(cls, dinosaur: TRexNew, geyser: Geyser) -> None:
+        if not geyser.erupting:
+            return
+
+        dinosaur.health -= 1
+        dinosaur.invincibility = dinosaur.INVINCIBILITY_DURATION
+
+        cls.bounce(
+            dinosaur,
+            geyser,
+            geyser.rect.center_x > dinosaur.hitbox.center_x,
+            dinosaur.vel_x * 1.15,
+            dinosaur.jump_impulse if dinosaur.vel_y >= 0 else dinosaur.vel_y,
+        )
 
     @classmethod
     def bounce(

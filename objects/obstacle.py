@@ -14,6 +14,7 @@ class Obstacle(Object):
         STONE = auto(),
         TREE = auto(),
         FERN = auto(),
+        OIL = auto(),
 
     TEXTURE_NAME: str = "obstacles.png"
     HANDLER_NAME = "ObstacleHandler"
@@ -24,6 +25,7 @@ class Obstacle(Object):
         Type.STONE: (8, 8),
         Type.TREE: (16, 16),
         Type.FERN: (32, 16),
+        Type.OIL: (16, 4)
     }
 
     _ID_STUB: str = "obstacle_%d"
@@ -34,6 +36,7 @@ class Obstacle(Object):
         Type.STONE: PygameRect(24, 8, *SIZES[Type.STONE]),
         Type.TREE: PygameRect(32, 0, *SIZES[Type.TREE]),
         Type.FERN: PygameRect(48, 0, *SIZES[Type.FERN]),
+        Type.OIL: PygameRect(80, 12, *SIZES[Type.OIL]),
     }
 
     _total: int = 0

@@ -3,6 +3,7 @@ from math import ceil
 from objects import (
     Object,
     Ground,
+    Obstacle,
     GroundCaves,
     CaveWalls,
     CaveBackgroundStalactites,
@@ -23,6 +24,16 @@ class CaveGenerator(BiomeGenerator):
     """
 
     FG_2_INTERVAL: tuple[int, int] = 30, 45
+
+    OBSTACLE_RATE: dict[Obstacle.Type, int] = {
+        Obstacle.Type.OIL: 15,
+    }
+
+    OBSTACLE_INTERVAL: tuple[int, int] = 10, 15
+
+    OBSTACLES: tuple[Obstacle.Type, ...] = (
+        Obstacle.Type.OIL,
+    )
 
     OBJECT_RATE: dict[type[Object], int] = {
         Geyser: 25,
@@ -83,9 +94,8 @@ class CaveGenerator(BiomeGenerator):
         pass
 
     def objects(self) -> None:
-        """As temporary solution, it uses last_obstacle_pos to avoid overlapping with obstacles"""
         end: float = self.camera.right
-        draw_x: float = max(self.last_obstacle_pos[0], self.camera.left)
+        draw_x: float = max(self.last_object_pos[0], self.camera.left)
 
         while draw_x < end:
             multiplier: int = 1
@@ -98,9 +108,9 @@ class CaveGenerator(BiomeGenerator):
 
                 obj_container.queue_add(new_object)
 
-                self.last_obstacle_pos = new_object.pos
+                self.last_object_pos = new_object.pos
 
                 multiplier = randint(*self.OBJECT_INTERVAL[obj_type])
 
             draw_x += multiplier * Ground.BLOCK_W
-            self.last_obstacle_pos = draw_x, self.last_obstacle_pos[1]
+            self.last_object_pos = draw_x, self.last_object_pos[1]

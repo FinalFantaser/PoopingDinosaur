@@ -1,6 +1,14 @@
 from typing import Callable, Iterable
-from objects import Object, Layer, Direction, Dinosaur, Ground, Obstacle, Skeleton
-from data_containers import objects as obj_container
+from objects import (
+    Object, Layer, Direction,
+    Dinosaur,
+    Ground, Obstacle,
+    Skeleton,
+    Geyser
+)
+
+from data_containers import objects as obj_container, game_data
+
 
 class DinosaurHandler:
     """
@@ -14,6 +22,7 @@ class DinosaurHandler:
         Obstacle.Type.STONE: 'stone_touch',
         Obstacle.Type.TREE: 'tree_touch',
         Obstacle.Type.FERN: 'fern_touch',
+        Obstacle.Type.OIL: 'oil_touch',
     }
 
     REACTIONS_OBSTACLE_SEE: dict[Obstacle.Type, str] = {
@@ -22,14 +31,17 @@ class DinosaurHandler:
         Obstacle.Type.STONE: 'stone_see',
         Obstacle.Type.TREE: 'tree_see',
         Obstacle.Type.FERN: 'fern_see',
+        Obstacle.Type.OIL: 'oil_see',
     }
 
-    REACTION_OBJECTS_SEE: dict[type[Object], str] = {
-        Skeleton: "skeleton_see",
+    REACTION_OBJECTS_SEE: dict[str, str] = {
+        Skeleton.__name__: "skeleton_see",
+        Geyser.__name__: "geyser_see",
     }
 
-    REACTION_OBJECTS_TOUCH: dict[type[Object], str] = {
-        Skeleton: "skeleton_touch",
+    REACTION_OBJECTS_TOUCH: dict[str, str] = {
+        Skeleton.__name__: "skeleton_touch",
+        Geyser.__name__: "geyser_touch",
     }
 
     @classmethod
@@ -121,7 +133,7 @@ class DinosaurHandler:
         else:
             reactions_touch, reactions_see = cls.REACTION_OBJECTS_TOUCH, cls.REACTION_OBJECTS_SEE
 
-        method_key: Obstacle.Type|str = obstacle.ob_type if isinstance(obstacle, Obstacle) else obstacle.__class__
+        method_key: Obstacle.Type|str = obstacle.ob_type if isinstance(obstacle, Obstacle) else obstacle.__class__.__name__
 
         for hitbox, method_list in (
                 (dinosaur.hitbox, reactions_touch),  # If touched
@@ -246,6 +258,17 @@ class DinosaurHandler:
         dinosaur.vel_x = min(abs(dinosaur.vel_x) / 2, dinosaur.VEL_X_MIN / 2) * dinosaur.direction.value[0]
 
     @classmethod
+    def oil_touch(cls, dinosaur: Dinosaur, oil: Obstacle) -> None:
+        """
+        React to touching oil.
+        :param dinosaur:
+        :param oil:
+        """
+
+        # Slow down
+        dinosaur.vel_x = min(abs(dinosaur.vel_x) * 0.1, dinosaur.VEL_X_MIN * 0.1) * dinosaur.direction.value[0]
+
+    @classmethod
     def skeleton_touch(cls, dinosaur: Dinosaur, skeleton: Skeleton) -> None:
         """
         React to touching a skeleton.
@@ -253,6 +276,19 @@ class DinosaurHandler:
         :param skeleton: Thorns to react to.
         """
         cls.bounce_back(dinosaur, skeleton)
+
+    @classmethod
+    def geyser_touch(cls, dinosaur: Dinosaur, geyser: Geyser) -> None:
+        if not geyser.erupting:
+            return
+
+        cls.bounce(
+            dinosaur,
+            geyser,
+            geyser.rect.center_x > dinosaur.hitbox.center_x
+        )
+
+        dinosaur.die()
 
     @classmethod
     def cactus_see(cls, dinosaur: Dinosaur, cactus: Obstacle) -> None:
@@ -275,5 +311,14 @@ class DinosaurHandler:
         cls.jump_over_object(dinosaur, fern)
 
     @classmethod
+    def oil_see(cls, dinosaur: Dinosaur, oil: Obstacle) -> None:
+        cls.jump_over_object(dinosaur, oil)
+
+    @classmethod
     def skeleton_see(cls, dinosaur: Dinosaur, skeleton: Skeleton) -> None:
         pass
+
+    @classmethod
+    def geyser_see(cls, dinosaur: Dinosaur, geyser: Geyser) -> None:
+        if geyser.erupting:
+            cls.jump_over_object(dinosaur, geyser)
