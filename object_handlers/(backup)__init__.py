@@ -26,6 +26,8 @@ from .gui.health_meter_handler import HealthMeterHandler
 from .gui.poo_handler import PooMeterHandler
 from .gui.pause_menu_handler import PauseMenuHandler
 
+# CLASSES MADE WITH multitool.py
+# <The next generated class will be here>
 
 object_handlers: dict[str, type[ObjectHandler]] = {
     handler_class.__name__: handler_class for handler_class in ObjectHandler.__subclasses__()
