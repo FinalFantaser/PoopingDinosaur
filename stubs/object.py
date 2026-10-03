@@ -1,3 +1,5 @@
+from math import floor
+from pygame.time import get_ticks
 import core.video
 from .object import Object
 from .layer import Layer
