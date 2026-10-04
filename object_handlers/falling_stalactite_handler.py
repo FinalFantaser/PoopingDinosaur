@@ -84,7 +84,6 @@ class FallingStalactiteHandler(ObjectHandler):
     def _process_live_stalactite(cls, stalactite: FallingStalactite) -> None:
         """Alive stalactite just drips and gives zero fucks (just like any other senior)"""
         if stalactite.drop_exists:
-            print(f"{stalactite.id}.drop_exists = {stalactite.drop_exists}")
             stalactite.drop_pos = (
                 stalactite.drop_pos[0],
                 stalactite.drop_pos[1] + stalactite.DROP_SPEED / 1000 * stalactite.update_delta,

@@ -41,4 +41,5 @@ from objects.gui.pause_menu import PauseMenu
 
 # OBJECTS MADE WITH multitool.py
 from .falling_stalactite import FallingStalactite
+from .snek import Snek
 # <The next generated class will be here>

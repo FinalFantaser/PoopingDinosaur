@@ -10,6 +10,8 @@ from objects import (
     CaveBones,
     Geyser,
     FallingStalactite,
+    Dinosaur,
+    Snek,
 )
 from data_containers import objects as obj_container
 from .biome_generator import BiomeGenerator
@@ -27,6 +29,16 @@ class CaveGenerator(BiomeGenerator):
     """
 
     FG_2_INTERVAL: tuple[int, int] = 30, 45
+
+    NPC_RATE: dict[type[Dinosaur], int] = {
+        Snek: 25,
+    }
+
+    NPC_INTERVAL: tuple[int, int] = 8, 10
+
+    NPC: tuple[type[Dinosaur], ...] = (
+        Snek,
+    )
 
     OBSTACLE_RATE: dict[Obstacle.Type, int] = {
         Obstacle.Type.OIL: 15,
@@ -94,9 +106,6 @@ class CaveGenerator(BiomeGenerator):
 
         new_bones: CaveBones = CaveBones(new_pos)
         obj_container.queue_add(new_bones)
-
-    def npc(self) -> None:
-        pass
 
     def objects(self) -> None:
         end: float = self.camera.right

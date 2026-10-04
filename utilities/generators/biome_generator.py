@@ -54,8 +54,8 @@ class BiomeGenerator:
     OBSTACLE_INTERVAL: tuple[int, int] = 10, 15
     OBSTACLES: tuple[Obstacle.Type, ...] = ()
 
-    OBJECT_RATE: dict[str, int] = {}
-    OBJECT_INTERVAL: dict[str, tuple[int, int]] = {}
+    OBJECT_RATE: dict[type[Object], int] = {}
+    OBJECT_INTERVAL: dict[type[Object], tuple[int, int]] = {}
 
     def __init__(self, total_tiles: int) -> None:
         self.camera: Camera = obj_container.get_camera()
@@ -153,7 +153,7 @@ class BiomeGenerator:
 
             npc_class: type[Dinosaur] = choice(self.NPC)
 
-            if randint(0, 100) >= self.NPC_RATE[npc_class]:
+            if randint(0, 100) <= self.NPC_RATE[npc_class]:
                 new_npc: Dinosaur = npc_class((draw_x, 0))
 
                 if isinstance(new_npc, Pterodactyl):
