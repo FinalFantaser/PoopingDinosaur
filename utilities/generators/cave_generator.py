@@ -9,12 +9,15 @@ from objects import (
     CaveBackgroundStalactites,
     CaveBones,
     Geyser,
+    FallingStalactite,
 )
 from data_containers import objects as obj_container
 from .biome_generator import BiomeGenerator
 
 class CaveGenerator(BiomeGenerator):
     """
+    Basic Cave Biome generator mainly to test/showcase the biome features.
+
     Attributes:
         FG_2_INTERVAL: Interval range between objects generated at FOREGROUND_2
 
@@ -35,12 +38,14 @@ class CaveGenerator(BiomeGenerator):
         Obstacle.Type.OIL,
     )
 
-    OBJECT_RATE: dict[type[Object], int] = {
-        Geyser: 25,
+    OBJECT_RATE: dict[str, int] = {
+        Geyser.__name__: 35,
+        FallingStalactite.__name__: 15,
     }
 
-    OBJECT_INTERVAL: dict[type[Object], tuple[int, int]] = {
-        Geyser: (20, 30),
+    OBJECT_INTERVAL: dict[str, tuple[int, int]] = {
+        Geyser.__name__: (20, 30),
+        FallingStalactite.__name__: (15, 30),
     }
 
     def __init__(self, total_tiles: int) -> None:
@@ -100,11 +105,16 @@ class CaveGenerator(BiomeGenerator):
         while draw_x < end:
             multiplier: int = 1
 
-            obj_type: type[Object] = choice(tuple(self.OBJECT_RATE.keys()))
+            obj_type: str = choice(tuple(self.OBJECT_RATE.keys()))
 
             if randint(0, 100) >= self.OBJECT_RATE[obj_type]:
-                new_object: Object = obj_type(pos=(draw_x, 0))
-                new_object.rect.bottom = self.ground.touch_level
+                new_object = None
+
+                if obj_type == Geyser.__name__:
+                    new_object = Geyser((draw_x, 0))
+                    new_object.rect.bottom = self.ground.touch_level
+                elif obj_type == FallingStalactite.__name__:
+                    new_object = FallingStalactite((draw_x, 0))
 
                 obj_container.queue_add(new_object)
 

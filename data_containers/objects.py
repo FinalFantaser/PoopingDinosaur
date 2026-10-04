@@ -18,6 +18,7 @@ class _Task:
 
 _all: dict[str, Object|Camera] = {}
 _idx_visible: list[str] = []
+_idx_main_layer: list[str] = []
 _idx_hidden: list[str] = []
 _idx_with_handlers: list[str] = []
 _task_queue: list[_Task] = []
@@ -26,6 +27,7 @@ _task_queue: list[_Task] = []
 def clear() -> None:
     _all.clear()
     _idx_visible.clear()
+    _idx_main_layer.clear()
     _idx_hidden.clear()
     _idx_with_handlers.clear()
     _task_queue.clear()
@@ -42,6 +44,9 @@ def add(obj: Object, throw: bool = False) -> None:
         _sort_visibles()
     else:
         _idx_hidden.append(obj.id)
+
+    if obj.LAYER == Layer.MAIN and obj.id not in _idx_main_layer:
+        _idx_main_layer.append(obj.id)
 
     if obj.HANDLER_NAME is not None:
         _idx_with_handlers.append(obj.id)
@@ -62,6 +67,9 @@ def delete(obj: Object, throw: bool = False) -> Object|None:
     if obj.HANDLER_NAME is not None:
         _idx_with_handlers.remove(obj.id)
 
+    if obj.LAYER == Layer.MAIN and obj.id in _idx_main_layer:
+        _idx_main_layer.remove(obj.id)
+
     return _all.pop(obj.id)
 
 
@@ -81,12 +89,14 @@ def get(id: str, throw: bool = False) -> Object|None:
 def visible() -> dict[str, Object]:
     return {obj_id: _all[obj_id] for obj_id in _idx_visible}
 
+def main_layer() -> dict[str, Object]:
+    return {obj_id: _all[obj_id] for obj_id in _idx_main_layer}
+
 def dinosaurs(family: type = Dinosaur) -> dict[str, Dinosaur]:
     return {obj_id: _all[obj_id] for obj_id in _idx_visible if isinstance(_all[obj_id], family)}
 
 def hidden() -> dict[str, Object]:
     return {obj_id: _all[obj_id] for obj_id in _idx_hidden}
-
 
 def with_handlers() -> dict[str, Object]:
     return {obj_id: _all[obj_id] for obj_id in _idx_with_handlers}

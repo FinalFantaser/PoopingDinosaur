@@ -48,21 +48,31 @@ class ObjectHandler:
 
     @classmethod
     def are_touching(cls, first: Object, second: Object) -> bool:
+        if first is second:
+            raise ValueError("first and second are the same object")
+
         return first.id in second.touching_objects or second.id in first.touching_objects
 
     @classmethod
     def mark_as_touching(cls, first: Object, second: Object) -> None:
+        if first is second:
+            raise ValueError("first and second are the same object")
+
         first.touching_objects.add(second.id)
         second.touching_objects.add(first.id)
 
     @classmethod
     def mark_as_not_touching(cls, first: Object, second: Object) -> None:
+        if first is second:
+            raise ValueError("first and second are the same object")
+
         for f, s in (first, second), (second, first):
             f.touching_objects.discard(s.id)
 
     @classmethod
     def clear_unexistent_touches(cls, obj: Object) -> None:
+        """Removes ids of non-existent objects from touched register"""
         if len(obj.touching_objects) < 1:
             return
 
-        obj.touching_objects = set(id for id in obj.touching_objects if id in obj_container.visible().keys())
+        obj.touching_objects = set(id for id in obj.touching_objects if id in obj_container.all().keys())

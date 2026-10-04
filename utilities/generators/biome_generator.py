@@ -54,8 +54,8 @@ class BiomeGenerator:
     OBSTACLE_INTERVAL: tuple[int, int] = 10, 15
     OBSTACLES: tuple[Obstacle.Type, ...] = ()
 
-    OBJECT_RATE: dict[type[Object], int] = {}
-    OBJECT_INTERVAL: dict[type[Object], tuple[int, int]] = {}
+    OBJECT_RATE: dict[str, int] = {}
+    OBJECT_INTERVAL: dict[str, tuple[int, int]] = {}
 
     def __init__(self, total_tiles: int) -> None:
         self.camera: Camera = obj_container.get_camera()

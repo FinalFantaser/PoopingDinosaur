@@ -266,16 +266,6 @@ def draw_line(start: tuple[int, int], end: tuple[int, int], color: str|Color, wi
     """
     pygame.draw.line(surface=_buffer, color=color, start_pos=start, end_pos=end, width=width)
 
-def draw_pixel(pos: tuple[int, int], color: str|Color) -> None:
-    """
-    Draw a pixel on the buffer surface.
-
-    :param pos: Position of the pixel.
-    :param color: Color for the pixel.
-    :return:
-    """
-    draw_line(start=pos, end=pos, color=color)
-
 def draw_rect(rect: Rect, color: str|Color, width: int = 0) -> None:
     """
     Draw/fill a rectangle on the buffer surface.

@@ -11,7 +11,6 @@ class ObjectWithPhysics(Object):
         "vel_y",
     )
 
-    HANDLER_NAME: str = "SkeletonHandler"
     WEIGHT_FACTOR: float = 1.0
 
     def __init__(
