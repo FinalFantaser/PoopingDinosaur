@@ -8,12 +8,13 @@ from data_containers import objects as obj_container, game_data
 from .object_handler import ObjectHandler
 from .dinosaur_handler import DinosaurHandler
 
-
 class TRexNewHandler(ObjectHandler, DinosaurHandler):
     EDIBLE_DINOSAURS: tuple[type[Dinosaur], ...] = (
         Velociraptor,
         Austroraptor,
         Pterodactyl,
+
+        Snek,
         # ...
     )
 

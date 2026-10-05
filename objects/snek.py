@@ -35,6 +35,6 @@ class Snek(Dinosaur):
             return
 
         last_ticks = get_ticks()
-        if last_ticks - self.last_ticks >= self.ANIM_INTERVAL:
+        if last_ticks - self.last_frame_change >= self.ANIM_INTERVAL:
             self.curr_frame = (self.curr_frame + 1) % self.TOTAL_FRAMES
             self.last_frame_change = last_ticks
