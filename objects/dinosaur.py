@@ -146,9 +146,10 @@ class Dinosaur(ObjectWithPhysics):
         if self.vel_x == 0.0 or self.state == self.State.DEAD:
             return
 
-        if pygame.time.get_ticks() - self.last_frame_change >= self.calc_anim_interval(self.ANIM_INTERVAL):
+        last_ticks = pygame.time.get_ticks()
+        if last_ticks - self.last_frame_change >= self.calc_anim_interval(self.ANIM_INTERVAL):
             self.curr_frame = (self.curr_frame + 1) % self.TOTAL_FRAMES
-            self.last_frame_change = pygame.time.get_ticks()
+            self.last_frame_change = last_ticks
 
     @property
     def weight(self) -> float:
