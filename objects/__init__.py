@@ -22,6 +22,7 @@ from .cave_walls import CaveWalls
 from .cave_background_stalactites import CaveBackgroundStalactites
 from .cave_bones import  CaveBones
 from .geyser import Geyser
+from .falling_stalactite import FallingStalactite
 
 # Dinosaurs
 from .dinosaur import Dinosaur
@@ -33,6 +34,7 @@ from .velociraptor import Velociraptor
 from .pterodactyl import Pterodactyl
 from .triceratops import Triceratops
 from .allosaurus import Allosaurus
+from .snek import Snek
 
 # GUI
 from objects.gui.health_meter import HealthMeter
@@ -40,6 +42,4 @@ from objects.gui.poo_meter import PooMeter
 from objects.gui.pause_menu import PauseMenu
 
 # OBJECTS MADE WITH multitool.py
-from .falling_stalactite import FallingStalactite
-from .snek import Snek
 # <The next generated class will be here>
