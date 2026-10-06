@@ -27,15 +27,18 @@ class SnekHandler(ObjectHandler, DinosaurHandler):
     REACTION_OBJECTS_SEE: dict[str, str] = {
         Skeleton.__name__: None,
         Geyser.__name__: None,
+        TRexNew.__name__: "trex_see",
     }
 
     REACTION_OBJECTS_TOUCH: dict[str, str] = {
         Skeleton.__name__: None,
         Geyser.__name__: "geyser_touch",
+        TRexNew.__name__: "trex_touch",
     }
 
     @classmethod
     def update(cls, obj: Snek):
+        last_ticks = get_ticks()
         time_delta = obj.update_delta
 
         if cls.delete_if_passed_camera(obj):
@@ -43,26 +46,55 @@ class SnekHandler(ObjectHandler, DinosaurHandler):
 
         cls.physics(obj)
 
+        # Slow down
+        if obj.vel_x != 0:
+            decel_x = obj.VEL_X_MIN / 1000 / obj.SLOWDOWN_TIME * time_delta
+
+            if obj.vel_x > 0:
+                obj.vel_x = max(0.0, obj.vel_x - decel_x)
+            else:
+                obj.vel_x = min(0.0, obj.vel_x + decel_x)
+
+        # Behaviour
         if obj.state == obj.State.IDLE:
-            pass
+            cls.process_idle_state(obj, last_ticks)
         elif obj.state == obj.State.BITING:
-            pass
+            cls.process_biting_state(obj)
 
-        if obj.state != obj.State.DEAD:
-            pass
-
-        obj.last_update = get_ticks()
+        obj.last_update = last_ticks
 
     @classmethod
-    def process_idle_state(cls, snek: Snek) -> None:
-        pass
+    def process_idle_state(cls, snek: Snek, ticks: int) -> None:
+        # Turn
+        if ticks - snek.last_turn_at >= snek.TURN_INTERVAL:
+            snek.direction = snek.direction.opposite()
+
+        # Reacting to TRex
+        trex: TRexNew|None = obj_container.get(TRexNew.ID)
+        if trex is not None and snek.fov_ahead.overlaps(trex.rect):
+            snek.curr_frame = 0
+            snek.state = snek.State.BITING
+            snek.vel_x = snek.VEL_X_MIN * snek.direction.value[0]
+            snek.vel_y = snek.JUMP_ACCEL
 
     @classmethod
     def process_biting_state(cls, snek: Snek) -> None:
+        # Touching the T-Rex
+        trex: TRexNew | None = obj_container.get(TRexNew.ID)
+        if trex is not None and snek.hitbox.overlaps(trex.hitbox) and trex.invincibility > 0:
+            trex.invincibility = trex.INVINCIBILITY_DURATION
+            cls.bounce_back(trex, snek)
+
+        # Touching the ground and getting apathetic
+        if snek.hitbox.bottom >= obj_container.get_ground().touch_level:
+            snek.state = snek.State.CORNERED
+
+    @classmethod
+    def trex_see(cls, snek: Snek, trex: TRexNew) -> None:
         pass
 
     @classmethod
-    def react_to_trex(cls, snek: Snek, trex: TRexNew) -> None:
+    def trex_touch(cls, snek: Snek, trex: TRexNew) -> None:
         pass
 
     @classmethod
