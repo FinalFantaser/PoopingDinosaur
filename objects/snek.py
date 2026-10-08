@@ -34,6 +34,7 @@ class Snek(Dinosaur):
     VEL_X_MAX: float = VEL_X_MIN * 1.5
     VEL_X_MAX_IN: float = 1.75
     WEIGHT: float = 30.0
+    JUMP_ACCEL: float = -(WEIGHT * 3)
     SLOWDOWN_TIME: int = 500
     TURN_INTERVAL: int = 500
 

@@ -68,6 +68,7 @@ class SnekHandler(ObjectHandler, DinosaurHandler):
         # Turn
         if ticks - snek.last_turn_at >= snek.TURN_INTERVAL:
             snek.direction = snek.direction.opposite()
+            snek.last_turn_at = ticks
 
         # Reacting to TRex
         trex: TRexNew|None = obj_container.get(TRexNew.ID)
@@ -81,13 +82,15 @@ class SnekHandler(ObjectHandler, DinosaurHandler):
     def process_biting_state(cls, snek: Snek) -> None:
         # Touching the T-Rex
         trex: TRexNew | None = obj_container.get(TRexNew.ID)
-        if trex is not None and snek.hitbox.overlaps(trex.hitbox) and trex.invincibility > 0:
+        if trex is not None and snek.hitbox.overlaps(trex.hitbox) and trex.invincibility < 1:
+            trex.health -= 1
             trex.invincibility = trex.INVINCIBILITY_DURATION
             cls.bounce_back(trex, snek)
 
         # Touching the ground and getting apathetic
         if snek.hitbox.bottom >= obj_container.get_ground().touch_level:
             snek.state = snek.State.CORNERED
+            snek.vel_x = 0
 
     @classmethod
     def trex_see(cls, snek: Snek, trex: TRexNew) -> None:

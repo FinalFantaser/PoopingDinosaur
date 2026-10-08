@@ -2,7 +2,7 @@
 .venv
 **/__pycache__/**
 objects/(backup)__init__.py
-object_handlers/__init__.py
+object_handlers/(backup)__init__.py
 config.yml
 
 # Убрать, когда будут оригинальные звуки и музыка
