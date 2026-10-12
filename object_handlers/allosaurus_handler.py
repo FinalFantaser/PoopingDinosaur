@@ -29,7 +29,14 @@ class AllosaurusHandler(ObjectHandler, DinosaurHandler):
 
         # React to environment
         for other_obj in obj_container.visible().values():
-            if cls.skip_irrelevant_object(obj, other_obj, (not obj.fov_around.overlaps(other_obj.rect),)):
+            if cls.skip_irrelevant_object(
+                    obj,
+                    other_obj,
+                    (
+                        not obj.fov_around.overlaps(other_obj.rect),
+
+                    )
+            ):
                 continue
 
             cls.react_to_objects(obj, other_obj)

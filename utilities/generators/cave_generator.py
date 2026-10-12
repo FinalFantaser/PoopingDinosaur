@@ -12,6 +12,7 @@ from objects import (
     FallingStalactite,
     Dinosaur,
     Snek,
+    Zephyrosaurus,
 )
 from data_containers import objects as obj_container
 from .biome_generator import BiomeGenerator
@@ -32,12 +33,14 @@ class CaveGenerator(BiomeGenerator):
 
     NPC_RATE: dict[type[Dinosaur], int] = {
         Snek: 25,
+        Zephyrosaurus: 15,
     }
 
-    NPC_INTERVAL: tuple[int, int] = 8, 10
+    NPC_INTERVAL: tuple[int, int] = 8, 25
 
     NPC: tuple[type[Dinosaur], ...] = (
         Snek,
+        Zephyrosaurus
     )
 
     OBSTACLE_RATE: dict[Obstacle.Type, int] = {

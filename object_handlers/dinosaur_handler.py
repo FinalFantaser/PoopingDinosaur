@@ -292,31 +292,38 @@ class DinosaurHandler:
 
     @classmethod
     def cactus_see(cls, dinosaur: Dinosaur, cactus: Obstacle) -> None:
-        cls.jump_over_object(dinosaur, cactus)
+        if dinosaur.state == dinosaur.State.RUNNING:
+            cls.jump_over_object(dinosaur, cactus)
 
     @classmethod
     def thorns_see(cls, dinosaur: Dinosaur, thorns: Obstacle) -> None:
-        cls.jump_over_object(dinosaur, thorns)
+        if dinosaur.state == dinosaur.State.RUNNING:
+            cls.jump_over_object(dinosaur, thorns)
 
     @classmethod
     def stone_see(cls, dinosaur: Dinosaur, stone: Obstacle) -> None:
-        cls.jump_over_object(dinosaur, stone)
+        if dinosaur.state == dinosaur.State.RUNNING:
+            cls.jump_over_object(dinosaur, stone)
 
     @classmethod
     def tree_see(cls, dinosaur: Dinosaur, tree: Obstacle) -> None:
-        cls.jump_over_object(dinosaur, tree)
+        if dinosaur.state == dinosaur.State.RUNNING:
+            cls.jump_over_object(dinosaur, tree)
 
     @classmethod
     def fern_see(cls, dinosaur: Dinosaur, fern: Obstacle) -> None:
-        cls.jump_over_object(dinosaur, fern)
+        if dinosaur.state == dinosaur.State.RUNNING:
+            cls.jump_over_object(dinosaur, fern)
 
     @classmethod
     def oil_see(cls, dinosaur: Dinosaur, oil: Obstacle) -> None:
-        cls.jump_over_object(dinosaur, oil)
+        if dinosaur.state == dinosaur.State.RUNNING:
+            cls.jump_over_object(dinosaur, oil)
 
     @classmethod
     def skeleton_see(cls, dinosaur: Dinosaur, skeleton: Skeleton) -> None:
-        pass
+        if dinosaur.state == dinosaur.State.RUNNING:
+            cls.jump_over_object(dinosaur, skeleton)
 
     @classmethod
     def geyser_see(cls, dinosaur: Dinosaur, geyser: Geyser) -> None:
