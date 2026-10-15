@@ -9,7 +9,7 @@ class Geyser(Object):
 
     HANDLER_NAME: str = 'GeyserHandler'
     ID_STUB: str = 'geyser_%d'
-    WIDTH: float = 16
+    WIDTH: float = 32
     HEIGHT: float = 16
     SIZE: tuple[float, float] = WIDTH, HEIGHT
     TEXTURE_NAME: str = 'geyser.png'

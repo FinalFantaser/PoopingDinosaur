@@ -43,4 +43,5 @@ from objects.gui.pause_menu import PauseMenu
 
 # OBJECTS MADE WITH multitool.py
 from .zephyrosaurus import Zephyrosaurus
+from .zombiesaurus import Zombiesaurus
 # <The next generated class will be here>
