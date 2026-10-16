@@ -21,7 +21,7 @@ class FallingStalactite(ObjectWithPhysics):
     ID_STUB: str = "stalactite_%d"
     TEXTURE_NAME: str = "stalactite.png"
     WIDTH: float = 13
-    HEIGHT: float = 16
+    HEIGHT: float = 17
     SIZE: tuple[float, float] = WIDTH, HEIGHT
 
     DROP_COLOR: str = core.gui.COLOR_BG

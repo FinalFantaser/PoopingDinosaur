@@ -110,6 +110,38 @@ class CaveGenerator(BiomeGenerator):
         new_bones: CaveBones = CaveBones(new_pos)
         obj_container.queue_add(new_bones)
 
+    def obstacles(self) -> None:
+        """Creates obstacles within vicinity"""
+        if len(self.OBSTACLES) < 1:
+            return
+
+        end: float = self.camera.right
+        draw_x: float = max(self.last_obstacle_pos[0], self.camera.left)
+
+        while draw_x < end:
+            multiplier: int = 1
+
+            ob_type: Obstacle.Type = choice(self.OBSTACLES)
+
+            if randint(0, 100) >= self.OBSTACLE_RATE[ob_type]:
+                new_obstacle: Obstacle = Obstacle(
+                    ob_type,
+                    (draw_x, 0)
+                )
+                new_obstacle.rect.bottom = self.ground.touch_level
+
+                if new_obstacle.ob_type == Obstacle.Type.OIL:
+                    new_obstacle.y = self.ground.touch_level - 1
+
+                obj_container.queue_add(new_obstacle)
+
+                self.last_obstacle_pos = new_obstacle.pos
+
+                multiplier = randint(*self.OBSTACLE_INTERVAL)
+
+            draw_x += multiplier * Ground.BLOCK_W
+            self.last_obstacle_pos = draw_x, self.last_obstacle_pos[1]
+
     def objects(self) -> None:
         end: float = self.camera.right
         draw_x: float = max(self.last_object_pos[0], self.camera.left)

@@ -24,7 +24,7 @@ class Snek(Dinosaur):
 
     HANDLER_NAME: str = "SnekHandler"
     ID_STUB: str = 'snek_%d'
-    SIZE: tuple[float, float] = 8, 8
+    SIZE: tuple[float, float] = 10, 10
     TEXTURE_NAME: str = "snek.png"
     ANIM_INTERVAL: int = 250
     TOTAL_FRAMES: int = 2

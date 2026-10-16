@@ -21,12 +21,12 @@ class TRexNew(SeparateHeadDinosaur):
         'last_pooped_at',
     )
 
-    HANDLER_NAME: str = 'TRexNewHandler'
+    HANDLER_NAME: str = "TRexNewHandler"
     ID: str = "player"
     SIZE: tuple[float, float] = 53, 16
     SIZE_BODY: tuple[float, float] = 44, 16
     SIZE_HEAD: tuple[float, float] = 15, 14
-    TEXTURE_NAME: str = 'trex_new.png'
+    TEXTURE_NAME: str = "trex_new.png"
     ANIM_INTERVAL: int = 250
     ANIM_INTERVAL_HEAD: int = 250
     TOTAL_FRAMES: int = 2
