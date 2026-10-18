@@ -67,7 +67,7 @@ class Zephyrosaurus(Dinosaur):
         y_diff = self.burrow_progress * self.BURROW_PER_MS
 
         draw_area = Rect.from_pygame_rect(self.DRAW_AREA)
-        draw_area.x = self.curr_frame * self.SIZE[0]
+        draw_area.x = self.curr_frame * self.WIDTH
         draw_area.height -= y_diff
 
         core.video.texture_blit(

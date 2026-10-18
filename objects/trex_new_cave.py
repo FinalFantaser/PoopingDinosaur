@@ -12,7 +12,8 @@ class TRexNewCave(TRexNew):
     """Same TRexNew, just with white contour for thhe cave biome"""
     HANDLER_NAME: str = "TRexNewHandler"
     SIZE_BODY: tuple[float, float] = 46, 18
-    SIZE_HEAD: tuple[float, float] = 16, 15
+    SIZE_HEAD: tuple[float, float] = 16, 16
     TEXTURE_NAME: str = "trex_new_cave.png"
     DRAW_AREA: PygameRect = PygameRect(0, 0, *SIZE_BODY)
-    DRAW_AREA_HEAD: PygameRect = PygameRect(0, 34, *SIZE_HEAD)
+    DRAW_AREA_HEAD: PygameRect = PygameRect(0, 36, *SIZE_HEAD)
+    HEAD_POS: tuple[float, float] = -6, 0

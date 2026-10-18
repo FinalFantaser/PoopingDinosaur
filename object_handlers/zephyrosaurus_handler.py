@@ -1,14 +1,15 @@
 from random import randint
 from pygame.time import get_ticks
-from objects import Rect, Layer, Direction, Object, Obstacle, Ground, Camera, Zephyrosaurus, TRexNew, Dinosaur
+from objects import Zephyrosaurus, TRexNew, TRexNewCave, Dinosaur
 from .object_handler import ObjectHandler
-from data_containers import objects as obj_container, game_data
+from data_containers import objects as obj_container
 from .dinosaur_handler import DinosaurHandler
 
 class ZephyrosaurusHandler(ObjectHandler, DinosaurHandler):
     REACTION_OBJECTS_SEE: dict[str, str] = {
         **DinosaurHandler.REACTION_OBJECTS_SEE,
-        TRexNew.__name__: "react_to_hunter"
+        TRexNew.__name__: "react_to_hunter",
+        TRexNewCave.__name__: "react_to_hunter",
     }
 
     @classmethod
@@ -55,7 +56,7 @@ class ZephyrosaurusHandler(ObjectHandler, DinosaurHandler):
                         continue
 
                     cls.react_to_objects(obj, other_obj)
-        elif obj.state == obj.State.CORNERED:
+        elif obj.state == obj.State.CORNERED and obj.rect.bottom >= obj_container.get_ground().touch_level:
             obj.burrow_progress = min(obj.burrow_progress + obj.update_delta, obj.BURROW_TIME)
         elif obj.state == obj.State.DEAD:
             obj.vel_x = 0

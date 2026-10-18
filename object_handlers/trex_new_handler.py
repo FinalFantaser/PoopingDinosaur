@@ -10,12 +10,14 @@ from .dinosaur_handler import DinosaurHandler
 
 class TRexNewHandler(ObjectHandler, DinosaurHandler):
     EDIBLE_DINOSAURS: tuple[type[Dinosaur], ...] = (
+        # Forest
         Velociraptor,
         Austroraptor,
         Pterodactyl,
 
+        # Caves
         Snek,
-        # ...
+        Zephyrosaurus,
     )
 
     REACTIONS_OBSTACLE_SEE: dict[Obstacle.Type, str | None] = {
