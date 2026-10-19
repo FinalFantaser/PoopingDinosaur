@@ -22,7 +22,7 @@ class Zombiesaurus(SeparateHeadDinosaur):
     HEIGHT: float = 14
     SIZE: tuple[float, float] = WIDTH, HEIGHT
     SIZE_BODY: tuple[float, float] = 31, 14
-    SIZE_HEAD: tuple[float, float] = 10, 11
+    SIZE_HEAD: tuple[float, float] = 11, 11
     HEAD_POS: tuple[float, float] = -2, 0
     ANIM_INTERVAL: int = 250
     TOTAL_FRAMES: int = 2
@@ -31,7 +31,7 @@ class Zombiesaurus(SeparateHeadDinosaur):
     DRAW_AREA: PygameRect = PygameRect(0, 0, *SIZE_BODY)
     DRAW_AREA_HEAD: PygameRect = PygameRect(0, 28, *SIZE_HEAD)
     HITBOX_BITE_SIZE: tuple[float, float] = SIZE_HEAD
-    WEIGHT: float = 1001
+    WEIGHT: float = 1500
     WEIGHT_FACTOR: float = 0.8
     JUMP_ACCEL: float = -(WEIGHT * 8)
 

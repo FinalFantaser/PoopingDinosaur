@@ -1,11 +1,21 @@
 from pygame.time import get_ticks
-from objects import Rect, Layer, Direction, Object, Ground, Camera, Zombiesaurus
+from objects import Rect, Layer, Direction, Object, Ground, Camera, Obstacle, Poo, Explosion, Dinosaur, Snek, TRexNew, Zombiesaurus, Zephyrosaurus
 from .object_handler import ObjectHandler
 from data_containers import objects as obj_container, game_data
 from .obstacle_handler import ObjectHandler
 from .dinosaur_handler import DinosaurHandler
 
 class ZombiesaurusHandler(ObjectHandler, DinosaurHandler):
+    REACTIONS_OBSTACLE_TOUCH: dict[Obstacle.Type, str] = {}
+    REACTIONS_OBSTACLE_SEE: dict[Obstacle.Type, str] = {}
+    REACTION_OBJECTS_SEE: dict[str, str] = {
+        Snek.__name__: "start_biting",
+        TRexNew.__name__: "start_biting",
+        Zephyrosaurus.__name__: "start_biting",
+    }
+
+    REACTION_OBJECTS_TOUCH: dict[str, str] = {}
+
     @classmethod
     def update(cls, obj: Zombiesaurus):
         time_delta = obj.update_delta
@@ -20,8 +30,40 @@ class ZombiesaurusHandler(ObjectHandler, DinosaurHandler):
         elif obj.state == obj.State.RUNNING or obj.state == obj.state.BITING:
             cls.physics(obj)
             cls.accelerate(obj)
+            obj.stop_biting()
 
-            # React to environment
-            # ...
+            for other_obj in obj_container.main_layer().values():
+                if cls.skip_irrelevant_object(
+                        obj,
+                        other_obj,
+                        (not isinstance(other_obj, (Zephyrosaurus, Snek, TRexNew)),)
+                ):
+                    cls.react_to_objects(obj, other_obj)
 
         obj.last_update = get_ticks()
+
+    @classmethod
+    def start_biting(cls, zombie: Zombiesaurus, prey: Dinosaur) -> None:
+        if zombie.state != zombie.State.BITING:
+            zombie.start_biting()
+
+    @classmethod
+    def attack(cls, zombie: Zombiesaurus, prey: Dinosaur) -> None:
+        if prey.invincibility > 0:
+            return
+
+        if zombie.is_biting():
+            if zombie.hitbox_bite.overlaps(prey.hitbox):
+                if cls.are_touching(zombie, prey):
+                    if isinstance(prey, TRexNew):
+                        prey.health -= 1
+                        prey.invincibility = TRexNew.INVINCIBILITY_DURATION
+
+                        prey.vel_x = prey.VEL_X_MIN * 0.5 * zombie.direction.value[0]
+                        prey.vel_y = prey.jump_impulse * 0.8
+                    elif isinstance(prey, (Snek, Zephyrosaurus)):
+                        obj_container.queue_delete(prey)
+                else:
+                    cls.mark_as_touching(zombie, prey)
+            else:
+                cls.mark_as_not_touching(zombie, prey)
