@@ -1,5 +1,5 @@
 from pygame.time import get_ticks
-from objects import Rect, Layer, Direction, Object, Ground, Camera, Obstacle, Poo, Explosion, Dinosaur, Snek, TRexNew, Zombiesaurus, Zephyrosaurus
+from objects import Rect, Layer, Direction, Object, Ground, Camera, Obstacle, Poo, Explosion, Dinosaur, Snek, TRexNewCave, Zombiesaurus, Zephyrosaurus
 from .object_handler import ObjectHandler
 from data_containers import objects as obj_container, game_data
 from .obstacle_handler import ObjectHandler
@@ -10,7 +10,7 @@ class ZombiesaurusHandler(ObjectHandler, DinosaurHandler):
     REACTIONS_OBSTACLE_SEE: dict[Obstacle.Type, str] = {}
     REACTION_OBJECTS_SEE: dict[str, str] = {
         Snek.__name__: "start_biting",
-        TRexNew.__name__: "start_biting",
+        TRexNewCave.__name__: "start_biting",
         Zephyrosaurus.__name__: "start_biting",
     }
 
@@ -36,9 +36,11 @@ class ZombiesaurusHandler(ObjectHandler, DinosaurHandler):
                 if cls.skip_irrelevant_object(
                         obj,
                         other_obj,
-                        (not isinstance(other_obj, (Zephyrosaurus, Snek, TRexNew)),)
+                        (not isinstance(other_obj, (Zephyrosaurus, Snek, TRexNewCave)),)
                 ):
-                    cls.react_to_objects(obj, other_obj)
+                    continue
+
+                cls.react_to_objects(obj, other_obj)
 
         obj.last_update = get_ticks()
 
@@ -55,9 +57,9 @@ class ZombiesaurusHandler(ObjectHandler, DinosaurHandler):
         if zombie.is_biting():
             if zombie.hitbox_bite.overlaps(prey.hitbox):
                 if cls.are_touching(zombie, prey):
-                    if isinstance(prey, TRexNew):
+                    if isinstance(prey, TRexNewCave):
                         prey.health -= 1
-                        prey.invincibility = TRexNew.INVINCIBILITY_DURATION
+                        prey.invincibility = TRexNewCave.INVINCIBILITY_DURATION
 
                         prey.vel_x = prey.VEL_X_MIN * 0.5 * zombie.direction.value[0]
                         prey.vel_y = prey.jump_impulse * 0.8
@@ -67,3 +69,12 @@ class ZombiesaurusHandler(ObjectHandler, DinosaurHandler):
                     cls.mark_as_touching(zombie, prey)
             else:
                 cls.mark_as_not_touching(zombie, prey)
+
+    @classmethod
+    def delete_if_passed_camera(cls, obj: Zombiesaurus) -> bool:
+        viewpoint = obj_container.get_camera()
+
+        if obj.direction == Direction.LEFT:
+            return obj.rect.right <= viewpoint.left - viewpoint.width * 0.5
+        else:
+            return obj.rect.left >= viewpoint.right + viewpoint.width * 0.5

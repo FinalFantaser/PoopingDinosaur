@@ -2,6 +2,7 @@ from random import randint, choice
 from math import ceil
 from objects import (
     Object,
+    Direction,
     Ground,
     Obstacle,
     GroundCaves,
@@ -12,6 +13,7 @@ from objects import (
     FallingStalactite,
     Dinosaur,
     Snek,
+    TRexNewCave,
     Zephyrosaurus,
     Zombiesaurus,
 )
@@ -40,7 +42,7 @@ class CaveGenerator(BiomeGenerator):
 
     NPC_INTERVAL: tuple[int, int] = 8, 25
 
-    NPC: tuple[type[Dinosaur], ...] = (
+    NPC: tuple[type[Snek|Zephyrosaurus|Zombiesaurus], ...] = (
         Snek,
         Zephyrosaurus,
         Zombiesaurus,
@@ -171,3 +173,39 @@ class CaveGenerator(BiomeGenerator):
 
             draw_x += multiplier * Ground.BLOCK_W
             self.last_object_pos = draw_x, self.last_object_pos[1]
+
+    def npc(self):
+        """Creates NPCs within vicinity"""
+        if len(self.NPC) < 1:
+            return
+
+        end: float = self.camera.right
+        draw_x: float = max(self.last_npc_pos[0], self.camera.left)
+
+        while draw_x < end:
+            multiplier: int = 1
+
+            npc_class: type[Snek|Zephyrosaurus|Zombiesaurus] = choice(self.NPC)
+
+            if randint(0, 100) <= self.NPC_RATE[npc_class]:
+                new_npc: Snek|Zephyrosaurus|Zombiesaurus = npc_class((draw_x, 0))
+                new_npc.rect.bottom = self.ground.touch_level
+
+                if isinstance(new_npc, Zombiesaurus):
+                    new_npc.direction = choice((Direction.LEFT, Direction.RIGHT))
+
+                    trex: TRexNewCave | None = obj_container.get_player()
+                    if trex is not None:
+                        if new_npc.direction == Direction.LEFT:
+                            new_npc.x = trex.rect.right + Zombiesaurus.WIDTH * 2
+                        else:
+                            new_npc.x = trex.rect.left - Zombiesaurus.WIDTH * 0.5
+
+                obj_container.queue_add(new_npc)
+
+                self.last_npc_pos = new_npc.pos
+
+                multiplier = randint(*self.NPC_INTERVAL)
+
+            draw_x += multiplier * Ground.BLOCK_W
+            self.last_npc_pos = draw_x, self.last_npc_pos[1]
