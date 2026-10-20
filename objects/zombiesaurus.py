@@ -31,6 +31,9 @@ class Zombiesaurus(SeparateHeadDinosaur):
     DRAW_AREA: PygameRect = PygameRect(0, 0, *SIZE_BODY)
     DRAW_AREA_HEAD: PygameRect = PygameRect(0, 28, *SIZE_HEAD)
     HITBOX_BITE_SIZE: tuple[float, float] = SIZE_HEAD
+    VEL_X_MIN: float = 150
+    VEL_X_MAX: float = 280
+    VEL_X_MAX_IN: float = 1.75  # Seconds to reach maximum speed
     WEIGHT: float = 1500
     WEIGHT_FACTOR: float = 0.8
     JUMP_ACCEL: float = -(WEIGHT * 8)

@@ -14,7 +14,11 @@ class ZombiesaurusHandler(ObjectHandler, DinosaurHandler):
         Zephyrosaurus.__name__: "start_biting",
     }
 
-    REACTION_OBJECTS_TOUCH: dict[str, str] = {}
+    REACTION_OBJECTS_TOUCH: dict[str, str] = {
+        Snek.__name__: "attack",
+        TRexNewCave.__name__: "attack",
+        Zephyrosaurus.__name__: "attack",
+    }
 
     @classmethod
     def update(cls, obj: Zombiesaurus):
@@ -56,19 +60,14 @@ class ZombiesaurusHandler(ObjectHandler, DinosaurHandler):
 
         if zombie.is_biting():
             if zombie.hitbox_bite.overlaps(prey.hitbox):
-                if cls.are_touching(zombie, prey):
-                    if isinstance(prey, TRexNewCave):
-                        prey.health -= 1
-                        prey.invincibility = TRexNewCave.INVINCIBILITY_DURATION
+                if isinstance(prey, TRexNewCave):
+                    prey.health -= 1
+                    prey.invincibility = TRexNewCave.INVINCIBILITY_DURATION
 
-                        prey.vel_x = prey.VEL_X_MIN * 0.5 * zombie.direction.value[0]
-                        prey.vel_y = prey.jump_impulse * 0.8
-                    elif isinstance(prey, (Snek, Zephyrosaurus)):
-                        obj_container.queue_delete(prey)
-                else:
-                    cls.mark_as_touching(zombie, prey)
-            else:
-                cls.mark_as_not_touching(zombie, prey)
+                    prey.vel_x = prey.VEL_X_MIN * 0.5 * zombie.direction.value[0]
+                    prey.vel_y = prey.jump_impulse * 0.8
+                elif isinstance(prey, (Snek, Zephyrosaurus)):
+                    obj_container.queue_delete(prey)
 
     @classmethod
     def delete_if_passed_camera(cls, obj: Zombiesaurus) -> bool:

@@ -9,7 +9,7 @@ from .trex_new import TRexNew
 
 
 class TRexNewCave(TRexNew):
-    """Same TRexNew, just with white contour for thhe cave biome"""
+    """Same TRexNew, just with white contour for the cave biome"""
     HANDLER_NAME: str = "TRexNewHandler"
     SIZE_BODY: tuple[float, float] = 46, 18
     SIZE_HEAD: tuple[float, float] = 16, 16

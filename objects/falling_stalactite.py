@@ -27,7 +27,7 @@ class FallingStalactite(ObjectWithPhysics):
     DROP_COLOR: str = core.gui.COLOR_BG
     DROP_SPEED: float = 250
     DROP_INTERVAL: int = 500
-    FALL_TRIGGER_AREA_SIZE: tuple[float, float] = WIDTH * 4, core.video.get_screen_rect().height
+    FALL_TRIGGER_AREA_SIZE: tuple[float, float] = WIDTH * 8, core.video.get_screen_rect().height
 
     _total: int = 0
 

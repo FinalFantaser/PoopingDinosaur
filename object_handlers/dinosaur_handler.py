@@ -266,7 +266,7 @@ class DinosaurHandler:
         """
 
         # Slow down
-        dinosaur.vel_x = min(abs(dinosaur.vel_x) * 0.1, dinosaur.VEL_X_MIN * 0.1) * dinosaur.direction.value[0]
+        dinosaur.vel_x = min(abs(dinosaur.vel_x) * 0.5, dinosaur.VEL_X_MIN * 0.5) * dinosaur.direction.value[0]
 
     @classmethod
     def skeleton_touch(cls, dinosaur: Dinosaur, skeleton: Skeleton) -> None:
