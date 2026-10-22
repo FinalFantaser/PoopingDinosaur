@@ -10,7 +10,19 @@
 cp config-example.yml config.yml
 ```
 
-Запустить через main.py
+В папке с игрой создать и активировать venv:
+```shell
+python3 -m venv ./
+
+source ./bin/activate
+
+pip install -r requirements.txt
+```
+
+Запустить через main.py:
+```shell
+python3 main.py
+```
 
 # Использование multitool.py для генерации новых объектов и обработчиков
 
