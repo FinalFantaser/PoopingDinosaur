@@ -14,6 +14,8 @@ game_mode_forest_title: Лес
 game_mode_forest_description: Демонстрация лесного биома
 game_mode_caves_title: Подземелье
 game_mode_caves_description: Демонстрация подземного биома
+game_mode_human_base_title: База людей
+game_mode_human_base_description: Демонстрация биома базы людей
 
 win: Ты выиграл. Ура. Молодец. Молодцы сосут концы.
 game_over: Потрачено

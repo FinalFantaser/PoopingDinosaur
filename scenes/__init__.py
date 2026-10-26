@@ -3,6 +3,7 @@ from .test import Test
 from .level_contract import LevelContract
 from .forest import Forest
 from .caves import Caves
+from .human_base import HumanBase
 
 from .main_menu import MainMenu
 from .select_game_mode import SelectGameMode

@@ -14,6 +14,8 @@ game_mode_forest_title: Forest
 game_mode_forest_description: A showcase for the forest biome
 game_mode_caves_title: Caves
 game_mode_caves_description: A showcase for the caves biome
+game_mode_human_base_title: Human Base
+game_mode_human_base_description: A showcase for the human base
 
 win: You won. Yay. Or something. Good (blow)job.
 game_over: Game Over
