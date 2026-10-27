@@ -45,4 +45,5 @@ from objects.gui.pause_menu import PauseMenu
 from .zephyrosaurus import Zephyrosaurus
 from .zombiesaurus import Zombiesaurus
 from .trex_new_cave import TRexNewCave
+from .ground_human_base import GroundHumanBase
 # <The next generated class will be here>
