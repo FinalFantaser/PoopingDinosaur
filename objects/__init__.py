@@ -46,4 +46,5 @@ from .zephyrosaurus import Zephyrosaurus
 from .zombiesaurus import Zombiesaurus
 from .trex_new_cave import TRexNewCave
 from .ground_human_base import GroundHumanBase
+from .skyscraper import Skyscraper
 # <The next generated class will be here>

@@ -31,6 +31,7 @@ from .gui.pause_menu_handler import PauseMenuHandler
 # CLASSES MADE WITH multitool.py
 from .zephyrosaurus_handler import ZephyrosaurusHandler
 from .zombiesaurus_handler import ZombiesaurusHandler
+from .skyscrapper_handler import SkyscraperHandler
 # <The next generated class will be here>
 
 object_handlers: dict[str, type[ObjectHandler]] = {
