@@ -1,6 +1,8 @@
 from enum import IntEnum
 from random import choice
 from math import floor
+
+import pygame.transform
 from pygame import Rect as PygameRect, Surface
 from pygame.time import get_ticks
 from pygame.math import Vector2
@@ -15,10 +17,11 @@ class Skyscraper(Object):
     __slots__ = (
 		*Object.__slots__,
         "pivot",
+        "offset",
         "angle",
         "invincibility",
         "health",
-        "_texture",
+        "texture_rotated",
     )
 
     ID_STUB: str = "skyscraper_%d"
@@ -50,16 +53,27 @@ class Skyscraper(Object):
         )
 
         self.angle: float = 0
-        self.pivot: Vector2 = Vector2(self.rect.center_x, self.rect.bottom)
+        self.pivot: Vector2 = Vector2(self.rect.center_x, 0)
+        self.offset: Vector2 = Vector2(0, -self.height / 2)
         self.invincibility: int = 0
         self.health: int = self.MAX_HEALTH[self.type.value]
-        self._texture: Surface = core.video.texture_get(self.TEXTURE_NAME).copy()
 
+        self.texture_rotated = self.texture.copy()
 
-    @property
-    def texture(self) -> Surface:
-        return self._texture
+    def rotate(self, angle_change: float) -> None:
+        self.angle += angle_change
 
-    @texture.setter
-    def texture(self, value: Surface):
-        self._texture = value
+        new_center = self.pivot + self.offset.rotate(self.angle)
+
+        self.texture_rotated = Surface(self.SIZE[self.Type.TALL])
+        self.texture_rotated.fill(core.video.COLOR_KEY)
+        self.texture_rotated.set_colorkey(core.video.COLOR_KEY)
+        self.texture_rotated.blit(
+            core.video.texture_get(self.TEXTURE_NAME),
+            (0, 0),
+            (self.type.value * self.width, 0, self.SIZE[self.Type.TALL])
+        )
+
+        self.texture_rotated = pygame.transform.rotate(self.texture_rotated, self.angle)
+        self.rect = self.texture_rotated.get_rect(center=new_center)
+
