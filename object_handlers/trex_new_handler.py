@@ -1,6 +1,8 @@
 from typing import Callable
 import random
 from pygame.time import get_ticks
+from pygame.mask import from_surface as mask_from_surface
+from pygame.sprite import Sprite
 
 import core.input, core.audio
 from objects import *
@@ -27,6 +29,11 @@ class TRexNewHandler(ObjectHandler, DinosaurHandler):
         Obstacle.Type.TREE: None,
         Obstacle.Type.FERN: None,
         # ... spicy berries
+    }
+
+    REACTION_OBJECTS_TOUCH: dict[str, str] = {
+        **DinosaurHandler.REACTIONS_OBSTACLE_TOUCH,
+        Skyscraper.__name__: "skyscraper_touch",
     }
 
     @classmethod
@@ -352,6 +359,14 @@ class TRexNewHandler(ObjectHandler, DinosaurHandler):
             dinosaur.vel_x * 1.15,
             dinosaur.jump_impulse if dinosaur.vel_y >= 0 else dinosaur.vel_y,
         )
+
+    @classmethod
+    def skyscraper_touch(cls, dinosaur: TRexNew, skyscraper: Skyscraper) -> None:
+        if skyscraper.invincibility > 0:
+            return
+
+        skyscraper.health -= 1
+        cls.bounce_back(dinosaur, skyscraper, dinosaur.VEL_X_MIN * 1.5, dinosaur.JUMP_ACCEL/2)
 
     @classmethod
     def bounce(

@@ -18,7 +18,9 @@ class Explosion(Object):
 
     HANDLER_NAME = "ExplosionHandler"
     ID_STUB: str = "explosion_%d"
-    SIZE: tuple[float, float] = 32, 32
+    WIDTH: float = 32
+    HEIGHT: float = 32
+    SIZE: tuple[float, float] = WIDTH, HEIGHT
     TEXTURE_NAME: str = "explosion.png"
     ANIM_INTERVAL: int = 150
     TOTAL_FRAMES = 3
