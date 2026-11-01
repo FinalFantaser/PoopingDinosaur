@@ -1,3 +1,4 @@
+from math import ceil
 from pygame.time import get_ticks
 
 import core.video
@@ -12,12 +13,13 @@ class SkyscraperHandler(ObjectHandler):
         time_delta = obj.update_delta
 
         obj.invincibility = max(0, obj.invincibility - time_delta)
+
         dest_angle: float = Skyscraper.MAX_ANGLE + (abs(Skyscraper.MAX_ANGLE) / obj.max_health * obj.health)
 
         if obj.angle > dest_angle:
             obj.rotate(time_delta * obj.DEGREES_PER_MS)
         elif obj.angle <= obj.MAX_ANGLE:
-            num_of_explosions = int(obj.texture_rotated.get_width() / Explosion.WIDTH)
+            num_of_explosions = ceil(obj.texture_rotated.get_width() / Explosion.WIDTH)
             pos_x = obj.x
             pos_y = obj.rect.bottom - Explosion.HEIGHT/2
 

@@ -10,7 +10,7 @@ class HumanBase(LevelContract):
 
         start_x = 480
         for _ in range(100):
-            scrapper = Skyscraper((start_x, 0))
+            scrapper = Skyscraper((start_x, 0), Skyscraper.Type.TALL)
             scrapper.rect.bottom = self.ground.touch_level
             start_x += 480
             obj_container.add(scrapper)

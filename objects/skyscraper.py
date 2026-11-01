@@ -80,23 +80,20 @@ class Skyscraper(Object):
         self.texture_rotated.set_colorkey(core.video.COLOR_KEY)
         self.bit_mask: Mask = mask_from_surface(self.texture_rotated)
 
+        # Compensating position after transformation
+        new_width, new_height = self.texture_rotated.get_size()
+        self.y += self.height - new_height
+        self.size = new_width, new_height
+
     def draw(self, viewpoint: Rect) -> None:
-        curr_width, curr_height = self.texture_rotated.get_size()
-
-        diff_h = self.height - curr_height
-
-        dest_x = floor(self.x - viewpoint.x)
-        dest_y = floor(self.y + diff_h - viewpoint.y)
-
-        core.video.texture_blit(self.texture_rotated, (dest_x, dest_y))
+        core.video.texture_blit(
+            self.texture_rotated,
+            (
+                floor(self.x - viewpoint.x),
+                floor(self.y - viewpoint.y),
+            )
+        )
 
     @property
     def max_health(self) -> int:
         return self.MAX_HEALTH[self.type.value]
-
-    @property
-    def rect_rotated(self) -> Rect:
-        curr_width, curr_height = self.texture_rotated.get_size()
-        diff_w, diff_h = self.width - curr_width, self.height - curr_height
-
-        return Rect(self.x + diff_w, self.y + diff_h, curr_width, curr_height)

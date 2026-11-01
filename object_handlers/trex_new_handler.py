@@ -1,7 +1,10 @@
 from typing import Callable
 import random
+from math import floor
+
+from pygame.surface import Surface
 from pygame.time import get_ticks
-from pygame.mask import from_surface as mask_from_surface
+from pygame.mask import from_surface as mask_from_surface, Mask
 from pygame.sprite import Sprite
 
 import core.input, core.audio
@@ -362,11 +365,21 @@ class TRexNewHandler(ObjectHandler, DinosaurHandler):
 
     @classmethod
     def skyscraper_touch(cls, dinosaur: TRexNew, skyscraper: Skyscraper) -> None:
-        if skyscraper.invincibility > 0:
+        if skyscraper.invincibility > 0 or skyscraper.health <= 0:
             return
 
-        skyscraper.health -= 1
-        cls.bounce_back(dinosaur, skyscraper, dinosaur.VEL_X_MIN * 1.5, dinosaur.JUMP_ACCEL/2)
+        dinosaur_mask = Mask(TRexNew.SIZE, True)
+
+        offset = (
+            skyscraper.x - dinosaur.x,
+            skyscraper.y - dinosaur.y
+        )
+
+        coll = dinosaur_mask.overlap(skyscraper.bit_mask, offset)
+        if coll is not None:
+            skyscraper.health -= 1
+            skyscraper.invincibility = Skyscraper.MAX_INVINCIBILITY
+            cls.bounce_back(dinosaur, skyscraper, dinosaur.VEL_X_MIN * 1.5, dinosaur.JUMP_ACCEL/2)
 
     @classmethod
     def bounce(
