@@ -380,6 +380,8 @@ class TRexNewHandler(ObjectHandler, DinosaurHandler):
             skyscraper.health -= 1
             skyscraper.invincibility = Skyscraper.MAX_INVINCIBILITY
             cls.bounce_back(dinosaur, skyscraper, dinosaur.VEL_X_MIN * 1.5, dinosaur.JUMP_ACCEL/2)
+        else:
+            cls.mark_as_not_touching(dinosaur, skyscraper)
 
     @classmethod
     def bounce(

@@ -40,7 +40,7 @@ class Skyscraper(Object):
     MAX_INVINCIBILITY: int = 1000
     MAX_ANGLE: float = -90
     DEGREES_PER_MS: float = MAX_ANGLE / 1000
-    SIZE: tuple[tuple[float, float], tuple[float, float]] = (16, 60), (16, 100)
+    SIZE: tuple[tuple[float, float], tuple[float, float]] = (16, 64), (16, 96)
     TOTAL_FRAMES: int = 1
     ANIM_INTERVAL: int = 0
 
