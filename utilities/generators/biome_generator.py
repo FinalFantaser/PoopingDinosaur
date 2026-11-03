@@ -34,6 +34,10 @@ class BiomeGenerator:
 
         camera: Game camera. Obtained via data_containers.objects.get_camera()
         ground: Ground. Obtained via data_containers.objects.get_ground()
+        last_bg3_pos: Position of the last BACKGROUND_3 layer object placed.
+        last_bg2_pos: Position of the last BACKGROUND_2 layer object placed.
+        last_fg1_pos: Position of the last FOREGROUND_1 layer object placed.
+        last_fg2_pos: Position of the last FOREGROUND_2 layer object placed.
         last_cloud_pos: Position of the last cloud placed.
         last_npc_pos: Position of the last NPC placed.
         last_obstacle_pos: Position of the last obstacle placed.
@@ -43,6 +47,16 @@ class BiomeGenerator:
     """
 
     CLOUD_INTERVAL: tuple[int, int] = 2, 4
+    BACKGROUND_3_INTERVAL: tuple[int, int] = 0, 0
+    BACKGROUND_2_INTERVAL: tuple[int, int] = 0, 0
+    FOREGROUND_1_INTERVAL: tuple[int, int] = 0, 0
+    FOREGROUND_2_INTERVAL: tuple[int, int] = 0, 0
+
+    BACKGROUND_3_RATE: int = 0
+    BACKGROUND_2_RATE: int = 0
+    FOREGROUND_1_RATE: int = 0
+    FOREGROUND_2_RATE: int = 0
+
     SKY_CENTER_LINE: float = core.video.get_screen_rect().height/4
     CLOUD_RATE: int = 85
 
@@ -61,6 +75,11 @@ class BiomeGenerator:
         self.camera: Camera = obj_container.get_camera()
         self.ground: Ground = Ground(total_tiles)
         obj_container.add(self.ground)
+
+        self.last_bg3_pos: tuple[float, float] = 0, 0
+        self.last_bg2_pos: tuple[float, float] = 0, 0
+        self.last_fg1_pos: tuple[float, float] = 0, 0
+        self.last_fg2_pos: tuple[float, float] = 0, 0
 
         self.last_cloud_pos: tuple[float, float] = self.camera.x - Cloud.SIZE[0], self.SKY_CENTER_LINE
         self.last_obstacle_pos: tuple[float, float] = 0, 0
