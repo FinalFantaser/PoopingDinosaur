@@ -48,4 +48,5 @@ from .trex_new_cave import TRexNewCave
 from .ground_human_base import GroundHumanBase
 from .skyscraper import Skyscraper
 from .human_base_walls import HumanBaseWalls
+from .human_base_background import HumanBaseBackground
 # <The next generated class will be here>

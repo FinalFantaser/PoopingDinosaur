@@ -32,6 +32,7 @@ from .gui.pause_menu_handler import PauseMenuHandler
 from .zephyrosaurus_handler import ZephyrosaurusHandler
 from .zombiesaurus_handler import ZombiesaurusHandler
 from .skyscrapper_handler import SkyscraperHandler
+from .human_base_background_handler import HumanBaseBackgroundHandler
 # <The next generated class will be here>
 
 object_handlers: dict[str, type[ObjectHandler]] = {
