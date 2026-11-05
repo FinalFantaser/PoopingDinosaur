@@ -23,6 +23,12 @@ from .cave_background_stalactites import CaveBackgroundStalactites
 from .cave_bones import  CaveBones
 from .geyser import Geyser
 from .falling_stalactite import FallingStalactite
+from .trex_new_cave import TRexNewCave
+from .ground_human_base import GroundHumanBase
+from .skyscraper import Skyscraper
+from .human_base_walls import HumanBaseWalls
+from .human_base_background import HumanBaseBackground
+from .human_base_foreground import HumanBaseForeground
 
 # Dinosaurs
 from .dinosaur import Dinosaur
@@ -35,6 +41,8 @@ from .pterodactyl import Pterodactyl
 from .triceratops import Triceratops
 from .allosaurus import Allosaurus
 from .snek import Snek
+from .zephyrosaurus import Zephyrosaurus
+from .zombiesaurus import Zombiesaurus
 
 # GUI
 from objects.gui.health_meter import HealthMeter
@@ -42,11 +50,4 @@ from objects.gui.poo_meter import PooMeter
 from objects.gui.pause_menu import PauseMenu
 
 # OBJECTS MADE WITH multitool.py
-from .zephyrosaurus import Zephyrosaurus
-from .zombiesaurus import Zombiesaurus
-from .trex_new_cave import TRexNewCave
-from .ground_human_base import GroundHumanBase
-from .skyscraper import Skyscraper
-from .human_base_walls import HumanBaseWalls
-from .human_base_background import HumanBaseBackground
 # <The next generated class will be here>

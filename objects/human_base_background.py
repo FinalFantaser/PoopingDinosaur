@@ -17,6 +17,7 @@ class HumanBaseBackground(Object):
         "draw_rect",
     )
 
+    LAYER: Layer = Layer.BACKGROUND_2
     HANDLER_NAME: str = "HumanBaseBackgroundHandler"
     ID_STUB: str = "human_base_bg2_%d"
     TEXTURE_NAME: str = "human_base_bg2.png"
@@ -25,6 +26,7 @@ class HumanBaseBackground(Object):
     SIZE: tuple[float, float] = WIDTH, HEIGHT
     Y_POS: float = 102
     MAX_OPTIONS: int = 3
+    PARALLAX_FACTOR: float = 0.6
     _total: int = 0
 
     def __init__(self, pos: tuple[float, float], option: int|None = None) -> None:
@@ -40,11 +42,22 @@ class HumanBaseBackground(Object):
         )
 
     def draw(self, viewpoint: Rect) -> None:
+        viewpoint_parallax: Rect = Rect(
+            x=viewpoint.x * self.PARALLAX_FACTOR,
+            y=viewpoint.y * self.PARALLAX_FACTOR,
+            width=viewpoint.width,
+            height=viewpoint.height
+        )
+
+        if not viewpoint_parallax.overlaps(self.rect):
+            return
+
+
         core.video.texture_blit(
             self.texture_name,
             (
-                floor(self.x - viewpoint.x),
-                floor(self.y - viewpoint.y),
+                floor(self.x - viewpoint_parallax.x),
+                floor(self.y - viewpoint_parallax.y),
             ),
             self.draw_rect
         )

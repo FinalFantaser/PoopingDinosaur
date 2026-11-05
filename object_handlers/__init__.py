@@ -12,6 +12,8 @@ from .pterodactyl_handler import PterodactylHandler
 from .triceratops_handler import TriceratopsHandler
 from .allosaurus_handler import AllosaurusHandler
 from .snek_handler import SnekHandler
+from .zephyrosaurus_handler import ZephyrosaurusHandler
+from .zombiesaurus_handler import ZombiesaurusHandler
 
 # Environment
 from .obstacle_handler import ObstacleHandler
@@ -22,6 +24,9 @@ from .skeleton_handler import SkeletonHandler
 from .cave_bones_handler import CaveBonesHandler
 from .geyser_handler import GeyserHandler
 from .falling_stalactite_handler import FallingStalactiteHandler
+from .skyscrapper_handler import SkyscraperHandler
+from .human_base_background_handler import HumanBaseBackgroundHandler
+from .human_base_foreground_handler import HumanBaseForegroundHandler
 
 # GUI
 from .gui.health_meter_handler import HealthMeterHandler
@@ -29,10 +34,6 @@ from .gui.poo_handler import PooMeterHandler
 from .gui.pause_menu_handler import PauseMenuHandler
 
 # CLASSES MADE WITH multitool.py
-from .zephyrosaurus_handler import ZephyrosaurusHandler
-from .zombiesaurus_handler import ZombiesaurusHandler
-from .skyscrapper_handler import SkyscraperHandler
-from .human_base_background_handler import HumanBaseBackgroundHandler
 # <The next generated class will be here>
 
 object_handlers: dict[str, type[ObjectHandler]] = {

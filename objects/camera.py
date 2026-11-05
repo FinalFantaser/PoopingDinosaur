@@ -1,3 +1,4 @@
+from typing import Self
 import core.video
 from objects.object import Object, Rect
 
@@ -16,6 +17,12 @@ class Camera(Object):
 
     def within_viewpoint(self, other_obj: Object) -> bool:
         return self.rect.overlaps(other_obj.rect)
+
+    def get_copy_with_parallax(self, parallax_factor: float) -> Self:
+        return Camera((
+            self.x * parallax_factor,
+            self.y * parallax_factor,
+        ))
 
     @property
     def viewpoint(self) -> Rect:

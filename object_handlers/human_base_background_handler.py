@@ -12,3 +12,9 @@ class HumanBaseBackgroundHandler(ObjectHandler):
 
         obj.last_update = get_ticks()
 
+    @classmethod
+    def delete_if_passed_camera(cls, obj: HumanBaseBackground):
+        parallax_camera = obj_container.get_camera().rect.with_parallax(HumanBaseBackground.PARALLAX_FACTOR)
+
+        if obj.rect.right < parallax_camera.x:
+            obj_container.queue_delete(obj)
