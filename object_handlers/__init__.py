@@ -34,6 +34,7 @@ from .gui.poo_handler import PooMeterHandler
 from .gui.pause_menu_handler import PauseMenuHandler
 
 # CLASSES MADE WITH multitool.py
+from .land_mine_handler import LandMineHandler
 # <The next generated class will be here>
 
 object_handlers: dict[str, type[ObjectHandler]] = {

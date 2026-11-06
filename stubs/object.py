@@ -2,9 +2,10 @@ from math import floor
 from pygame import Rect as PygameRect
 from pygame.time import get_ticks
 import core.video
-from .object import Object
-from .layer import Layer
 from .direction import Direction
+from .rect import Rect
+from .layer import Layer
+from .object import Object
 _ParentImports_
 
 

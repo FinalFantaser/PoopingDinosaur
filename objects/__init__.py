@@ -50,4 +50,5 @@ from objects.gui.poo_meter import PooMeter
 from objects.gui.pause_menu import PauseMenu
 
 # OBJECTS MADE WITH multitool.py
+from .land_mine import LandMine
 # <The next generated class will be here>
