@@ -9,8 +9,21 @@ class LandMineHandler(ObjectHandler):
     def update(cls, obj: LandMine):
         time_delta = obj.update_delta
 
-        # Your code here ...
-        # ...
+        if cls.delete_if_passed_camera(obj):
+            return
 
-        obj.last_update = get_ticks()
+        curr_ticks = get_ticks()
+
+        if obj.triggered_at is not None:
+            if curr_ticks - obj.triggered_at >= obj.TRIGGER_DELAY:
+                # Create explosions...
+                obj_container.queue_delete(obj)
+                return
+        else:
+            for dinosaur in obj_container.dinosaurs().values():
+                if dinosaur.hitbox.overlaps(obj.trigger_area):
+                    obj.triggered_at = curr_ticks
+                    break
+        
+        obj.last_update = curr_ticks
 

@@ -1,5 +1,6 @@
 .idea
 .venv
+pyproject.toml
 **/__pycache__/**
 objects/(backup)__init__.py
 object_handlers/(backup)__init__.py
