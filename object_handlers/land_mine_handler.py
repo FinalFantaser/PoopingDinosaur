@@ -7,8 +7,6 @@ from data_containers import objects as obj_container, game_data
 class LandMineHandler(ObjectHandler):
     @classmethod
     def update(cls, obj: LandMine):
-        time_delta = obj.update_delta
-
         if cls.delete_if_passed_camera(obj):
             return
 
@@ -24,6 +22,5 @@ class LandMineHandler(ObjectHandler):
                 if dinosaur.hitbox.overlaps(obj.trigger_area):
                     obj.triggered_at = curr_ticks
                     break
-        
-        obj.last_update = curr_ticks
 
+        obj.last_update = curr_ticks

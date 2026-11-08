@@ -6,7 +6,7 @@ import core.video
 from .object import Object, Rect
 
 class Explosion(Object):
-    __slots__ = *Object.__slots__, "spawn"
+    __slots__ = *Object.__slots__, "spawn", "damage"
 
     """
     Explosion object. Mostly for decoration but can spawn other objects after fading if necessary.
@@ -27,7 +27,7 @@ class Explosion(Object):
 
     total: int = 0
 
-    def __init__(self, pos: tuple[int | float, int | float] = (0, 0), spawn: Object|None = None):
+    def __init__(self, pos: tuple[int | float, int | float] = (0, 0), spawn: Object|None = None, damage: bool = False):
         self.__class__.total += 1
 
         super().__init__(
@@ -40,6 +40,7 @@ class Explosion(Object):
         )
 
         self.spawn: Object|None = spawn
+        self.damage: bool = damage
 
     def animate(self) -> None:
         if get_ticks() - self.last_frame_change >= self.ANIM_INTERVAL:

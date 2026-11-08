@@ -92,7 +92,7 @@ def visible() -> dict[str, Object]:
 def main_layer() -> dict[str, Object]:
     return {obj_id: _all[obj_id] for obj_id in _idx_main_layer}
 
-def dinosaurs(family: type = Dinosaur) -> dict[str, Dinosaur]:
+def dinosaurs(family: type[Dinosaur] = Dinosaur) -> dict[str, Dinosaur]:
     return {obj_id: _all[obj_id] for obj_id in _idx_visible if isinstance(_all[obj_id], family)}
 
 def hidden() -> dict[str, Object]:

@@ -1,3 +1,4 @@
+from typing import Self
 from enum import IntEnum
 from random import choice
 from math import floor
@@ -94,6 +95,10 @@ class Skyscraper(Object):
                 floor(self.y - viewpoint.y),
             )
         )
+
+    def put_on_ground(self, touch_level: float) -> Self:
+        self.rect.bottom = touch_level
+        return self
 
     @property
     def max_health(self) -> int:

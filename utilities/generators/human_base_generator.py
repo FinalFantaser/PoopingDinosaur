@@ -100,7 +100,7 @@ class HumanBaseGenerator(BiomeGenerator):
             return
 
         new_object = obj_class((self.camera.right + 1, 0))
-        new_object.rect.bottom = self.ground.touch_level
+        new_object.put_on_ground(self.ground.touch_level)
         self.last_object_pos = new_object.pos
 
         obj_container.queue_add(new_object)

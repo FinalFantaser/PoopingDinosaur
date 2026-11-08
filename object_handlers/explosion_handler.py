@@ -7,6 +7,11 @@ from data_containers import objects as obj_container
 class ExplosionHandler(ObjectHandler):
     @classmethod
     def update(cls, obj: Explosion) -> None:
+        if obj.damage and obj.curr_frame >= int(obj.TOTAL_FRAMES/2):
+            for npc in obj_container.main_layer().values():
+                if not getattr(npc, "hitbox", npc.rect).overlaps(obj.rect):
+                    continue
+        
         if obj.curr_frame >= obj.TOTAL_FRAMES - 1 and get_ticks() - obj.last_frame_change >= obj.anim_interval:
             obj_container.queue_delete(obj)
 
