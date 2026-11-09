@@ -26,7 +26,7 @@ class LandMine(Object):
     TRIGGER_AREA_WIDTH: float = 96
     TRIGGER_AREA_HEIGHT: float = 32
     TRIGGER_AREA_SIZE: tuple[float, float] = TRIGGER_AREA_WIDTH, TRIGGER_AREA_HEIGHT
-    TRIGGER_DELAY: int = 1000  # In ms
+    TRIGGER_DELAY: int = 250  # In ms
  
     _total: int = 0
 

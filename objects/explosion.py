@@ -14,6 +14,7 @@ class Explosion(Object):
     Attributes:
          spawn: An object to be spawned in place of the explosion as it fades.
          total: Total amount of the explosions created (used for id).
+         damage: Flag indicating whether the explosion shall do damage to the objects it touches.
     """
 
     HANDLER_NAME = "ExplosionHandler"

@@ -1,5 +1,19 @@
 import pygame.time
-from objects import Poo, Ground, Dinosaur, Layer, TRexNew, FlattenedObject, Explosion, Skeleton, Zombiesaurus
+from objects import (
+    Rect,
+    Poo,
+    Ground,
+    Dinosaur,
+    TRexNew,
+    TRexNewCave,
+    FlattenedObject,
+    Explosion,
+    Skeleton,
+    Zombiesaurus,
+
+    LandMine,
+)
+
 from object_handlers.object_handler import ObjectHandler
 from data_containers import objects as obj_container, game_data
 
@@ -16,12 +30,12 @@ class PooHandler(ObjectHandler):
         poo_hitbox = obj.rect
 
         # Collision with NPCs
-        for npc in obj_container.visible().values():
+        for npc in obj_container.main_layer().values():
             # Skip oneself, not in MAIN layer, TRex, not NPC
-            if npc.id == obj.id or npc.LAYER != Layer.MAIN or not isinstance(npc, Dinosaur) or isinstance(npc, TRexNew):
+            if npc.id == obj.id or not isinstance(npc, Dinosaur|LandMine):
                 continue
 
-            npc_hitbox = npc.hitbox
+            npc_hitbox: Rect = getattr(npc, 'hitbox', npc.rect)
 
             # Skip ones beyond reach
             if not poo_hitbox.overlaps(npc_hitbox):
@@ -31,9 +45,11 @@ class PooHandler(ObjectHandler):
             # Per each boss individually ...
             # ...
 
-
             # Hitting NPCs
             if isinstance(npc, Dinosaur): # ... and human NPCs on foot
+                if isinstance(npc, TRexNew|TRexNewCave):
+                    continue
+
                 if npc.weight < game_data.HEAVY_DINOSAUR_WEIGHT:
                     # Flatten a smaller NPC when hitting from above
                     if (
@@ -55,6 +71,9 @@ class PooHandler(ObjectHandler):
                     obj_container.queue_delete(obj)
                     obj_container.queue_delete(npc)
                     obj_container.queue_add(explosion)
+            elif isinstance(npc, LandMine):
+                npc.triggered_at = pygame.time.get_ticks() - LandMine.TRIGGER_DELAY
+                obj_container.queue_delete(obj)
 
             # Explode vehicles ...
             # ...
