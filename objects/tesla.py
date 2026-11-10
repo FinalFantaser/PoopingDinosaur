@@ -1,0 +1,77 @@
+from typing import Self
+from random import choice
+from math import floor
+from pygame import Rect as PygameRect
+from pygame.time import get_ticks
+import core.video
+from .rect import Rect
+from .object import Object
+
+
+class Tesla(Object):
+    __slots__ = (
+        *Object.__slots__,
+        "charge",
+        "charge_interval",
+        "couple",
+        "draw_rect",
+        # Your slots here ...
+    )
+
+    HANDLER_NAME: str = "TeslaHandler"
+    TEXTURE_NAME: str = "tesla.png"
+    ID_STUB: str = "tesla_%"
+    WIDTH: int = 16
+    HEIGHT: int = 18
+    SIZE: tuple[float, float] = WIDTH, HEIGHT
+    TOTAL_FRAMES: int = 2
+    ANIM_INTERVAL: int = 250
+    CHARGE_MAX: float = 1000
+    CHARGE_INTERVALS: tuple[float, ...] = 1000, 800, 750
+
+    _total: int = 0
+
+    def __init__(self, pos: tuple[float, float]) -> None:
+        Tesla._total += 1
+
+        super().__init__(
+            id=self.ID_STUB % self._total,
+            pos=pos,
+            size=self.SIZE,
+            texture_name=self.TEXTURE_NAME,
+            total_frames=self.TOTAL_FRAMES,
+            anim_interval=self.ANIM_INTERVAL,
+        )
+
+        self.charge: float = 0.0
+        self.charge_interval: float = choice(self.CHARGE_INTERVALS)
+        self.couple: str|None = None
+        self.draw_rect: PygameRect = PygameRect(0, 0, *self.size)
+
+    def connect(self, other_tesla_id: str|None) -> Self:
+        self.couple = other_tesla_id
+        return self
+
+    def animate(self) -> None:
+        curr_ticks = get_ticks()
+
+        if curr_ticks - self.last_frame_change < self.anim_interval:
+            return
+
+        if self.charge > self.CHARGE_MAX * 0.75:
+            self.curr_frame = (self.curr_frame + 1) % self.total_frames
+
+    def draw(self, viewpoint: Rect) -> None:
+        if not viewpoint.overlaps(self.rect):
+            return
+
+        self.draw_rect.x = self.curr_frame * self.width
+
+        core.video.texture_blit(
+            self.texture_name,
+            (
+                floor(self.x - viewpoint.x),
+                floor(self.y - viewpoint.y),
+            ),
+            self.draw_rect
+        )
