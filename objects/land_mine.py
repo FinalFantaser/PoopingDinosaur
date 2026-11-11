@@ -64,8 +64,3 @@ class LandMine(Object):
         if curr_ticks - self.last_frame_change >= self.anim_interval:
             self.curr_frame = (self.curr_frame + 1) % self.TOTAL_FRAMES
             self.last_frame_change = curr_ticks
-
-    def put_on_ground(self, touch_level: float) -> Self:
-        self.rect.bottom = touch_level
-        self.trigger_area.y = self.y
-        return self

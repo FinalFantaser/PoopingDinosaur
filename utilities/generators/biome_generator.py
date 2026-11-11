@@ -86,6 +86,10 @@ class BiomeGenerator:
         self.last_object_pos: tuple[float, float] = 0, 0
         self.last_npc_pos: tuple[float, float] = 0, 0
 
+    def put_on_ground(self, obj: Object) -> None:
+        """Puts object's bottom to generator's ground touch level"""
+        obj.rect.bottom = self.ground.touch_level
+
     def generate(self) -> None:
         """Wrapper calling generating methods for all layers, obstacles and NPCs."""
         self.background_3()

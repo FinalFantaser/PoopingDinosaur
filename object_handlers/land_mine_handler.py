@@ -12,6 +12,8 @@ class LandMineHandler(ObjectHandler):
 
         curr_ticks = get_ticks()
 
+        obj.trigger_area.y = obj.y
+
         if obj.triggered_at is not None:
             if curr_ticks - obj.triggered_at >= obj.TRIGGER_DELAY:
                 # Create explosions

@@ -96,10 +96,6 @@ class Skyscraper(Object):
             )
         )
 
-    def put_on_ground(self, touch_level: float) -> Self:
-        self.rect.bottom = touch_level
-        return self
-
     @property
     def max_health(self) -> int:
         return self.MAX_HEALTH[self.type.value]

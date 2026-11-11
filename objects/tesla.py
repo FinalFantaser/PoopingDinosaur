@@ -1,5 +1,5 @@
 from typing import Self
-from random import choice
+from random import randint
 from math import floor
 from pygame import Rect as PygameRect
 from pygame.time import get_ticks
@@ -14,20 +14,21 @@ class Tesla(Object):
         "charge",
         "charge_interval",
         "couple",
+        "gap",
         "draw_rect",
-        # Your slots here ...
     )
 
     HANDLER_NAME: str = "TeslaHandler"
     TEXTURE_NAME: str = "tesla.png"
-    ID_STUB: str = "tesla_%"
-    WIDTH: int = 16
-    HEIGHT: int = 18
+    ID_STUB: str = "tesla_%d"
+    WIDTH: int = 14
+    HEIGHT: int = 16
     SIZE: tuple[float, float] = WIDTH, HEIGHT
     TOTAL_FRAMES: int = 2
     ANIM_INTERVAL: int = 250
     CHARGE_MAX: float = 1000
-    CHARGE_INTERVALS: tuple[float, ...] = 1000, 800, 750
+    CHARGE_INTERVALS: tuple[float, ...] = 750, 1000
+    GAP_RANGE: tuple[int, int] = 4, 8
 
     _total: int = 0
 
@@ -44,13 +45,10 @@ class Tesla(Object):
         )
 
         self.charge: float = 0.0
-        self.charge_interval: float = choice(self.CHARGE_INTERVALS)
+        self.charge_interval: float = randint(*self.CHARGE_INTERVALS)
         self.couple: str|None = None
+        self.gap: int = randint(*self.GAP_RANGE)
         self.draw_rect: PygameRect = PygameRect(0, 0, *self.size)
-
-    def connect(self, other_tesla_id: str|None) -> Self:
-        self.couple = other_tesla_id
-        return self
 
     def animate(self) -> None:
         curr_ticks = get_ticks()
@@ -65,7 +63,7 @@ class Tesla(Object):
         if not viewpoint.overlaps(self.rect):
             return
 
-        self.draw_rect.x = self.curr_frame * self.width
+        self.draw_rect.x = int(self.curr_frame * self.width)
 
         core.video.texture_blit(
             self.texture_name,

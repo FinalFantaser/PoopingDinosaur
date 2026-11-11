@@ -1,23 +1,16 @@
 ifeq ($(OS),Windows_NT)
-    PYTHON := venv\Scripts\python.exe
-    PIP := venv\Scripts\pip.exe
-    RM := rmdir /s /q
+    PYTHON ?= py -3.12
+    VENV_PYTHON := venv/Scripts/python.exe
 else
-    PYTHON := venv/bin/python
-    PIP := venv/bin/pip
-    RM := rm -rf
+    PYTHON ?= python3
+    VENV_PYTHON := venv/bin/python
 endif
 
-.PHONY: venv install run clean
-
 venv:
-	python -m venv venv
+	$(PYTHON) -m .venv venv
 
 install: venv
-	$(PIP) install -r requirements.txt
+	$(VENV_PYTHON) -m pip install -r requirements.txt
 
 run: install
-	$(PYTHON) main.py
-
-clean:
-	$(RM) venv
+	$(VENV_PYTHON) main.py

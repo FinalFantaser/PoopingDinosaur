@@ -31,9 +31,9 @@ make run
 
 В папке с игрой создать и активировать venv:
 ```shell
-python3 -m venv ./
+python3 -m venv .venv
 
-source ./bin/activate
+source .venv/bin/activate
 
 pip install -r requirements.txt
 ```

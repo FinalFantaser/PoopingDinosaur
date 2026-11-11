@@ -52,4 +52,6 @@ from objects.gui.pause_menu import PauseMenu
 # OBJECTS MADE WITH multitool.py
 from .land_mine import LandMine
 from .tesla import Tesla
+from .lighting import Lighting
+from .human import Human
 # <The next generated class will be here>

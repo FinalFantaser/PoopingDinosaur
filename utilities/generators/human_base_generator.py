@@ -7,6 +7,8 @@ from objects import (
     HumanBaseForeground,
     Skyscraper,
     LandMine,
+    Tesla,
+    Lighting,
 )
 from data_containers import objects as obj_container
 from .biome_generator import BiomeGenerator
@@ -18,20 +20,21 @@ class HumanBaseGenerator(BiomeGenerator):
     FOREGROUND_2_RATE: int = 33
 
     OBJECT_RATE: dict[
-        type[Skyscraper|LandMine],
+        type[Skyscraper|LandMine|Tesla],
         int
     ] = {
         Skyscraper: 25,
         LandMine: 15,
-        # ...
+        Tesla: 35
     }
 
     OBJECT_INTERVAL: dict[
-        type[Skyscraper|LandMine],
+        type[Skyscraper|LandMine|Tesla],
         tuple[int, int]
     ] = {
         Skyscraper: (25, 40),
         LandMine: (15, 30),
+        Tesla: (10, 20),
     }
 
     OBJECTS: tuple[type[Skyscraper|LandMine], ...] = tuple(OBJECT_RATE.keys())
@@ -91,7 +94,7 @@ class HumanBaseGenerator(BiomeGenerator):
         obj_container.queue_add(new_decoration)
 
     def objects(self):
-        obj_class: type[Skyscraper|LandMine] = choice(self.OBJECTS)
+        obj_class: type[Skyscraper|LandMine|Tesla] = choice(self.OBJECTS)
         interval = randint(*self.OBJECT_INTERVAL[obj_class]) * obj_class.WIDTH
         rate = self.OBJECT_RATE[obj_class]
         create = self.camera.right - self.last_object_pos[0] >= interval and randint(0, 100) <= rate
@@ -99,8 +102,26 @@ class HumanBaseGenerator(BiomeGenerator):
         if not create:
             return
 
-        new_object = obj_class((self.camera.right + 1, 0))
-        new_object.put_on_ground(self.ground.touch_level)
-        self.last_object_pos = new_object.pos
+        if obj_class is Tesla:
+            self.teslas()
+            return
 
+        new_object = obj_class((self.camera.right + 1, 0))
+        self.put_on_ground(new_object)
+        self.last_object_pos = new_object.pos
         obj_container.queue_add(new_object)
+
+    def teslas(self):
+        tesla_1 = Tesla((self.camera.right + 1, 0))
+        self.put_on_ground(tesla_1)
+
+        tesla_2 = Tesla((
+                tesla_1.rect.right + tesla_1.gap * Lighting.WIDTH,
+                tesla_1.y,
+        ))
+
+        tesla_1.couple = tesla_2.id
+        self.last_object_pos = tesla_2.pos
+
+        obj_container.queue_add(tesla_1)
+        obj_container.queue_add(tesla_2)
