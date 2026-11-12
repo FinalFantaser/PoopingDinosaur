@@ -9,6 +9,7 @@ from objects import (
     LandMine,
     Tesla,
     Lighting,
+    MissileSilo,
 )
 from data_containers import objects as obj_container
 from .biome_generator import BiomeGenerator
@@ -20,21 +21,23 @@ class HumanBaseGenerator(BiomeGenerator):
     FOREGROUND_2_RATE: int = 33
 
     OBJECT_RATE: dict[
-        type[Skyscraper|LandMine|Tesla],
+        type[Skyscraper|LandMine|Tesla|MissileSilo],
         int
     ] = {
         Skyscraper: 25,
         LandMine: 15,
-        Tesla: 35
+        Tesla: 35,
+        MissileSilo: 20,
     }
 
     OBJECT_INTERVAL: dict[
-        type[Skyscraper|LandMine|Tesla],
+        type[Skyscraper|LandMine|Tesla|MissileSilo],
         tuple[int, int]
     ] = {
         Skyscraper: (25, 40),
         LandMine: (15, 30),
         Tesla: (10, 20),
+        MissileSilo: (10, 20),
     }
 
     OBJECTS: tuple[type[Skyscraper|LandMine], ...] = tuple(OBJECT_RATE.keys())
@@ -97,7 +100,11 @@ class HumanBaseGenerator(BiomeGenerator):
         obj_class: type[Skyscraper|LandMine|Tesla] = choice(self.OBJECTS)
         interval = randint(*self.OBJECT_INTERVAL[obj_class]) * obj_class.WIDTH
         rate = self.OBJECT_RATE[obj_class]
-        create = self.camera.right - self.last_object_pos[0] >= interval and randint(0, 100) <= rate
+
+        if rate > 0:
+            create = self.camera.right - self.last_object_pos[0] >= interval and randint(0, 100) <= rate
+        else:
+            create = False
 
         if not create:
             return

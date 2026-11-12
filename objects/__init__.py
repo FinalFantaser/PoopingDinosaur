@@ -54,4 +54,5 @@ from .land_mine import LandMine
 from .tesla import Tesla
 from .lighting import Lighting
 from .human import Human
+from .missile_silo import MissileSilo
 # <The next generated class will be here>

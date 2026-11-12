@@ -37,6 +37,7 @@ from .gui.pause_menu_handler import PauseMenuHandler
 from .land_mine_handler import LandMineHandler
 from .tesla_handler import TeslaHandler
 from .lighting_handler import LightingHandler
+from .missile_silo_handler import MissileSiloHandler
 # <The next generated class will be here>
 
 object_handlers: dict[str, type[ObjectHandler]] = {
