@@ -13,7 +13,8 @@ class Tesla(Object):
         *Object.__slots__,
         "charge",
         "charge_interval",
-        "couple",
+        "left",
+        "right",
         "gap",
         "draw_rect",
     )
@@ -27,7 +28,7 @@ class Tesla(Object):
     TOTAL_FRAMES: int = 2
     ANIM_INTERVAL: int = 250
     CHARGE_MAX: float = 1000
-    CHARGE_INTERVALS: tuple[float, ...] = 750, 1000
+    CHARGE_INTERVALS: tuple[float, ...] = 1500, 2000
     GAP_RANGE: tuple[int, int] = 4, 8
 
     _total: int = 0
@@ -46,9 +47,26 @@ class Tesla(Object):
 
         self.charge: float = 0.0
         self.charge_interval: float = randint(*self.CHARGE_INTERVALS)
-        self.couple: str|None = None
+        self.left: str|None = None
+        self.right: str|None = None
         self.gap: int = randint(*self.GAP_RANGE)
         self.draw_rect: PygameRect = PygameRect(0, 0, *self.size)
+
+    def connect(self, other_tesla: Self) -> Self:
+        """
+        Connect to another tesla. Sets `left` and `right` to each other respectively.
+        Charge level and interval are set as for the `left` tesla.
+
+        **self is left, and other_tesla is right:**
+
+        **self** <-------> **other_tesla**
+        """
+        self.right = other_tesla.id
+        other_tesla.left = self.id
+        other_tesla.charge_interval = self.charge_interval
+        other_tesla.charge = self.charge
+
+        return self
 
     def animate(self) -> None:
         curr_ticks = get_ticks()

@@ -23,7 +23,7 @@ class Lighting(Object):
     TOTAL_FRAMES: int = 2
     ANIM_INTERVAL: int = 100
     FRAME_RAND_RANGE: tuple[int, int] = -100, 100
-    LIFESPAN: int = 750  # In ms
+    LIFESPAN: int = 500  # In ms
 
     _total: int = 0
 

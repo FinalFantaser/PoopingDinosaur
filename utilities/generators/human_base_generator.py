@@ -120,7 +120,7 @@ class HumanBaseGenerator(BiomeGenerator):
                 tesla_1.y,
         ))
 
-        tesla_1.couple = tesla_2.id
+        tesla_1.connect(tesla_2)
         self.last_object_pos = tesla_2.pos
 
         obj_container.queue_add(tesla_1)
