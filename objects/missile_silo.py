@@ -15,12 +15,12 @@ class MissileSilo(Object):
 		*Object.__slots__,
         "state",
         "button_hitbox",
+        "empty",
         "draw_area",
     )
 
     class State(IntEnum):
         READY = 0,
-        LAUNCHING = 1,
         EMPTY = 1,
 
     HANDLER_NAME: str = "MissileSiloHandler"
@@ -31,7 +31,7 @@ class MissileSilo(Object):
     SIZE: tuple[float, float] = WIDTH, HEIGHT
     TOTAL_FRAMES: int = 2
     ANIM_INTERVAL: int = 250
-    BUTTON_HITBOX_TEMPLATE: Rect = Rect(24, 0, 8, 6)
+    BUTTON_HITBOX_TEMPLATE: Rect = Rect(0, 4, 6, 2)
 
     _total: int = 0
 
@@ -54,10 +54,11 @@ class MissileSilo(Object):
             *self.BUTTON_HITBOX_TEMPLATE.size,
         )
 
+        self.empty = False
         self.draw_area: PygameRect = PygameRect(0, 0, *self.SIZE)
 
     def animate(self) -> None:
-        if self.state != self.State.READY:
+        if self.state == self.State.EMPTY and self.curr_frame == self.total_frames - 1:
             return
 
         curr_ticks = get_ticks()

@@ -1,5 +1,5 @@
 from enum import Enum
-from objects import Object, Layer, Camera, TRexNew, Ground, Dinosaur
+from objects import Object, Layer, Camera, TRexNew, TRexNewCave, Ground, Dinosaur
 
 
 class _TaskType(int, Enum):
@@ -150,7 +150,7 @@ def get_camera() -> Camera:
     return get(Camera.ID, True)
 
 
-def get_player() -> TRexNew:
+def get_player() -> TRexNew|TRexNewCave:
     return get(TRexNew.ID, True)
 
 

@@ -26,8 +26,8 @@ class HumanBaseGenerator(BiomeGenerator):
     ] = {
         Skyscraper: 25,
         LandMine: 15,
-        Tesla: 35,
-        MissileSilo: 20,
+        Tesla: 15,
+        MissileSilo: 30,
     }
 
     OBJECT_INTERVAL: dict[
