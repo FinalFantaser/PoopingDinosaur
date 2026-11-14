@@ -55,4 +55,5 @@ from .tesla import Tesla
 from .lighting import Lighting
 from .human import Human
 from .missile_silo import MissileSilo
+from .missile import Missile
 # <The next generated class will be here>

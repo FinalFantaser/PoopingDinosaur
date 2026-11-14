@@ -1,5 +1,3 @@
-from telnetlib import Telnet
-
 from pygame.time import get_ticks
 from objects import Rect, Layer, Direction, Object, Ground, Camera, Tesla, Lighting
 from .object_handler import ObjectHandler
