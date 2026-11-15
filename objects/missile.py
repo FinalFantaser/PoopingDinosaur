@@ -3,9 +3,7 @@ from pygame import Rect as PygameRect
 from pygame.time import get_ticks
 from pygame import transform
 import core.video
-from .direction import Direction
 from .rect import Rect
-from .layer import Layer
 from .object import Object
 
 
@@ -62,6 +60,13 @@ class Missile(Object):
                 core.video.texture_add(rotated_surface, key, True)
 
         Missile._cached = True
+
+    def animate(self) -> None:
+        curr_ticks = get_ticks()
+
+        if curr_ticks - self.last_frame_change >= self.anim_interval:
+            self.last_frame_change = curr_ticks
+            self.curr_frame = (self.curr_frame + 1) % self.total_frames
 
     def draw(self, viewpoint: Rect) -> None:
         if not viewpoint.overlaps(self.rect):
