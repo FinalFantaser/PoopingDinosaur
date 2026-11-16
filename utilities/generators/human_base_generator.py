@@ -24,9 +24,9 @@ class HumanBaseGenerator(BiomeGenerator):
         type[Skyscraper|LandMine|Tesla|MissileSilo],
         int
     ] = {
-        Skyscraper: 25,
-        LandMine: 15,
-        Tesla: 15,
+        # Skyscraper: 25,
+        # LandMine: 15,
+        # Tesla: 15,
         MissileSilo: 30,
     }
 

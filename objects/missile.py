@@ -3,6 +3,7 @@ from pygame import Rect as PygameRect
 from pygame.time import get_ticks
 from pygame import transform
 import core.video
+import core.paths
 from .rect import Rect
 from .object import Object
 
@@ -13,23 +14,33 @@ class Missile(Object):
         "vel_x", "vel_y",
         "angle",
         "target_id",
+        "_hitbox",
     )
 
     HANDLER_NAME: str = "MissileHandler"
     ID_STUB: str = "missile_%d"
     TEXTURE_NAME: str = "missile.png"
-    WIDTH: float = 4
-    HEIGHT: float = 8
+    WIDTH: float = 12
+    HEIGHT: float = 7
     SIZE: tuple[float, float] = WIDTH, HEIGHT
     TOTAL_FRAMES: int = 2
     ANIM_INTERVAL: int = 250
-    SPEED: float = 300
+    SPEED: float = 150
     ROTATION_SPEED: float = 180
 
     _total: int = 0
-    _cached: bool = False
 
-    def __init__(self, pos: tuple[float, float], angle: float = 0, target: str|None = None) -> None:
+    # Cached texture data
+    _cached: bool = False
+    _cached_sizes: dict[
+        int,
+        tuple[
+            tuple[float, float],
+            tuple[float, float],
+        ]
+    ] = {}
+
+    def __init__(self, pos: tuple[float, float] = (0, 0), angle: float = 0, target_id: str|None = None) -> None:
         Missile._total += 1
 
         super().__init__(
@@ -44,22 +55,21 @@ class Missile(Object):
         self.vel_x: float = 0
         self.vel_y: float = 0
         self.angle: float = angle
-        self.target: str|None = target
+        self.target_id: str|None = target_id
+        self._hitbox: Rect = self.rect.get_copy()
 
-        if Missile._cached:
-            return
+        if not Missile._cached:
+            self.cache_textures()
 
-        # Caching rotation textures
-        src_surf = core.video.texture_get(self.texture_name)
-        frames = tuple(src_surf.subsurface(frame * self.width, 0, *self.size) for frame in range(self.total_frames))
+    @property
+    def curr_size(self) -> tuple[float, float]:
+        return self._cached_sizes[int(self.angle) % 360][self.curr_frame]
 
-        for degree in range(361):
-            for frame_num in range(self.total_frames):
-                rotated_surface = transform(frames[frame_num], degree)
-                key = f"{self.texture_name}_{degree}_{frame_num}"
-                core.video.texture_add(rotated_surface, key, True)
-
-        Missile._cached = True
+    @property
+    def hitbox(self) -> Rect:
+        self._hitbox.size = self.curr_size
+        self._hitbox.center = self.rect.center
+        return self._hitbox
 
     def animate(self) -> None:
         curr_ticks = get_ticks()
@@ -69,15 +79,51 @@ class Missile(Object):
             self.curr_frame = (self.curr_frame + 1) % self.total_frames
 
     def draw(self, viewpoint: Rect) -> None:
-        if not viewpoint.overlaps(self.rect):
+        box = self.hitbox
+        if not viewpoint.overlaps(box):
             return
 
-        key = f"{self.texture_name}_{int(self.angle)}_{self.curr_frame}"
-
+        degree = int(self.angle) % 360
+        key = f"{self.texture_name}_{degree}_{self.curr_frame}"
         core.video.texture_blit(
             key,
             (
-                floor(self.x - viewpoint.x),
-                floor(self.y - viewpoint.y),
-            )
+                floor(box.x - viewpoint.x),
+                floor(box.y - viewpoint.y)
+            ),
         )
+
+        # For debugging purposes
+        # hitbox = self.hitbox.to_pygame_rect()
+        # hitbox.x -= viewpoint.x
+        # hitbox.y -= viewpoint.y
+        #
+        # core.video.draw_rect(
+        #     hitbox,
+        #     "0xFF0000",
+        #     1
+        # )
+
+    @classmethod
+    def cache_textures(cls) -> None:
+        if cls._cached:
+            return
+
+        src_surf = core.video.texture_load(core.paths.TEXTURES / cls.TEXTURE_NAME, cls.TEXTURE_NAME)
+        frames = tuple(src_surf.subsurface(frame * cls.WIDTH, 0, *cls.SIZE) for frame in range(cls.TOTAL_FRAMES))
+
+        for modifier in -1, 1:
+            for degree in range(min(0, 360 * modifier), max(0, 361 * modifier)):
+                sizes = []
+                for frame_num in range(cls.TOTAL_FRAMES):
+                    rotated_surf = transform.rotate(frames[frame_num], degree)
+                    sizes.append(rotated_surf.get_size())
+
+                    core.video.texture_add(
+                        rotated_surf,
+                        f"{cls.TEXTURE_NAME}_{degree}_{frame_num}"
+                    )
+
+                cls._cached_sizes[degree] = tuple(sizes)
+
+        cls._cached = True

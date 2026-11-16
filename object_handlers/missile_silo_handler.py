@@ -1,5 +1,5 @@
 from pygame.time import get_ticks
-from objects import Rect, Layer, Direction, Object, Ground, Camera, MissileSilo, TRexNew, TRexNewCave
+from objects import MissileSilo, Missile
 from .object_handler import ObjectHandler
 from data_containers import objects as obj_container, game_data
 
@@ -22,7 +22,13 @@ class MissileSiloHandler(ObjectHandler):
                     obj.state = obj.State.EMPTY
             elif obj.state == obj.State.EMPTY:
                 if obj.curr_frame == obj.total_frames - 1 and curr_ticks - obj.last_frame_change >= obj.anim_interval:
-                    # Spawn a missile ...
+                    missile = Missile(obj.pos, -90)
+                    missile_size = missile.curr_size
+                    missile.x = obj.rect.center_x - missile_size[0]/2
+                    missile.y = obj.y - missile_size[1]/2
+
+                    obj_container.queue_add(missile)
+
                     obj.empty = True
 
         obj.last_update = curr_ticks
