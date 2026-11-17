@@ -12,7 +12,7 @@ from .object_with_physics import ObjectWithPhysics
 
 class Helicopter(ObjectWithPhysics):
     __slots__ = (
-		*ObjectWithPhysics.__slots__,
+        *ObjectWithPhysics.__slots__,
         "draw_rect",
         "bombs",
         "last_bomb_at",
@@ -30,10 +30,10 @@ class Helicopter(ObjectWithPhysics):
 
     ALTITUDE_MAX: float = HEIGHT * 2
     ALTITUDE_MIN: float = HEIGHT * 4
-    VEL_X_MIN: float = 175 / 1.5  # To stay within TRex' velocity range
-    VEL_X_MAX: float = 175 * 1.5  # To stay within TRex' velocity range
-    ENGINE_POWER_X: float = VEL_X_MAX - VEL_X_MIN / 500   # Per ms
-    ENGINE_POWER_Y: float = ALTITUDE_MAX - ALTITUDE_MIN / 750  # Per ms
+    TARGET_TRACKING_MIN = -WIDTH * 2
+    TARGET_TRACKING_MAX = WIDTH * 2
+    ENGINE_POWER_X: float = (TARGET_TRACKING_MAX - TARGET_TRACKING_MIN) / 1000  # Per ms
+    ENGINE_POWER_Y: float = (ALTITUDE_MAX - ALTITUDE_MIN) / 750  # Per ms
     WEIGHT_FACTOR: float = 0.3
     BOMBS_MAX: int = 3
     BOMBS_INTERVAL_RANGE: tuple[int, int] = 1000, 1500  # In ms
@@ -43,7 +43,6 @@ class Helicopter(ObjectWithPhysics):
     DELAY_BEFORE_RETREAT: int = 1000  # In ms
 
     _total: int = 0
-
 
     def __init__(self, pos: tuple[float, float] = (0, 0)) -> None:
         Helicopter._total += 1
