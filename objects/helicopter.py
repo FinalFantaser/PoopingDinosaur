@@ -5,7 +5,6 @@ from pygame.time import get_ticks
 import core.video
 from .direction import Direction
 from .rect import Rect
-from .layer import Layer
 from .object import Object
 from .object_with_physics import ObjectWithPhysics
 
@@ -15,6 +14,8 @@ class Helicopter(ObjectWithPhysics):
         *ObjectWithPhysics.__slots__,
         "draw_rect",
         "bombs",
+        "engine_power_x",
+        "engine_power_y",
         "last_bomb_at",
         "next_bomb_at",
     )
@@ -29,14 +30,20 @@ class Helicopter(ObjectWithPhysics):
     ANIM_INTERVAL: int = 150
 
     ALTITUDE_MAX: float = HEIGHT * 2
-    ALTITUDE_MIN: float = HEIGHT * 4
-    TARGET_TRACKING_MIN = -WIDTH * 2
-    TARGET_TRACKING_MAX = WIDTH * 2
-    ENGINE_POWER_X: float = (TARGET_TRACKING_MAX - TARGET_TRACKING_MIN) / 1000  # Per ms
-    ENGINE_POWER_Y: float = (ALTITUDE_MAX - ALTITUDE_MIN) / 750  # Per ms
+    ALTITUDE_MIN: float = HEIGHT * 5
+    TARGET_TRACKING_MIN = -WIDTH * 3
+    TARGET_TRACKING_MAX = WIDTH * 3
+    VEL_X_MIN: float = 175
+    VEL_Y_CONST: float = 100
+    ENGINE_POWER_X_MIN: float = -1
+    ENGINE_POWER_X_MAX: float = 2
+    ENGINE_POWER_Y_MIN: float = -1
+    ENGINE_POWER_Y_MAX: float = 1
+    ENGINE_POWER_X: float = (ENGINE_POWER_X_MAX - ENGINE_POWER_X_MIN) / 1000  # Per ms
+    ENGINE_POWER_Y: float = (ENGINE_POWER_Y_MAX - ENGINE_POWER_Y_MIN) / 1000  # Per ms
     WEIGHT_FACTOR: float = 0.3
     BOMBS_MAX: int = 3
-    BOMBS_INTERVAL_RANGE: tuple[int, int] = 1000, 1500  # In ms
+    BOMBS_INTERVAL_RANGE: tuple[int, int] = 1500, 2500  # In ms
     BOMBS_INDICATOR_POS: tuple[int, int] = 8, 11
     BOMBS_INDICATOR_COLOR: str = "0xFFFFFF"
     BOMBS_DELAY_AFTER_SPAWN: int = 2000  # In ms
@@ -52,12 +59,14 @@ class Helicopter(ObjectWithPhysics):
             pos=pos,
             size=self.SIZE,
             texture_name=self.TEXTURE_NAME,
-            total_frames=self.total_frames,
+            total_frames=self.TOTAL_FRAMES,
             anim_interval=self.ANIM_INTERVAL,
         )
 
         self.draw_rect: PygameRect = PygameRect(0, 0, *self.SIZE)
         self.bombs: int = self.BOMBS_MAX
+        self.engine_power_x: float = 0
+        self.engine_power_y: float = 0
         self.last_bomb_at: int = get_ticks() + self.BOMBS_DELAY_AFTER_SPAWN
         self.next_bomb_at: int = self.calculate_next_bomb()
 
@@ -97,7 +106,8 @@ class Helicopter(ObjectWithPhysics):
         if self.bombs < 1:
             return
 
-        draw_x, draw_y = self.x + self.BOMBS_INDICATOR_POS[0], self.y + self.BOMBS_INDICATOR_POS[1]
+        draw_x = self.x + self.BOMBS_INDICATOR_POS[0] - viewpoint.x
+        draw_y = self.y + self.BOMBS_INDICATOR_POS[1] - viewpoint.y
 
         for _ in range(self.bombs):
             core.video.draw_rect(

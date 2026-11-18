@@ -1,5 +1,6 @@
 from random import randint, choice
 from math import ceil
+from pygame.time import get_ticks
 from objects import (
     GroundHumanBase,
     HumanBaseWalls,
@@ -10,6 +11,8 @@ from objects import (
     Tesla,
     Lighting,
     MissileSilo,
+
+    Helicopter,
 )
 from data_containers import objects as obj_container
 from .biome_generator import BiomeGenerator
@@ -42,8 +45,12 @@ class HumanBaseGenerator(BiomeGenerator):
 
     OBJECTS: tuple[type[Skyscraper|LandMine], ...] = tuple(OBJECT_RATE.keys())
 
+    HELICOPTER_SPAWN_RANGE: tuple[int, int] = 1500, 2000
+
     def __init__(self, total_tiles: int) -> None:
         super().__init__(total_tiles)
+
+        self.next_helicopter_spawn: int = get_ticks() + randint(*self.HELICOPTER_SPAWN_RANGE)
 
         obj_container.delete(self.ground)
         self.ground = GroundHumanBase(total_tiles)
@@ -118,6 +125,9 @@ class HumanBaseGenerator(BiomeGenerator):
         self.last_object_pos = new_object.pos
         obj_container.queue_add(new_object)
 
+    def npc(self):
+        self.helicopters()
+
     def teslas(self):
         tesla_1 = Tesla((self.camera.right + 1, 0))
         self.put_on_ground(tesla_1)
@@ -132,3 +142,32 @@ class HumanBaseGenerator(BiomeGenerator):
 
         obj_container.queue_add(tesla_1)
         obj_container.queue_add(tesla_2)
+
+    def helicopters(self):
+        existing_helicopter: None|Helicopter = None
+
+        for obj in obj_container.main_layer().values():
+            if isinstance(obj, Helicopter):
+                existing_helicopter = obj
+                break
+
+        if existing_helicopter is not None:
+            return
+
+        curr_time = get_ticks()
+
+        if curr_time < self.next_helicopter_spawn:
+            return
+
+        # Prevents spawning next helicopter immediately after the last one
+        if curr_time - self.next_helicopter_spawn >= self.HELICOPTER_SPAWN_RANGE[1]:
+            self.next_helicopter_spawn = curr_time + randint(*self.HELICOPTER_SPAWN_RANGE)
+            return
+
+        new_helicopter = Helicopter((
+                self.camera.left - Helicopter.WIDTH,
+                Helicopter.ALTITUDE_MIN - Helicopter.ALTITUDE_MAX/2,
+        ))
+
+        obj_container.add(new_helicopter)
+        self.next_helicopter_spawn = curr_time + randint(*self.HELICOPTER_SPAWN_RANGE)
