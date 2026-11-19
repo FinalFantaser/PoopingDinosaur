@@ -30,7 +30,7 @@ class Helicopter(ObjectWithPhysics):
     ANIM_INTERVAL: int = 150
 
     ALTITUDE_MAX: float = HEIGHT * 2
-    ALTITUDE_MIN: float = HEIGHT * 5
+    ALTITUDE_MIN: float = HEIGHT * 4
     TARGET_TRACKING_MIN = -WIDTH * 3
     TARGET_TRACKING_MAX = WIDTH * 3
     VEL_X_MIN: float = 175
@@ -40,7 +40,7 @@ class Helicopter(ObjectWithPhysics):
     ENGINE_POWER_Y_MIN: float = -1
     ENGINE_POWER_Y_MAX: float = 1
     ENGINE_POWER_X: float = (ENGINE_POWER_X_MAX - ENGINE_POWER_X_MIN) / 1000  # Per ms
-    ENGINE_POWER_Y: float = (ENGINE_POWER_Y_MAX - ENGINE_POWER_Y_MIN) / 1000  # Per ms
+    ENGINE_POWER_Y: float = (ENGINE_POWER_Y_MAX - ENGINE_POWER_Y_MIN) / 750  # Per ms
     WEIGHT_FACTOR: float = 0.3
     BOMBS_MAX: int = 3
     BOMBS_INTERVAL_RANGE: tuple[int, int] = 1500, 2500  # In ms

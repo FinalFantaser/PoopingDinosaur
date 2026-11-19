@@ -57,4 +57,5 @@ from .human import Human
 from .missile_silo import MissileSilo
 from .missile import Missile
 from .helicopter import Helicopter
+from .bomb import Bomb
 # <The next generated class will be here>

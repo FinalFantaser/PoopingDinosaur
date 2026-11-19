@@ -1,4 +1,5 @@
 from enum import Enum
+from typing import Iterable, Self
 from objects import Object, Layer, Camera, TRexNew, TRexNewCave, Ground, Dinosaur
 
 
@@ -7,13 +8,103 @@ class _TaskType(int, Enum):
     DELETE = 1
 
 
-
 class _Task:
     __slots__ = ("type", "subject", "throw")
     def __init__(self, type: _TaskType, subject: Object | str, throw: bool = False) -> None:
         self.type: _TaskType = type
         self.subject: Object|str = subject
         self.throw: bool = throw
+
+
+class Filter:
+    def __init__(
+            self,
+            obj_type: type[Object]|Iterable[type[Object]]|None = None,
+            layer: Layer|None = None,
+            visible: bool|None = None,
+            with_handler: bool|None = None,
+            id: str|None = None,
+            limit: int = 1,
+            return_type: type[dict|set|tuple|list] = type[dict],
+    ):
+        # Validation
+        if limit < 1:
+            raise ValueError(f"Invalid filter limit: {limit} (must be > 0)")
+
+        self.obj_type: type[Object]|Iterable[type[Object]]|None = obj_type
+        self.layer: Layer | None = layer
+        self.visible: bool|None = visible
+        self.with_handler: bool|None = with_handler
+        self.id: str|None = id
+        self.limit: int = limit
+        self.return_type: type[dict|set|tuple|list] = return_type
+
+    def by_type(self, obj_type: type[Object]|Iterable[type[Object]]|None) -> Self:
+        self.obj_type = obj_type
+        return self
+
+    def by_layer(self, layer: Layer | None) -> Self:
+        self.layer = layer
+        return self
+
+    def by_visible(self, visible: bool | None) -> Self:
+        self.visible = visible
+        return self
+
+    def by_with_handler(self, with_handler: bool | None) -> Self:
+        self.with_handler = with_handler
+        return self
+
+    def by_id(self, id: str | None) -> Self:
+        self.id = id
+        return self
+
+    def skip_id(self, id: str) -> Self:
+        self.id = f"!{id}"
+        return self
+
+    def with_collision(self) -> Self:
+        self.collision = True
+        return self
+
+    def no_collision(self) -> Self:
+        self.collision = False
+        return self
+
+    def skip_collision(self) -> Self:
+        self.collision = None
+        return self
+
+    def limit_by(self, limit: int) -> Self:
+        self.limit = limit
+        return self
+
+    def return_as(self, return_type: type[dict|set|tuple|list]) -> Self:
+        self.return_type = return_type
+        return self
+
+    def check(self, obj: Object) -> bool:
+        check = True
+
+        if self.obj_type is not None:
+            check = isinstance(obj, self.obj_type)
+
+        if self.layer is not None:
+            check = obj.LAYER == self.layer
+
+        if self.visible is not None:
+            check = obj.VISIBLE == self.visible
+
+        if self.with_handler is not None:
+            check = obj.HANDLER_NAME is not None
+
+        if self.id is not None:
+            if check[0] == '!':
+                check = obj.id != self.id[1:]
+            else:
+                check = obj.id == self.id
+
+        return check
 
 
 _all: dict[str, Object|Camera] = {}
@@ -86,17 +177,40 @@ def get(id: str, throw: bool = False) -> Object|None:
     return obj
 
 
+def filter(filter: Filter) -> dict[str, Object]|Iterable[Object]|Object|None:
+    if filter.limit == 1:
+        return next(
+            (obj for obj in _all.values() if filter.check(obj)),
+            None
+        )
+
+    obtained = set(obj for obj in _all.values() if filter.check(obj))
+
+    if filter.return_type == type[tuple]:
+        return tuple(obtained)
+    elif filter.return_type == type[list]:
+        return list(obtained)
+    elif filter.return_type == type[dict]:
+        return {obj.id: obj for obj in obtained}
+    else:
+        return obtained
+
+
 def visible() -> dict[str, Object]:
     return {obj_id: _all[obj_id] for obj_id in _idx_visible}
+
 
 def main_layer() -> dict[str, Object]:
     return {obj_id: _all[obj_id] for obj_id in _idx_main_layer}
 
+
 def dinosaurs(family: type[Dinosaur] = Dinosaur) -> dict[str, Dinosaur]:
     return {obj_id: _all[obj_id] for obj_id in _idx_visible if isinstance(_all[obj_id], family)}
 
+
 def hidden() -> dict[str, Object]:
     return {obj_id: _all[obj_id] for obj_id in _idx_hidden}
+
 
 def with_handlers() -> dict[str, Object]:
     return {obj_id: _all[obj_id] for obj_id in _idx_with_handlers}

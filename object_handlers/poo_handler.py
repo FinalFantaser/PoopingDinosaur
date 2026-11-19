@@ -12,6 +12,7 @@ from objects import (
     Zombiesaurus,
 
     LandMine,
+    Helicopter,
 )
 
 from object_handlers.object_handler import ObjectHandler
@@ -74,9 +75,10 @@ class PooHandler(ObjectHandler):
             elif isinstance(npc, LandMine):
                 npc.triggered_at = pygame.time.get_ticks() - LandMine.TRIGGER_DELAY
                 obj_container.queue_delete(obj)
-
-            # Explode vehicles ...
-            # ...
+            elif isinstance(npc, Helicopter):
+                explosion = Explosion().instead_of(npc)
+                obj_container.queue_delete(npc)
+                obj_container.queue_add(explosion)
 
         obj.last_update = pygame.time.get_ticks()
 

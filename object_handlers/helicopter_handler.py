@@ -1,5 +1,6 @@
+from pygame.mask import Mask
 from pygame.time import get_ticks
-from objects import Rect, Layer, Direction, Object, Ground, Camera, Helicopter, TRexNew, Skyscraper, Explosion
+from objects import Rect, Layer, Direction, Object, Ground, Camera, Helicopter, TRexNew, Skyscraper, Explosion, Bomb
 from .object_handler import ObjectHandler
 from data_containers import objects as obj_container, game_data
 
@@ -7,6 +8,8 @@ from data_containers import objects as obj_container, game_data
 class HelicopterHandler(ObjectHandler):
     @classmethod
     def update(cls, obj: Helicopter):
+        cls.delete_if_passed_camera(obj)
+
         time_delta = obj.update_delta
         trex = obj_container.get(TRexNew.ID, True)
 
@@ -24,6 +27,14 @@ class HelicopterHandler(ObjectHandler):
         obj.last_update = get_ticks()
 
     @classmethod
+    def delete_if_passed_camera(cls, obj: Helicopter) -> bool:
+        if obj.bombs < 1 and obj.rect.bottom <= 0:
+            obj_container.queue_delete(obj)
+            return True
+
+        return False
+
+    @classmethod
     def track_target(cls, helicopter: Helicopter, trex: TRexNew, time_delta: int) -> None:
         if helicopter.rect.center_x < trex.rect.center_x + helicopter.TARGET_TRACKING_MIN:
             helicopter.engine_power_x = min(
@@ -38,6 +49,13 @@ class HelicopterHandler(ObjectHandler):
 
     @classmethod
     def maintain_altitude(cls, helicopter: Helicopter, time_delta: int) -> None:
+        if helicopter.bombs < 1:
+            helicopter.engine_power_y = max(
+                helicopter.ENGINE_POWER_Y_MIN,
+                helicopter.engine_power_y - helicopter.ENGINE_POWER_Y * time_delta,
+            )
+            return
+
         if helicopter.y < helicopter.ALTITUDE_MAX:
             helicopter.engine_power_y = min(
                 helicopter.ENGINE_POWER_Y_MAX,
@@ -60,8 +78,11 @@ class HelicopterHandler(ObjectHandler):
 
         if helicopter.next_bomb_at <= get_ticks():
             helicopter.drop_bomb()
-            # Spawn a bomb ...
-            # ...
+            bomb = Bomb(
+                (helicopter.rect.center_x - Bomb.WIDTH/2, helicopter.rect.bottom),
+                helicopter.vel_x,
+            )
+            obj_container.queue_add(bomb)
 
     @classmethod
     def collisions(cls, helicopter: Helicopter) -> None:
@@ -88,11 +109,17 @@ class HelicopterHandler(ObjectHandler):
                 if other_object.health > 0:
                     # ... pixel-perfect collision check
                     # ...
-                    other_object.health -= 1
+                    collision = True
+                    if other_object.health < other_object.max_health:
+                        mask = Mask(helicopter.size, True)
+                        offset = other_object.x - helicopter.x, other_object.y - helicopter.y
+                        collision = mask.overlap(other_object.bit_mask, offset)
 
-                    explosion = Explosion().instead_of(helicopter)
-                    obj_container.queue_delete(helicopter)
-                    obj_container.queue_add(explosion)
+                    if collision:
+                        other_object.health -= 1
+                        explosion = Explosion().instead_of(helicopter)
+                        obj_container.queue_delete(helicopter)
+                        obj_container.queue_add(explosion)
 
     @classmethod
     def physics_ext(cls, helicopter: Helicopter, time_delta: int) -> None:

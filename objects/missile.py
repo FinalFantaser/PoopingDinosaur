@@ -25,7 +25,7 @@ class Missile(Object):
     SIZE: tuple[float, float] = WIDTH, HEIGHT
     TOTAL_FRAMES: int = 2
     ANIM_INTERVAL: int = 250
-    SPEED: float = 150
+    SPEED: float = 250
     ROTATION_SPEED: float = 180
 
     _total: int = 0
@@ -116,7 +116,7 @@ class Missile(Object):
             for degree in range(min(0, 360 * modifier), max(0, 361 * modifier)):
                 sizes = []
                 for frame_num in range(cls.TOTAL_FRAMES):
-                    rotated_surf = transform.rotate(frames[frame_num], degree)
+                    rotated_surf = transform.rotate(frames[frame_num], 180 - degree)
                     sizes.append(rotated_surf.get_size())
 
                     core.video.texture_add(
