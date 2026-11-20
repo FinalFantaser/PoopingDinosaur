@@ -53,7 +53,7 @@ from objects.gui.pause_menu import PauseMenu
 from .land_mine import LandMine
 from .tesla import Tesla
 from .lighting import Lighting
-from .human import Human
+from .scientist import Scientist
 from .missile_silo import MissileSilo
 from .missile import Missile
 from .helicopter import Helicopter

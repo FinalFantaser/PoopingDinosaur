@@ -5,8 +5,8 @@ from objects import (
     TRexNew,
     TRexNewCave,
     Dinosaur,
-    Human,
-    # Missile
+    Scientist,
+    Missile,
     LandMine,
 )
 from .object_handler import ObjectHandler
@@ -16,16 +16,16 @@ from data_containers import objects as obj_container
 class LightingHandler(ObjectHandler):
     DESTRUCTIBLES: tuple[type[
         TRexNew
-        |TRexNewCave
-        |Dinosaur
-        |Human
-        |LandMine
-    ]] = (
+        | TRexNewCave
+        | Dinosaur
+        | Scientist
+        | LandMine
+        ]] = (
         TRexNew,
         TRexNewCave,
         Dinosaur,
-        Human,
-        # Missile
+        Scientist,
+        Missile,
         LandMine,
     )
 

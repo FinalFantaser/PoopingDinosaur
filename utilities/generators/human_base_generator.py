@@ -13,6 +13,7 @@ from objects import (
     MissileSilo,
 
     Helicopter,
+    Scientist,
 )
 from data_containers import objects as obj_container
 from .biome_generator import BiomeGenerator
@@ -22,6 +23,25 @@ class HumanBaseGenerator(BiomeGenerator):
     FOREGROUND_2_INTERVAL: tuple[int, int] = 5, 10
     BACKGROUND_3_RATE: int = 75
     FOREGROUND_2_RATE: int = 33
+
+    NPC_RATE: dict[
+        type[Scientist],
+        int
+    ] = {
+        Scientist: 40,
+    }
+
+    NPC_INTERVAL: dict[
+        type[Scientist],
+        tuple[int, int],
+    ] = {
+        Scientist: (15, 20),
+    }
+
+    NPC: tuple[
+        type[Scientist],
+        ...
+    ] = tuple(NPC_RATE.keys())
 
     OBJECT_RATE: dict[
         type[Skyscraper|LandMine|Tesla|MissileSilo],
@@ -43,7 +63,10 @@ class HumanBaseGenerator(BiomeGenerator):
         MissileSilo: (10, 20),
     }
 
-    OBJECTS: tuple[type[Skyscraper|LandMine], ...] = tuple(OBJECT_RATE.keys())
+    OBJECTS: tuple[
+        type[Skyscraper|LandMine|Tesla|MissileSilo],
+        ...
+    ] = tuple(OBJECT_RATE.keys())
 
     HELICOPTER_SPAWN_RANGE: tuple[int, int] = 1500, 2000
 
@@ -105,7 +128,7 @@ class HumanBaseGenerator(BiomeGenerator):
 
     def objects(self):
         obj_class: type[Skyscraper|LandMine|Tesla] = choice(self.OBJECTS)
-        interval = randint(*self.OBJECT_INTERVAL[obj_class]) * obj_class.WIDTH
+        interval = randint(*self.OBJECT_INTERVAL[obj_class]) * self.ground.BLOCK_W
         rate = self.OBJECT_RATE[obj_class]
 
         if rate > 0:
@@ -126,6 +149,21 @@ class HumanBaseGenerator(BiomeGenerator):
         obj_container.queue_add(new_object)
 
     def npc(self):
+        npc_class: type[Scientist] = choice(self.NPC)
+        interval = randint(*self.NPC_INTERVAL[npc_class]) * self.ground.BLOCK_W
+        rate = self.NPC_RATE[npc_class]
+
+        if rate > 0:
+            create = self.camera.right - self.last_npc_pos[0] >= interval and randint(0, 100) <= rate
+        else:
+            create = False
+
+        if create:
+            new_npc = npc_class((self.camera.right + 1, 0))
+            self.put_on_ground(new_npc)
+            self.last_npc_pos = new_npc.pos
+            obj_container.queue_add(new_npc)
+
         self.helicopters()
 
     def teslas(self):
@@ -166,7 +204,7 @@ class HumanBaseGenerator(BiomeGenerator):
 
         new_helicopter = Helicopter((
                 self.camera.left - Helicopter.WIDTH,
-                Helicopter.ALTITUDE_MIN - Helicopter.ALTITUDE_MAX/2,
+                self.SKY_CENTER_LINE - Helicopter.HEIGHT/2,
         ))
 
         obj_container.add(new_helicopter)
