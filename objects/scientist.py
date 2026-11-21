@@ -25,11 +25,16 @@ class Scientist(ObjectWithPhysics):
     TOTAL_FRAMES: int = 2
     ANIM_INTERVAL: int = 250
     JUMP_ACCEL: int = 100
+    WEIGHT: float = 75
     WEIGHT_FACTOR: float = 0.5
+    HEALTH_MAX: int = 1
+    INVINCIBILITY_DURATION: int = 0
     _total: int = 0
 
     __slots__ = (
 		*ObjectWithPhysics.__slots__,
+        "invincibility",
+        "health",
         "state",
         "direction",
         "last_direction_change",
@@ -53,10 +58,20 @@ class Scientist(ObjectWithPhysics):
             anim_interval=self.ANIM_INTERVAL,
         )
 
+        self.invincibility: int = 0
+        self.health = 1
         self.state: Scientist.State = state
         self.direction: Direction = direction
         self.last_direction_change: int = get_ticks()
         self.draw_rect: PygameRect = PygameRect(0, 0, *self.size)
+
+    @property
+    def hitbox(self) -> Rect:
+        return self.rect
+
+    @property
+    def weight(self) -> float:
+        return self.WEIGHT
 
     def animate(self) -> None:
         if self.state == self.State.IDLE:

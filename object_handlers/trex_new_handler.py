@@ -23,6 +23,9 @@ class TRexNewHandler(ObjectHandler, DinosaurHandler):
         # Caves
         Snek,
         Zephyrosaurus,
+
+        # Human Base
+        Scientist,
     )
 
     REACTIONS_OBSTACLE_SEE: dict[Obstacle.Type, str | None] = {
@@ -132,7 +135,7 @@ class TRexNewHandler(ObjectHandler, DinosaurHandler):
                 continue
 
             # Collision with dinosaurs
-            if isinstance(other_obj, Dinosaur):
+            if isinstance(other_obj, Dinosaur|Scientist):
                 cls.touch_dinosaur(obj, other_obj)
 
             # Obstacles
