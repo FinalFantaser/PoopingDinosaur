@@ -7,10 +7,11 @@ from objects import (
     Dinosaur,
     TRexNew,
     TRexNewCave,
+    Scientist,
 
     LandMine,
     Skyscraper,
-    # ... Missile
+    Missile,
 
     Explosion,
 )
@@ -23,10 +24,11 @@ class ExplosionHandler(ObjectHandler):
         Dinosaur,
         TRexNew,
         TRexNewCave,
+        Scientist,
 
         LandMine,
         Skyscraper,
-        # ... Missile
+        Missile,
     )
 
     @classmethod

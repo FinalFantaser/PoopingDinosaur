@@ -1,5 +1,6 @@
 from enum import IntEnum, auto
 from math import floor
+from random import randint
 
 from pygame import Rect as PygameRect
 from pygame.time import get_ticks
@@ -24,11 +25,14 @@ class Scientist(ObjectWithPhysics):
     SIZE: tuple[float, float] = WIDTH, HEIGHT
     TOTAL_FRAMES: int = 2
     ANIM_INTERVAL: int = 250
-    JUMP_ACCEL: int = 100
+    VEL_X: float = 90
+    JUMP_ACCEL: float = -100
     WEIGHT: float = 75
-    WEIGHT_FACTOR: float = 0.5
+    WEIGHT_FACTOR: float = 1
     HEALTH_MAX: int = 1
     INVINCIBILITY_DURATION: int = 0
+    FOV_SIZE: tuple[float, float] = core.video.get_screen_rect().width / 3, HEIGHT * 4
+    DIRECTION_CHANGE_INTERVAL: tuple[int, int] = 1250, 2000
     _total: int = 0
 
     __slots__ = (
@@ -37,7 +41,8 @@ class Scientist(ObjectWithPhysics):
         "health",
         "state",
         "direction",
-        "last_direction_change",
+        "next_direction_change",
+        "_fov",
         "draw_rect",
     )
 
@@ -62,7 +67,8 @@ class Scientist(ObjectWithPhysics):
         self.health = 1
         self.state: Scientist.State = state
         self.direction: Direction = direction
-        self.last_direction_change: int = get_ticks()
+        self.next_direction_change: int = get_ticks() + randint(*self.DIRECTION_CHANGE_INTERVAL)
+        self._fov: Rect = Rect(*self.pos, *self.FOV_SIZE)
         self.draw_rect: PygameRect = PygameRect(0, 0, *self.size)
 
     @property
@@ -70,11 +76,18 @@ class Scientist(ObjectWithPhysics):
         return self.rect
 
     @property
+    def fov(self) -> Rect:
+        self._fov.center_x = self.rect.center_x
+        self._fov.bottom = self.rect.bottom
+
+        return self._fov
+
+    @property
     def weight(self) -> float:
         return self.WEIGHT
 
     def animate(self) -> None:
-        if self.state == self.State.IDLE:
+        if self.state != self.State.RUNNING:
             return
 
         curr_ticks = get_ticks()
@@ -84,7 +97,7 @@ class Scientist(ObjectWithPhysics):
 
     def draw(self, viewpoint: Rect) -> None:
         self.draw_rect.x = int(self.curr_frame * self.width)
-        self.draw_rect.y = int((0 if self.state == self.State.RUNNING else 1) * self.height)
+        self.draw_rect.y = int((0 if self.state != self.State.RUNNING else 1) * self.height)
 
         core.video.texture_blit(
             self.texture_name,
