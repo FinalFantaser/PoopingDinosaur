@@ -25,7 +25,7 @@ class TRexNewHandler(ObjectHandler, DinosaurHandler):
         Zephyrosaurus,
 
         # Human Base
-        Scientist,
+        Human,
     )
 
     REACTIONS_OBSTACLE_SEE: dict[Obstacle.Type, str | None] = {
@@ -135,7 +135,7 @@ class TRexNewHandler(ObjectHandler, DinosaurHandler):
                 continue
 
             # Collision with dinosaurs
-            if isinstance(other_obj, Dinosaur|Scientist):
+            if isinstance(other_obj, Dinosaur|Human):
                 cls.touch_dinosaur(obj, other_obj)
 
             # Obstacles
@@ -229,7 +229,7 @@ class TRexNewHandler(ObjectHandler, DinosaurHandler):
             core.audio.sound_play(sound_key)
 
     @classmethod
-    def touch_dinosaur(cls, trex: TRexNew, dinosaur: Dinosaur) -> None:
+    def touch_dinosaur(cls, trex: TRexNew, dinosaur: Dinosaur|Human) -> None:
         # If a dinosaur is smol, Super Mario Brothers the sucker
         if dinosaur.weight < game_data.HEAVY_DINOSAUR_WEIGHT:
             flatten_hitbox = trex.hitbox_flatten

@@ -1,5 +1,5 @@
 from pygame.time import get_ticks
-from objects import Rect, Layer, Direction, Object, Ground, Camera, Tesla, Lighting
+from objects import Tesla, Lighting
 from .object_handler import ObjectHandler
 from data_containers import objects as obj_container, game_data
 

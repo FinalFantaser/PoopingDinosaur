@@ -5,7 +5,7 @@ from objects import (
     TRexNew,
     TRexNewCave,
     Dinosaur,
-    Scientist,
+    Human,
     Missile,
     LandMine,
 )
@@ -18,13 +18,13 @@ class LightingHandler(ObjectHandler):
         TRexNew
         | TRexNewCave
         | Dinosaur
-        | Scientist
+        | Human
         | LandMine
         ]] = (
         TRexNew,
         TRexNewCave,
         Dinosaur,
-        Scientist,
+        Human,
         Missile,
         LandMine,
     )

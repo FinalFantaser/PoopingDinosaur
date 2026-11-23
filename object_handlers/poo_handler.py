@@ -13,6 +13,7 @@ from objects import (
 
     LandMine,
     Helicopter,
+    Human,
 )
 
 from object_handlers.object_handler import ObjectHandler
@@ -47,7 +48,7 @@ class PooHandler(ObjectHandler):
             # ...
 
             # Hitting NPCs
-            if isinstance(npc, Dinosaur): # ... and human NPCs on foot
+            if isinstance(npc, Dinosaur|Human): # ... and human NPCs on foot
                 if isinstance(npc, TRexNew|TRexNewCave):
                     continue
 

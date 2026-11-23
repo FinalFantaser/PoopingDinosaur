@@ -14,6 +14,7 @@ from objects import (
 
     Helicopter,
     Scientist,
+    Soldier,
 )
 from data_containers import objects as obj_container
 from .biome_generator import BiomeGenerator
@@ -29,6 +30,7 @@ class HumanBaseGenerator(BiomeGenerator):
         int
     ] = {
         Scientist: 40,
+        Soldier: 30,
     }
 
     NPC_INTERVAL: dict[
@@ -36,6 +38,7 @@ class HumanBaseGenerator(BiomeGenerator):
         tuple[int, int],
     ] = {
         Scientist: (15, 20),
+        Soldier: (10, 15),
     }
 
     NPC: tuple[

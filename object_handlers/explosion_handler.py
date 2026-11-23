@@ -7,7 +7,7 @@ from objects import (
     Dinosaur,
     TRexNew,
     TRexNewCave,
-    Scientist,
+    Human,
 
     LandMine,
     Skyscraper,
@@ -24,7 +24,7 @@ class ExplosionHandler(ObjectHandler):
         Dinosaur,
         TRexNew,
         TRexNewCave,
-        Scientist,
+        Human,
 
         LandMine,
         Skyscraper,
