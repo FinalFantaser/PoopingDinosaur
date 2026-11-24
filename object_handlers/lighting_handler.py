@@ -8,6 +8,7 @@ from objects import (
     Human,
     Missile,
     LandMine,
+    Jeep,
 )
 from .object_handler import ObjectHandler
 from data_containers import objects as obj_container
@@ -20,6 +21,7 @@ class LightingHandler(ObjectHandler):
         | Dinosaur
         | Human
         | LandMine
+        | Jeep
         ]] = (
         TRexNew,
         TRexNewCave,
@@ -27,6 +29,7 @@ class LightingHandler(ObjectHandler):
         Human,
         Missile,
         LandMine,
+        Jeep,
     )
 
     @classmethod

@@ -1,8 +1,8 @@
 from pygame.mask import Mask
 from pygame.time import get_ticks
-from objects import Rect, Layer, Direction, Object, Ground, Camera, Helicopter, TRexNew, Skyscraper, Explosion, Bomb
+from objects import Helicopter, TRexNew, Skyscraper, Explosion, Bomb
 from .object_handler import ObjectHandler
-from data_containers import objects as obj_container, game_data
+from data_containers import objects as obj_container
 
 
 class HelicopterHandler(ObjectHandler):
@@ -107,8 +107,6 @@ class HelicopterHandler(ObjectHandler):
                     obj_container.queue_add(explosion)
             elif isinstance(other_object, Skyscraper):
                 if other_object.health > 0:
-                    # ... pixel-perfect collision check
-                    # ...
                     collision = True
                     if other_object.health < other_object.max_health:
                         mask = Mask(helicopter.size, True)

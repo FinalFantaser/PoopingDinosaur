@@ -13,7 +13,7 @@ from objects import (
     Skyscraper,
     Missile,
 
-    Explosion,
+    Explosion, Jeep,
 )
 from .object_handler import ObjectHandler
 from data_containers import objects as obj_container
@@ -25,6 +25,7 @@ class ExplosionHandler(ObjectHandler):
         TRexNew,
         TRexNewCave,
         Human,
+        Jeep,
 
         LandMine,
         Skyscraper,

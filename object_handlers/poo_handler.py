@@ -14,6 +14,7 @@ from objects import (
     LandMine,
     Helicopter,
     Human,
+    Jeep,
 )
 
 from object_handlers.object_handler import ObjectHandler
@@ -34,7 +35,7 @@ class PooHandler(ObjectHandler):
         # Collision with NPCs
         for npc in obj_container.main_layer().values():
             # Skip oneself, not in MAIN layer, TRex, not NPC
-            if npc.id == obj.id or not isinstance(npc, Dinosaur|LandMine):
+            if npc.id == obj.id or not isinstance(npc, (Dinosaur, LandMine, Helicopter, Jeep)):
                 continue
 
             npc_hitbox: Rect = getattr(npc, 'hitbox', npc.rect)
@@ -76,9 +77,10 @@ class PooHandler(ObjectHandler):
             elif isinstance(npc, LandMine):
                 npc.triggered_at = pygame.time.get_ticks() - LandMine.TRIGGER_DELAY
                 obj_container.queue_delete(obj)
-            elif isinstance(npc, Helicopter):
+            elif isinstance(npc, Helicopter|Jeep):
                 explosion = Explosion().instead_of(npc)
                 obj_container.queue_delete(npc)
+                obj_container.queue_delete(obj)
                 obj_container.queue_add(explosion)
 
         obj.last_update = pygame.time.get_ticks()

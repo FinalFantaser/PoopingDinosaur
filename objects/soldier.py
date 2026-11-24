@@ -31,6 +31,7 @@ class Soldier(Human):
         Direction.RIGHT.value[0]: TEXTURE_NAME,
         Direction.LEFT.value[0]: f"{TEXTURE_NAME}_left",
     }
+    FOV_SIZE: tuple[float, float] = core.video.get_screen_rect().width * 0.75, Human.HEIGHT * 4
 
     _total: int = 0
     _cached: bool = False

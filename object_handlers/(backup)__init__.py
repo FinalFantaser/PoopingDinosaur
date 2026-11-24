@@ -43,6 +43,7 @@ from .helicopter_handler import HelicopterHandler
 from .bomb_handler import BombHandler
 from .scientist_handler import ScientistHandler
 from .soldier_handler import SoldierHandler
+from .bullet_handler import BulletHandler
 # <The next generated class will be here>
 
 object_handlers: dict[str, type[ObjectHandler]] = {

@@ -51,7 +51,7 @@ class BulletHandler(ObjectHandler):
                     target.health -= 1
                     target.invincibility = target.INVINCIBILITY_DURATION
                     target.vel_y = target.JUMP_ACCEL/2
-                    target.vel_x = target.VEL_X * obj.direction.value[0]
+                    target.vel_x = target.vel_x * obj.direction.value[0]
 
             elif isinstance(target, cls.DESTRUCTIBLES):
                 explosion = Explosion().instead_of(target)
