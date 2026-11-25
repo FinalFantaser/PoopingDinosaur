@@ -44,6 +44,7 @@ from .bomb_handler import BombHandler
 from .scientist_handler import ScientistHandler
 from .soldier_handler import SoldierHandler
 from .bullet_handler import BulletHandler
+from .jeep_handler import JeepHandler
 # <The next generated class will be here>
 
 object_handlers: dict[str, type[ObjectHandler]] = {

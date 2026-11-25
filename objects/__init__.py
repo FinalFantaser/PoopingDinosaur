@@ -61,4 +61,5 @@ from .bomb import Bomb
 from .human import Human
 from .soldier import Soldier
 from .bullet import Bullet
+from .jeep import Jeep
 # <The next generated class will be here>

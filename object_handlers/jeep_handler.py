@@ -9,8 +9,6 @@ from data_containers import objects as obj_container
 class JeepHandler(ObjectHandler):
     @classmethod
     def update(cls, obj: Jeep):
-        print(f"{obj.id}")
-
         if cls.delete_if_passed_camera(obj):
             return
 

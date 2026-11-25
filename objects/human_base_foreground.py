@@ -22,10 +22,10 @@ class HumanBaseForeground(Object):
     ID_STUB: str = "human_base_fg2_%d"
     TEXTURE_NAME: str = "human_base_fg2.png"
     WIDTH: float = 56
-    HEIGHT: float = 26
+    HEIGHT: float = 56
     SIZE: tuple[float, float] = WIDTH, HEIGHT
     Y_POS: float = 168
-    MAX_OPTIONS: int = 3
+    MAX_OPTIONS: int = 4
     PARALLAX_FACTOR: float = 1.4
     _total: int = 0
 

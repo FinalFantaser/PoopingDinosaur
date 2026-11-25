@@ -44,9 +44,11 @@ class Explosion(Object):
         self.damage: bool = damage
 
     def animate(self) -> None:
-        if get_ticks() - self.last_frame_change >= self.ANIM_INTERVAL:
-            self.curr_frame = (self.curr_frame + 1) % self.TOTAL_FRAMES
-            self.last_frame_change = get_ticks()
+        curr_ticks = get_ticks()
+        if curr_ticks - self.last_frame_change >= self.anim_interval:
+            if self.curr_frame < self.total_frames - 1:
+                self.curr_frame += 1
+                self.last_frame_change = curr_ticks
 
     def draw(self, viewpoint: Rect) -> None:
         core.video.texture_blit(
