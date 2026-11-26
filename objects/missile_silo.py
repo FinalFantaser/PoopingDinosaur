@@ -26,12 +26,12 @@ class MissileSilo(Object):
     HANDLER_NAME: str = "MissileSiloHandler"
     ID_STUB: str = "missile_silo_%d"
     TEXTURE_NAME: str = "missile_silo.png"
-    WIDTH: float = 32
-    HEIGHT: float = 8
+    WIDTH: float = 37
+    HEIGHT: float = 12
     SIZE: tuple[float, float] = WIDTH, HEIGHT
     TOTAL_FRAMES: int = 2
     ANIM_INTERVAL: int = 250
-    BUTTON_HITBOX_TEMPLATE: Rect = Rect(0, 4, 6, 2)
+    BUTTON_HITBOX_TEMPLATE: Rect = Rect(0, 8, 12, 4)
 
     _total: int = 0
 

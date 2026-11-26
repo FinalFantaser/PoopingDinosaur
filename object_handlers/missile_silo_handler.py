@@ -1,8 +1,7 @@
 from pygame.time import get_ticks
-from objects import MissileSilo, Missile
+from objects import MissileSilo, Missile, TRexNew, Poo
 from .object_handler import ObjectHandler
-from data_containers import objects as obj_container, game_data
-
+from data_containers import objects as obj_container
 
 class MissileSiloHandler(ObjectHandler):
     @classmethod
@@ -16,10 +15,20 @@ class MissileSiloHandler(ObjectHandler):
 
         if not obj.empty:
             if obj.state == obj.State.READY:
-                trex = obj_container.get_player()
-                if trex.invincibility < 1 and trex.hitbox.overlaps(obj.button_hitbox) and trex.vel_y > 0:
+                for activator in obj_container.main_layer().values():
+                    if not isinstance(activator, (TRexNew, Poo)):
+                        continue
+
+                    if not getattr(activator, "hitbox", activator.rect).overlaps(obj.button_hitbox):
+                        continue
+
+                    if getattr(activator, "invincibility", 0) > 0 or activator.vel_y <= 0:
+                        continue
+
                     obj.curr_frame = 0
                     obj.state = obj.State.EMPTY
+                    break
+
             elif obj.state == obj.State.EMPTY:
                 if obj.curr_frame == obj.total_frames - 1 and curr_ticks - obj.last_frame_change >= obj.anim_interval:
                     missile = Missile(obj.pos, -90)
