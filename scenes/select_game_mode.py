@@ -73,7 +73,8 @@ class SelectGameMode(Scene):
             #"Test": _Card("game_mode_test_title", "game_mode_test_description"),
             "Forest": _Card("game_mode_forest_title", "game_mode_forest_description", "game_mode_forest.png"),
             "Caves": _Card("game_mode_caves_title", "game_mode_caves_description", "game_mode_caves.png"),
-            "HumanBase": _Card("game_mode_human_base_title", "game_mode_human_base_description", "game_mode_human_base.png")
+            "HumanBase": _Card("game_mode_human_base_title", "game_mode_human_base_description", "game_mode_human_base.png"),
+            "Desert": _Card("game_mode_desert_title", "game_mode_desert_description", "game_mode_desert.png"),
             # ...
         }
 

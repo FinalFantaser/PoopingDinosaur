@@ -16,6 +16,8 @@ game_mode_caves_title: Подземелье
 game_mode_caves_description: Демонстрация подземного биома
 game_mode_human_base_title: База людей
 game_mode_human_base_description: Демонстрация биома базы людей
+game_mode_desert_title: Пустыня
+game_mode_desert_description: Демонстрация пустынного биома
 
 win: Ты выиграл. Ура. Молодец. Молодцы сосут концы.
 game_over: Потрачено

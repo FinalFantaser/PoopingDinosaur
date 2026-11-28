@@ -32,7 +32,7 @@ class CaveGenerator(BiomeGenerator):
         last_fg2_x: Last X position of an object generated at FOREGROUND_2
     """
 
-    FG_2_INTERVAL: tuple[int, int] = 30, 45
+    FOREGROUND_2_INTERVAL: tuple[int, int] = 30, 45
 
     NPC_RATE: dict[type[Dinosaur], int] = {
         Snek: 25,
@@ -110,7 +110,7 @@ class CaveGenerator(BiomeGenerator):
             return
 
         new_pos = ceil(parallax_camera.right + CaveBones.WIDTH * 1.5), CaveBones.POS_Y
-        self.last_fg2_x = new_pos[0] + randint(*self.FG_2_INTERVAL) * GroundCaves.BLOCK_W
+        self.last_fg2_x = new_pos[0] + randint(*self.FOREGROUND_2_INTERVAL) * GroundCaves.BLOCK_W
 
         new_bones: CaveBones = CaveBones(new_pos)
         obj_container.queue_add(new_bones)

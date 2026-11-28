@@ -29,6 +29,13 @@ from .skyscraper import Skyscraper
 from .human_base_walls import HumanBaseWalls
 from .human_base_background import HumanBaseBackground
 from .human_base_foreground import HumanBaseForeground
+from .land_mine import LandMine
+from .tesla import Tesla
+from .lighting import Lighting
+from .missile_silo import MissileSilo
+from .missile import Missile
+from .bomb import Bomb
+from .bullet import Bullet
 
 # Dinosaurs
 from .dinosaur import Dinosaur
@@ -44,22 +51,17 @@ from .snek import Snek
 from .zephyrosaurus import Zephyrosaurus
 from .zombiesaurus import Zombiesaurus
 
+# Human NPCs
+from .human import Human
+from .scientist import Scientist
+from .soldier import Soldier
+from .helicopter import Helicopter
+from .jeep import Jeep
+
 # GUI
 from objects.gui.health_meter import HealthMeter
 from objects.gui.poo_meter import PooMeter
 from objects.gui.pause_menu import PauseMenu
 
 # OBJECTS MADE WITH multitool.py
-from .land_mine import LandMine
-from .tesla import Tesla
-from .lighting import Lighting
-from .scientist import Scientist
-from .missile_silo import MissileSilo
-from .missile import Missile
-from .helicopter import Helicopter
-from .bomb import Bomb
-from .human import Human
-from .soldier import Soldier
-from .bullet import Bullet
-from .jeep import Jeep
 # <The next generated class will be here>

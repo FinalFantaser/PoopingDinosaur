@@ -10,7 +10,7 @@ class TiledBackground(Object):
     __slots__ = *Object.__slots__, "total_blocks", "blocks"
 
     LAYER = Layer.BACKGROUND_3
-    ID: str = 'tiled_background_dummy.png'
+    ID: str = 'tiled_background_dummy'
     TEXTURE_NAME: str = 'tile_background_dummy.png'
     BLOCK_VAR_RANGE: int = 2
     BLOCK_W: int = 64

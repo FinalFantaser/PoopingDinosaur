@@ -15,6 +15,12 @@ from .snek_handler import SnekHandler
 from .zephyrosaurus_handler import ZephyrosaurusHandler
 from .zombiesaurus_handler import ZombiesaurusHandler
 
+# Human NPCs
+from .scientist_handler import ScientistHandler
+from .soldier_handler import SoldierHandler
+from .helicopter_handler import HelicopterHandler
+from .jeep_handler import JeepHandler
+
 # Environment
 from .obstacle_handler import ObstacleHandler
 from .poo_handler import PooHandler
@@ -27,6 +33,13 @@ from .falling_stalactite_handler import FallingStalactiteHandler
 from .skyscrapper_handler import SkyscraperHandler
 from .human_base_background_handler import HumanBaseBackgroundHandler
 from .human_base_foreground_handler import HumanBaseForegroundHandler
+from .land_mine_handler import LandMineHandler
+from .tesla_handler import TeslaHandler
+from .lighting_handler import LightingHandler
+from .missile_silo_handler import MissileSiloHandler
+from .missile_handler import MissileHandler
+from .bomb_handler import BombHandler
+from .bullet_handler import BulletHandler
 
 # GUI
 from .gui.health_meter_handler import HealthMeterHandler
@@ -34,17 +47,6 @@ from .gui.poo_handler import PooMeterHandler
 from .gui.pause_menu_handler import PauseMenuHandler
 
 # CLASSES MADE WITH multitool.py
-from .land_mine_handler import LandMineHandler
-from .tesla_handler import TeslaHandler
-from .lighting_handler import LightingHandler
-from .missile_silo_handler import MissileSiloHandler
-from .missile_handler import MissileHandler
-from .helicopter_handler import HelicopterHandler
-from .bomb_handler import BombHandler
-from .scientist_handler import ScientistHandler
-from .soldier_handler import SoldierHandler
-from .bullet_handler import BulletHandler
-from .jeep_handler import JeepHandler
 # <The next generated class will be here>
 
 object_handlers: dict[str, type[ObjectHandler]] = {
